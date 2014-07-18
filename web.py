@@ -453,3 +453,39 @@ if not app.config['DEBUG']:
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)),
             debug=app.config['DEBUG'])
+
+
+
+@app.route('/newevent', methods=['GET', 'POST'])
+@login_required()
+def new_event():
+    error = False
+    error_type = 'validate'
+    if request.method == 'POST':
+        event_name = request.form.get('event-name').strip()
+        event_description=request.form.get('event-description')
+
+        if not event_name or not event_description:
+            error = True
+        else:
+            tags = cgi.escape(request.form.get('event-tags'))
+            tags_array = extract_tags(tags)
+            post_data = {'name': event_name,
+                         'description': event_description,
+                         'tags': tags_array,
+                         'author': session['user']['username']}
+
+            event = postClass.validate_post_data(post_data)
+
+            response = postClass.create_new_event(event)
+            if response['error']:
+                error = True
+                error_type = 'post'
+                flash(response['error'], 'error')
+            else:
+                flash('New post created!', 'success')
+
+        return render_template('new_event.html',
+                           meta_title='New event',
+                           error=error,
+                           error_type=error_type)
