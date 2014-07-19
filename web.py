@@ -200,29 +200,58 @@ def new_event():
     error_type = 'validate'
     if request.method == 'POST':
         event_name = request.form.get('event-name').strip()
-        event_description=request.form.get('event-description')
+        event_summary = request.form.get('event-summary')
+        event_description = request.form.get('event-description')
 
         if not event_name or not event_description:
             error = True
         else:
-            tags = cgi.escape(request.form.get('event-tags'))
+            tags = cgi.escape(request.form.get('post-tags'))
             tags_array = extract_tags(tags)
-            event_data = {'name': event_name,
+            event_data = {'name':event_name,
+                          'summary':request.form.get('event-summary'),
                           'description': event_description,
+                          'dateInit': request.form.get('event-dateInit'),
+                          'dateEnd': request.form.get('event-dateEnd'),
+                          #'permalink'
                           'tags': tags_array,
                           'author': session['user']['username']}
 
+
             event = eventClass.validate_event_data(event_data)
-
-            response = eventClass.create_new_event(event)
-            if response['error']:
-                error = True
-                error_type = 'post'
-                flash(response['error'], 'error')
+            if request.form.get('event-preview') == '1':
+                session['event-preview'] = event
+                session[
+                    'event-preview']['action'] = 'edit' if request.form.get('event-id') else 'add'
+                if request.form.get('event-id'):
+                    session[
+                        'event-preview']['redirect'] = url_for('event_edit', id=request.form.get('event-id'))
+                else:
+                    session['event-preview']['redirect'] = url_for('new_event')
+                return redirect(url_for('event_preview'))
             else:
-                flash('New event created!', 'success')
+                session.pop('event-preview', None)
 
-        return render_template('new_event.html',
+                if request.form.get('event-id'):
+                    response = eventClass.edit_event(
+                        request.form['event-id'], event)
+                    if not response['error']:
+                        flash('Event updated!', 'success')
+                    else:
+                        flash(response['error'], 'error')
+                    return redirect(url_for('events'))
+                else:
+                    response = eventClass.create_new_event(event)
+                    if response['error']:
+                        error = True
+                        error_type = 'event'
+                        flash(response['error'], 'error')
+                    else:
+                        flash('New event created!', 'success')
+    else:
+        if session.get('event-preview') and session['event-preview']['action'] == 'edit':
+            session.pop('event-preview', None)
+    return render_template('new_event.html',
                            meta_title='New event',
                            error=error,
                            error_type=error_type)
