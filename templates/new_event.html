@@ -1,3 +1,4 @@
+{%- extends 'index.html' -%}
 <div class="event clearfix">
 		<div class="row">
 			<div class="col-lg-8">
@@ -21,26 +22,25 @@
 							{%- endif -%}
 						    <input type="text" class="form-control" name="event-name" id="event-name" placeholder="Event Name" value="{{ event_name }}" required>
 					    </div>
-						<!--<div class="form-group">
-						    <textarea id="post-short" name="post-short" class="form-control" rows="3" placeholder="Short Text">{{ post_preview }}</textarea>
+						<div class="form-group">
+						    <textarea id="event-short" name="event-short" class="form-control" rows="3" placeholder="Short Text">{{ event_preview }}</textarea>
 					    </div>
 						<div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
 							{%- if error and error_type == 'validate' -%}
-								<label class="control-label" for="post-full">Required field</label>
+								<label class="control-label" for="event-full">Required field</label>
 							{%- endif -%}
-						    <textarea id="post-full" name="post-full" class="form-control" rows="6" placeholder="Full Text" required>{{ post_body }}</textarea>
+						    <textarea id="event-full" name="event-full" class="form-control" rows="6" placeholder="Full Text" required>{{ event_description }}</textarea>
 					    </div>
 						<div class="form-group">
-						    <label for="post-tags">Tags</label>
-						    <input type="text" name="post-tags" class="form-control" id="post-tags" placeholder="Comma separated" value="{{ ','.join(post_tags) }}">
+						    <label for="event-tags">Tags</label>
+						    <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ ','.join(event_tags) }}">
 					    </div>
 						<div class="form-group">
-							<input type="hidden" name="post-preview" id="preview">
+							<input type="hidden" name="event-preview" id="preview">
 							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-						    <input id="post-submit" type="submit" class="btn btn-primary" value="Submit">
-							<input id="post-preview" type="submit" class="btn" value="Preview">
+						    <input id="event-submit" type="submit" class="btn btn-primary" value="Submit">
+							<input id="event-preview" type="submit" class="btn" value="Preview">
 					    </div>
-                        -->
 					</form>
 				</div>
 			</div>

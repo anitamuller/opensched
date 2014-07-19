@@ -7,6 +7,7 @@ from mdx_strike import StrikeExtension
 from mdx_quote import QuoteExtension
 from werkzeug.contrib.atom import AtomFeed
 import post
+import event
 import user
 import pagination
 import settings
@@ -190,6 +191,41 @@ def post_del(id):
         flash('Need to be at least one post..', 'error')
 
     return redirect(url_for('posts'))
+
+
+@app.route('/newevent', methods=['GET', 'POST'])
+@login_required()
+def new_event():
+    error = False
+    error_type = 'validate'
+    if request.method == 'POST':
+        event_name = request.form.get('event-name').strip()
+        event_description=request.form.get('event-description')
+
+        if not event_name or not event_description:
+            error = True
+        else:
+            tags = cgi.escape(request.form.get('event-tags'))
+            tags_array = extract_tags(tags)
+            event_data = {'name': event_name,
+                          'description': event_description,
+                          'tags': tags_array,
+                          'author': session['user']['username']}
+
+            event = eventClass.validate_event_data(event_data)
+
+            response = eventClass.create_new_event(event)
+            if response['error']:
+                error = True
+                error_type = 'post'
+                flash(response['error'], 'error')
+            else:
+                flash('New event created!', 'success')
+
+        return render_template('new_event.html',
+                           meta_title='New event',
+                           error=error,
+                           error_type=error_type)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -434,6 +470,7 @@ def format_datetime_filter(input_value, format_="%a, %d %b %Y"):
 
 
 settingsClass = settings.Settings(app.config)
+eventClass = event.Event(app.config)
 postClass = post.Post(app.config)
 userClass = user.User(app.config)
 
@@ -453,39 +490,3 @@ if not app.config['DEBUG']:
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)),
             debug=app.config['DEBUG'])
-
-
-
-@app.route('/newevent', methods=['GET', 'POST'])
-@login_required()
-def new_event():
-    error = False
-    error_type = 'validate'
-    if request.method == 'POST':
-        event_name = request.form.get('event-name').strip()
-        event_description=request.form.get('event-description')
-
-        if not event_name or not event_description:
-            error = True
-        else:
-            tags = cgi.escape(request.form.get('event-tags'))
-            tags_array = extract_tags(tags)
-            post_data = {'name': event_name,
-                         'description': event_description,
-                         'tags': tags_array,
-                         'author': session['user']['username']}
-
-            event = postClass.validate_post_data(post_data)
-
-            response = postClass.create_new_event(event)
-            if response['error']:
-                error = True
-                error_type = 'post'
-                flash(response['error'], 'error')
-            else:
-                flash('New post created!', 'success')
-
-        return render_template('new_event.html',
-                           meta_title='New event',
-                           error=error,
-                           error_type=error_type)

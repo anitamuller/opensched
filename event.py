@@ -11,7 +11,7 @@ class Event:
         self.response = {'error': None, 'data': None}
         self.debug_mode = default_config['DEBUG']
 
-    def get_posts(self, limit, skip, tag=None, search=None):
+    def get_events(self, limit, skip, tag=None, search=None):
         self.response['error'] = None
         cond = {}
         if tag is not None:
@@ -19,7 +19,7 @@ class Event:
         elif search is not None:
             cond = {'$or': [
                     {'name': {'$regex': search, '$options': 'i'}},
-                    {'body': {'$regex': search, '$options': 'i'}},
+                    {'description': {'$regex': search, '$options': 'i'}},
                     {'preview': {'$regex': search, '$options': 'i'}}]}
         try:
             cursor = self.collection.find(cond).sort(
@@ -45,26 +45,26 @@ class Event:
                                               'comments': event['comments']})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Posts not found..'
+            self.response['error'] = 'Events not found..'
 
         return self.response
 
-    def get_post_by_permalink(self, permalink):
+    def get_event_by_permalink(self, permalink):
         self.response['error'] = None
         try:
             self.response['data'] = self.collection.find_one(
                 {'permalink': permalink})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Post not found..'
+            self.response['error'] = 'Event not found..'
 
         return self.response
 
-    def get_post_by_id(self, post_id):
+    def get_event_by_id(self, event_id):
         self.response['error'] = None
         try:
             self.response['data'] = self.collection.find_one(
-                {'_id': ObjectId(post_id)})
+                {'_id': ObjectId(event_id)})
             if self.response['data']:
                 if 'tags' not in self.response['data']:
                     self.response['data']['tags'] = ''
@@ -75,7 +75,7 @@ class Event:
                     self.response['data']['preview'] = ''
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Post not found..'
+            self.response['error'] = 'Event not found..'
 
         return self.response
 
@@ -112,59 +112,55 @@ class Event:
 
         return self.response
 
-    def create_new_post(self, post_data):
+    def create_new_event(self, post_data):
         self.response['error'] = None
         try:
             self.response['data'] = self.collection.insert(post_data)
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Adding post error..'
+            self.response['error'] = 'Adding event error..'
 
         return self.response
 
-    def edit_post(self, post_id, post_data):
+    def edit_event(self, event_id, event_data):
         self.response['error'] = None
-        del post_data['date']
-        del post_data['permalink']
+        del event_data['date']
+        del event_data['permalink']
 
         try:
             self.collection.update(
-                {'_id': ObjectId(post_id)}, {"$set": post_data}, upsert=False)
+                {'_id': ObjectId(event_id)}, {"$set": event_data}, upsert=False)
             self.response['data'] = True
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Post update error..'
+            self.response['error'] = 'Event update error..'
 
         return self.response
 
-    def delete_post(self, post_id):
+    def delete_post(self, event_id):
         self.response['error'] = None
         try:
-            if self.get_post_by_id(post_id) and self.collection.remove({'_id': ObjectId(post_id)}):
+            if self.get_event_by_id(event_id) and self.collection.remove({'_id': ObjectId(event_id)}):
                 self.response['data'] = True
             else:
                 self.response['data'] = False
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Deleting post error..'
+            self.response['error'] = 'Deleting event error..'
 
         return self.response
 
     @staticmethod
-    def validate_post_data(post_data):
+    def validate_event_data(event_data):
         permalink = random_string(12)
-        #exp = re.compile('\W')
-        #whitespace = re.compile('\s')
-        #temp_title = whitespace.sub("_", post_data['title'])
-        #permalink = exp.sub('', temp_title)
 
-        post_data['title'] = cgi.escape(post_data['title'])
-        post_data['preview'] = cgi.escape(post_data['preview'], quote=True)
-        post_data['body'] = cgi.escape(post_data['body'], quote=True)
-        post_data['date'] = datetime.datetime.utcnow()
-        post_data['permalink'] = permalink
+        event_data['title'] = cgi.escape(event_data['name'])
+        event_data['preview'] = cgi.escape(event_data['preview'], quote=True)
+        event_data['description'] = cgi.escape(event_data['description'], quote=True)
+        event_data['date'] = datetime.datetime.utcnow()
+        event_data['permalink'] = permalink
 
-        return post_data
+        return event_data
 
     @staticmethod
     def print_debug_info(msg, show=False):
