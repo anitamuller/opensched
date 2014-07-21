@@ -19,8 +19,9 @@ class Event:
         elif search is not None:
             cond = {'$or': [
                     {'name': {'$regex': search, '$options': 'i'}},
-                    {'description': {'$regex': search, '$options': 'i'}},
-                    {'preview': {'$regex': search, '$options': 'i'}}]}
+                    {'summary': {'$regex': search, '$options': 'i'}},
+                    {'description': {'$regex': search, '$options': 'i'}}]}
+
         try:
             cursor = self.collection.find(cond).sort(
                 'date', direction=-1).skip(skip).limit(limit)
@@ -28,15 +29,13 @@ class Event:
             for event in cursor:
                 if 'tags' not in event:
                     event['tags'] = []
-                if 'preview' not in event:
-                    event['preview'] = ''
 
                 self.response['data'].append({'id': event['_id'],
                                               'name': event['name'],
+                                              'summary': event['summary'],
                                               'description': event['description'],
                                               'dateInit': event['dateInit'],
                                               'dateEnd': event['dateEnd'],
-                                              'preview': event['preview'],
                                               'permalink': event['permalink'],
                                               'tags': event['tags'],
                                               'author': event['author']})

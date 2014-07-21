@@ -167,6 +167,21 @@ def posts(page):
     return render_template('posts.html', posts=posts['data'], pagination=pag, meta_title='Posts')
 
 
+@app.route('/events_list', defaults={'page': 1})
+@app.route('/events_list/page-<int:page>')
+@login_required()
+def events(page):
+    session.pop('event-preview', None)
+    skip = (page - 1) * int(app.config['PER_PAGE'])
+    events = eventClass.get_events(int(app.config['PER_PAGE']), skip)
+    count = eventClass.get_total_count()
+    pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
+
+    if not events['data']:
+        abort(404)
+
+    return render_template('events.html', events=events['data'], pagination=pag, meta_title='Events')
+
 @app.route('/post_edit?id=<id>')
 @login_required()
 def post_edit(id):
@@ -261,6 +276,41 @@ def new_event():
                            meta_title='New event',
                            error=error,
                            error_type=error_type)
+
+
+
+@app.route('/event_edit?id=<id>')
+@login_required()
+def event_edit(id):
+    event = eventClass.get_event_by_id(id)
+    if event['error']:
+        flash(event['error'], 'error')
+        return redirect(url_for('events'))
+
+    if session.get('event-preview') and session['event-preview']['action'] == 'add':
+        session.pop('event-preview', None)
+    return render_template('edit_event.html',
+                           meta_title='Edit event::' + event['data']['name'],
+                           event=event['data'],
+                           error=False,
+                           error_type=False)
+
+
+@app.route('/event_delete?id=<id>')
+@login_required()
+def event_del(id):
+    if eventClass.get_total_count() > 1:
+        response = eventClass.delete_post(id)
+        if response['data'] is True:
+            flash('Event removed!', 'success')
+        else:
+            flash(response['error'], 'error')
+    else:
+        flash('Need to be at least one event..', 'error')
+
+    return redirect(url_for('events'))
+
+
 
 
 @app.route('/login', methods=['GET', 'POST'])

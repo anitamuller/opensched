@@ -1,0 +1,48 @@
+{%- extends 'index.html' -%}
+{%- block body -%}
+	<div class="event">
+		<div class="row">
+			<div class="col-lg-12">
+				{%- if events -%}
+					<div class="page-header">
+						<h1>Events</h1>
+					</div>
+					<div class="content">
+						{%- with messages = get_flashed_messages(with_categories=True) -%}
+		                    {%- if messages -%}
+		                        {%- for category, message in messages -%}
+		                            <div class="response">
+		                                <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+		                            </div>
+		                        {%- endfor -%}
+		                    {%- endif -%}
+		                {%- endwith -%}
+						<a href="{{ url_for('new_event') }}" class="response btn btn-primary">Add new</a>
+						<table class="table table-striped">
+							<tr>
+								<th>Name</th>
+                                <th>Summary</th>
+                                <th>Date Init</th>
+                                <th>Date End</th>
+                                <th>Action</th>
+							</tr>
+							{%- for event in events -%}
+							<tr>
+								<td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
+                                <td>{{ event['summary'] |formatdate }}</td>
+								<td>{{ event['dateInit'] |formatdate }}</td>
+                                <td>{{ event['dateEnd'] |formatdate }}</td>
+								<td><a title="Edit" href="{{ url_for('event_edit', id=event['id']) }}" class="icon-edit-sign bigger icon"></a>{%- if events|length > 1 -%}&nbsp;&nbsp;<a title="Delete" href="{{ url_for('event_del', id=event['id']) }}" class="icon-remove-sign bigger icon"></a>{%- endif -%}</td>
+							</tr>
+							{%- endfor -%}
+						</table>
+					</div>
+				{%- else -%}
+					<div class="page-header">
+						<h1>Events not found..</h1>
+					</div>
+				{%- endif -%}
+		    </div>
+		</div>
+	</div>
+{%- endblock -%}
