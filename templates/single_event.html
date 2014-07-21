@@ -22,7 +22,7 @@
 				        </div>
 					</div>
 					<div class="content article">
-                        <div><h3>Summary</h3></div>
+						<div><h3>Summary</h3></div>
 						{{ event['summary']|markdown }}
                         <div><h3>Description</h3></div>
 						{{ event['description']|markdown }}
@@ -36,13 +36,10 @@
 							<i>tags:</i>
 							{%- if event['tags'] -%}
 								{%- for tag in event['tags'] -%}
-									&nbsp;<a href="/tag/{{ tag }}">{{ tag }}</a>
+									&nbsp;<a href="{{ url_for('events_by_tag', tag=tag) }}">{{ tag }}</a>
 								{%- endfor -%}
 							{%- endif -%}
 						</div>
-					</div>
-					<div class="preview-back">
-						<a href="{{ session.get('event-preview')['redirect'] }}" class="btn btn-primary btn-lg">< Back</a>
 					</div>
 				</div>
 			</div>

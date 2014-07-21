@@ -29,10 +29,14 @@
 							{%- for event in events -%}
 							<tr>
 								<td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
-                                <td>{{ event['summary'] |formatdate }}</td>
-								<td>{{ event['dateInit'] |formatdate }}</td>
-                                <td>{{ event['dateEnd'] |formatdate }}</td>
-								<td><a title="Edit" href="{{ url_for('event_edit', id=event['id']) }}" class="icon-edit-sign bigger icon"></a>{%- if events|length > 1 -%}&nbsp;&nbsp;<a title="Delete" href="{{ url_for('event_del', id=event['id']) }}" class="icon-remove-sign bigger icon"></a>{%- endif -%}</td>
+                                <td>{{ event['summary'] }}</td>
+								<td>{{ event['dateInit'] }}</td>
+                                <td>{{ event['dateEnd']  }}</td>
+								<td><a title="Edit" href="{{ url_for('event_edit', id=event['id']) }}" class="icon-edit-sign bigger icon"></a>
+                                    {%- if events|length >= 1 -%}&nbsp;&nbsp;
+                                    <a title="Delete" href="{{ url_for('event_del', id=event['id']) }}" class="icon-remove-sign bigger icon"></a>
+                                    {%- endif -%}
+                                </td>
 							</tr>
 							{%- endfor -%}
 						</table>

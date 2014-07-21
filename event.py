@@ -151,8 +151,8 @@ class Event:
         event_data['name'] = cgi.escape(event_data['name'])
         event_data['summary'] = cgi.escape(event_data['summary'], quote=True)
         event_data['description'] = cgi.escape(event_data['description'], quote=True)
-        event_data['dateInit']= cgi.escape(event_data['dateInit'], quote=True)
-        event_data['dateEnd']= cgi.escape(event_data['dateEnd'], quote=True)
+        event_data['dateInit'] = cgi.escape(event_data['dateInit'], quote=True)
+        event_data['dateEnd'] = cgi.escape(event_data['dateEnd'], quote=True)
         permalink = random_string(12)
         event_data['permalink'] = permalink
 

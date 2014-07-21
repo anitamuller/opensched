@@ -44,12 +44,32 @@ def posts_by_tag(tag, page):
     return render_template('index.html', posts=posts['data'], pagination=pag, meta_title='Posts by tag: ' + tag)
 
 
+@app.route('/tag/<tag>', defaults={'page': 1})
+@app.route('/tag/<tag>/page-<int:page>')
+def events_by_tag(tag, page):
+    skip = (page - 1) * int(app.config['PER_PAGE'])
+    posts = postClass.get_posts(int(app.config['PER_PAGE']), skip, tag=tag)
+    count = postClass.get_total_count(tag=tag)
+    if not posts['data']:
+        abort(404)
+    pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
+    return render_template('index.html', posts=posts['data'], pagination=pag, meta_title='Posts by tag: ' + tag)
+
 @app.route('/post/<permalink>')
 def single_post(permalink):
     post = postClass.get_post_by_permalink(permalink)
     if not post['data']:
         abort(404)
     return render_template('single_post.html', post=post['data'], meta_title=app.config['BLOG_TITLE'] + '::' + post['data']['title'])
+
+
+@app.route('/event/<permalink>')
+def single_event(permalink):
+    event = eventClass.get_event_by_permalink(permalink)
+    if not event['data']:
+        abort(404)
+    return render_template('single_event.html', event=event['data'], meta_title=app.config['BLOG_TITLE'] + '::' + event['data']['name'])
+
 
 
 @app.route('/q/<query>', defaults={'page': 1})
@@ -234,7 +254,6 @@ def new_event():
                           'description': event_description,
                           'dateInit': request.form.get('event-dateInit'),
                           'dateEnd': request.form.get('event-dateEnd'),
-                          #'permalink'
                           'tags': tags_array,
                           'author': session['user']['username']}
 
