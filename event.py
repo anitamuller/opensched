@@ -28,21 +28,18 @@ class Event:
             for event in cursor:
                 if 'tags' not in event:
                     event['tags'] = []
-                if 'comments' not in event:
-                    event['comments'] = []
                 if 'preview' not in event:
                     event['preview'] = ''
 
                 self.response['data'].append({'id': event['_id'],
                                               'name': event['name'],
-                                              'description' : event['description'],
+                                              'description': event['description'],
                                               'dateInit': event['dateInit'],
                                               'dateEnd': event['dateEnd'],
                                               'preview': event['preview'],
                                               'permalink': event['permalink'],
                                               'tags': event['tags'],
-                                              'author': event['author'],
-                                              'comments': event['comments']})
+                                              'author': event['author']})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Events not found..'
@@ -85,8 +82,8 @@ class Event:
             cond = {'tags': tag}
         elif search is not None:
             cond = {'$or': [
-                    {'title': {'$regex': search, '$options': 'i'}},
-                    {'body': {'$regex': search, '$options': 'i'}},
+                    {'name': {'$regex': search, '$options': 'i'}},
+                    {'description': {'$regex': search, '$options': 'i'}},
                     {'preview': {'$regex': search, '$options': 'i'}}]}
 
         return self.collection.find(cond).count()
@@ -124,7 +121,6 @@ class Event:
 
     def edit_event(self, event_id, event_data):
         self.response['error'] = None
-        del event_data['date']
         del event_data['permalink']
 
         try:
@@ -137,7 +133,7 @@ class Event:
 
         return self.response
 
-    def delete_post(self, event_id):
+    def delete_event(self, event_id):
         self.response['error'] = None
         try:
             if self.get_event_by_id(event_id) and self.collection.remove({'_id': ObjectId(event_id)}):
@@ -152,12 +148,13 @@ class Event:
 
     @staticmethod
     def validate_event_data(event_data):
-        permalink = random_string(12)
 
-        event_data['title'] = cgi.escape(event_data['name'])
-        event_data['preview'] = cgi.escape(event_data['preview'], quote=True)
+        event_data['name'] = cgi.escape(event_data['name'])
+        event_data['summary'] = cgi.escape(event_data['summary'], quote=True)
         event_data['description'] = cgi.escape(event_data['description'], quote=True)
-        event_data['date'] = datetime.datetime.utcnow()
+        event_data['dateInit']= cgi.escape(event_data['dateInit'], quote=True)
+        event_data['dateEnd']= cgi.escape(event_data['dateEnd'], quote=True)
+        permalink = random_string(12)
         event_data['permalink'] = permalink
 
         return event_data

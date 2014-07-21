@@ -7,6 +7,11 @@ $(function(){
         $('#post-full').mdmagick();
     }
 
+    if($('#event-summary').length && $('#event-description').length) {
+        $('#event-summary').mdmagick();
+        $('#event-description').mdmagick();
+    }
+
     $('.post .article img').each(function(index, el){
         var anchor = '<a href="'+$(el).attr('src')+'" title="'+$(el).attr('alt')+'" data-lightbox="'+$(el).attr('src')+'"><img src="'+$(el).attr('src')+'" alt="'+$(el).attr('alt')+'"></a>';
         $(el).replaceWith(anchor);
@@ -20,6 +25,16 @@ $(function(){
         var postForm = $('#post-form');
         postForm.find('#preview').val('');
     });
+
+    $('#event-preview').on('click', function(){
+        var eventForm = $('#event-form');
+        eventForm.find('#preview').val('1');
+    });
+    $('#event-submit').on('click', function(){
+        var eventForm = $('#event-form');
+        eventForm.find('#preview').val('');
+    });
+
     $('a.icon').on('click', function(){
         return confirm('Are you sure?');
     });

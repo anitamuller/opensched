@@ -144,6 +144,12 @@ def post_preview():
     post = session.get('post-preview')
     return render_template('preview.html', post=post, meta_title='Preview post::' + post['title'])
 
+@app.route('/event_preview')
+@login_required()
+def event_preview():
+    event = session.get('event-preview')
+    return render_template('event-preview.html', event=event, meta_title='Preview event::' + event['name'])
+
 
 @app.route('/posts_list', defaults={'page': 1})
 @app.route('/posts_list/page-<int:page>')
@@ -203,13 +209,13 @@ def new_event():
         event_summary = request.form.get('event-summary')
         event_description = request.form.get('event-description')
 
-        if not event_name or not event_description:
+        if not event_name or not event_summary or not event_description:
             error = True
         else:
-            tags = cgi.escape(request.form.get('post-tags'))
+            tags = cgi.escape(request.form.get('event-tags'))
             tags_array = extract_tags(tags)
-            event_data = {'name':event_name,
-                          'summary':request.form.get('event-summary'),
+            event_data = {'name': event_name,
+                          'summary': event_summary,
                           'description': event_description,
                           'dateInit': request.form.get('event-dateInit'),
                           'dateEnd': request.form.get('event-dateEnd'),
