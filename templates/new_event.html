@@ -24,14 +24,26 @@
 						    <input type="text" class="form-control" name="event-name" id="event-name" placeholder="Event Name" value="{{ event_name }}" required>
 					    </div>
 						<div class="form-group">
-						    <textarea id="event-short" name="event-short" class="form-control" rows="3" placeholder="Short Text">{{ event_preview }}</textarea>
+						    <textarea id="event-summary" name="event-summary" class="form-control" rows="3" placeholder="Short summary of the Event">{{ event_preview }}</textarea>
 					    </div>
 						<div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
 							{%- if error and error_type == 'validate' -%}
-								<label class="control-label" for="event-full">Required field</label>
+								<label class="control-label" for="event-description">Required field</label>
 							{%- endif -%}
-						    <textarea id="event-full" name="event-full" class="form-control" rows="6" placeholder="Full Text" required>{{ event_description }}</textarea>
+						    <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event description" required>{{ event_description }}</textarea>
 					    </div>
+                        </br>
+                        <div>
+                            <div>
+                            <label for="eventStartField">Date Init</label>
+                            <input id="eventStartField" name="eventStartField" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="2">
+
+                            <label for="eventEndField">Date End</label>
+                            <input id="eventEndField" name="eventEndField" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="3">
+
+                            </div>
+                        </div>
+                        </br>
 						<div class="form-group">
 						    <label for="event-tags">Tags</label>
 						    <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ ','.join(event_tags) }}">
