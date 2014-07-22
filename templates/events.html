@@ -22,16 +22,16 @@
 							<tr>
 								<th>Name</th>
                                 <th>Summary</th>
-                                <th>Date Init</th>
-                                <th>Date End</th>
+                                <th>Start date</th>
+                                <th>End date</th>
                                 <th>Action</th>
 							</tr>
 							{%- for event in events -%}
 							<tr>
 								<td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                                 <td>{{ event['summary'] }}</td>
-								<td>{{ event['dateInit'] }}</td>
-                                <td>{{ event['dateEnd']  }}</td>
+								<td>{{ event['start'] }}</td>
+                                <td>{{ event['end'] }}</td>
 								<td><a title="Edit" href="{{ url_for('event_edit', id=event['id']) }}" class="icon-edit-sign bigger icon"></a>
                                     {%- if events|length >= 1 -%}&nbsp;&nbsp;
                                     <a title="Delete" href="{{ url_for('event_del', id=event['id']) }}" class="icon-remove-sign bigger icon"></a>
@@ -43,7 +43,7 @@
 					</div>
 				{%- else -%}
 					<div class="page-header">
-						<h1>Events not found..</h1>
+						<h1>Events not found...</h1>
 					</div>
 				{%- endif -%}
 		    </div>

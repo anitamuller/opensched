@@ -4,8 +4,8 @@
 		{% set event_name = session['event-preview'].get('name', None) %}
 		{% set event_summary = session['event-preview'].get('summary', None) %}
 		{% set event_description = session['event-preview'].get('description', None) %}
-        {% set event_dateInit = session['event-preview'].get('dateInit', None) %}
-        {% set event_dateEnd = session['event-preview'].get('dateEnd', None) %}
+        {% set event_start = session['event-preview'].get('start', None) %}
+        {% set event_end = session['event-preview'].get('end', None) %}
 		{% set event_tags = session['event-preview'].get('tags', None) %}
 		{% if tags %}
 			{% set event_tags = ','.join(tags) %}
@@ -14,8 +14,8 @@
         {% set event_name = event.get('name') %}
 		{% set event_summary = event.get('summary') %}
 		{% set event_description = event.get('description') %}
-        {% set event_dateInit = event.get('dateInit') %}
-        {% set event_dateEnd = event.get('dateEnd') %}
+        {% set event_start = event.get('start') %}
+        {% set event_end = event.get('end') %}
 		{% set event_tags = event.get('tags') %}
   	{% endif %}
 	<div class="event clearfix">
@@ -50,22 +50,12 @@
 							{%- endif -%}
 						    <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event Description" required>{{ event_description }}</textarea>
 					    </div>
-
-                        </br>
-                        <div>
-                            <div>
-                            <div>
-                            <label for="event-dateInit">Date Init</label>
-                            <input id="event-dateInit" name="event-dateInit" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="2" value= {{event_dateInit}} >
-                            </div>
-                            <div>
-                            <label for="event-dateEnd">Date End</label>
-                            <input id="event-dateEnd" name="event-dateEnd" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="3" value= {{event_dateEnd}}>
-                            </div>
-                            </div>
+                        <div class="event-date">
+                            <label for="event-start">Start</label>
+                            <input type="text" class="event-start" name="event-start" id="event-start" value="{{ event_start }}"/>
+                            <label for="event-end">End</label>
+                            <input type="text" class="event-end" name="event-end" id="event-end" value="{{ event_end }}"/>
                         </div>
-                        </br>
-
 						<div class="form-group">
 						    <label for="event-tags">Tags</label>
 						    <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ event_tags }}">
@@ -84,11 +74,12 @@
 	</div>
 {%- endblock -%}
 {%- block scripts -%}
-	<script src="//codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/a-tools.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/showdown.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
 {%- endblock -%}

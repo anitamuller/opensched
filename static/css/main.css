@@ -162,3 +162,13 @@ input[type='checkbox'] {
     .search-form {width:100%;}
 }
 
+.event-date {
+    font-size: 14px;
+    margin-bottom: 2%;
+}
+
+.event-date input {
+    width: 100px;
+    padding: 2px;
+    margin-right: 10%;
+}
