@@ -26,10 +26,10 @@ app.config.from_object('config')
 @app.route('/page-<int:page>')
 def index(page):
     skip = (page - 1) * int(app.config['PER_PAGE'])
-    posts = postClass.get_posts(int(app.config['PER_PAGE']), skip)
-    count = postClass.get_total_count()
+    events = eventClass.get_events(int(app.config['PER_PAGE']), skip)
+    count = eventClass.get_total_count()
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    return render_template('index.html', posts=posts['data'], pagination=pag, meta_title=app.config['BLOG_TITLE'])
+    return render_template('index.html', events=events['data'], pagination=pag, meta_title=app.config['BLOG_TITLE'])
 
 
 @app.route('/tag/<tag>', defaults={'page': 1})
@@ -77,14 +77,14 @@ def single_event(permalink):
 def search_results(page, query):
     skip = (page - 1) * int(app.config['PER_PAGE'])
     if query:
-        posts = postClass.get_posts(
+        events = eventClass.get_events(
             int(app.config['PER_PAGE']), skip, search=query)
     else:
-        posts = []
-        posts['data'] = []
-    count = postClass.get_total_count(search=query)
+        events = []
+        events['data'] = []
+    count = eventClass.get_total_count(search=query)
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    return render_template('index.html', posts=posts['data'], pagination=pag, meta_title='Search results')
+    return render_template('index.html', events=events['data'], pagination=pag, meta_title='Search results')
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -582,6 +582,7 @@ app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
 app.jinja_env.globals['meta_description'] = app.config['BLOG_DESCRIPTION']
 app.jinja_env.globals['recent_posts'] = postClass.get_posts(10, 0)['data']
+app.jinja_env.globals['recent_events'] = eventClass.get_events(10, 0)['data']
 app.jinja_env.globals['tags'] = postClass.get_tags()['data']
 
 if not app.config['DEBUG']:
