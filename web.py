@@ -318,7 +318,7 @@ def event_edit(id):
 @app.route('/event_delete?id=<id>')
 @login_required()
 def event_del(id):
-    if eventClass.get_total_count() > 1:
+    if eventClass.get_total_count() >= 1:
         response = eventClass.delete_post(id)
         if response['data'] is True:
             flash('Event removed!', 'success')

@@ -38,4 +38,24 @@ $(function(){
     $('a.icon').on('click', function(){
         return confirm('Are you sure?');
     });
+
+    $('event-dateInit').DatePicker(options);
+    $('event-dateEnd').DatePicker(options);
+
+    $('#event-dateInit').DatePicker({
+	format:'d/m/Y',
+	date: $('#event-dateInit').val(),
+	current: $('#event-dateInit').val(),
+	starts: 1,
+	position: 'r',
+	onBeforeShow: function(){
+		$('#event-dateInit').DatePickerSetDate($('#event-dateInit').val(), true);
+	},
+	onChange: function(formated, dates){
+		$('#event-dateInit').val(formated);
+		if ($('#closeOnSelect input').attr('checked')) {
+			$('#event-dateInit').DatePickerHide();
+		}
+	}
+});
 });

@@ -51,10 +51,27 @@
                         <div>
                             <div>
                             <label for="event-dateInit">Date Init</label>
-                            <input id="event-dateInit" name="event-dateInit" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="2">
+                            <input id="event-dateInit" name="event-dateInit"  autocorrect="off" autocapitalize="off"  size="9" tabindex="2" value= {{event_dateInit}}>
 
+                            <script>    $('#event-dateInit').DatePicker({
+	                                    format:'m/d/Y',
+	                                    date: $('#event-dateInit').val(),
+	                                    current: $('#event-dateInit').val(),
+	                                    starts: 1,
+	                                    position: 'r',
+	                                    onBeforeShow: function(){
+		                                    $('#event-dateInit').DatePickerSetDate($('#event-dateInit').val(), true);
+	                                    },
+	                                    onChange: function(formated, dates){
+		                                    $('#event-dateInit').val(formated);
+		                                    if ($('#closeOnSelect input').attr('checked')) {
+			                                $('#event-dateInit').DatePickerHide();
+		                                    }
+	                                    }
+                                    });
+                            </script>
                             <label for="event-dateEnd">Date End</label>
-                            <input id="event-dateEnd" name="event-dateEnd" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="3">
+                            <input id="event-dateEnd" name="event-dateEnd"  autocorrect="off" autocapitalize="off"  size="9" tabindex="3" value= {{event_dateEnd}}>
 
                             </div>
                         </div>
@@ -82,4 +99,13 @@
 	<script src="{{ url_for('static', filename='js/showdown.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/datepicker/datepicker.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/datepicker/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/datepicker/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/datepicker/eye.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/datepicker/layout.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/datepicker/utils.js') }}"></script>
+    <link href="{{ url_for('static', filename='css/datepicker/datepicker.css') }}" rel="stylesheet">
+
 {%- endblock -%}

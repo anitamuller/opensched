@@ -56,11 +56,11 @@
                             <div>
                             <div>
                             <label for="event-dateInit">Date Init</label>
-                            <input id="event-dateInit" name="event-dateInit" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="2">{{ event_dateInit }}
+                            <input id="event-dateInit" name="event-dateInit" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="2" value= {{event_dateInit}} >
                             </div>
                             <div>
                             <label for="event-dateEnd">Date End</label>
-                            <input id="event-dateEnd" name="event-dateEnd" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="3">{{ event_dateEnd }}
+                            <input id="event-dateEnd" name="event-dateEnd" type="date" autocorrect="off" autocapitalize="off"  size="9" tabindex="3" value= {{event_dateEnd}}>
                             </div>
                             </div>
                         </div>
@@ -90,4 +90,5 @@
 	<script src="{{ url_for('static', filename='js/showdown.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
 {%- endblock -%}

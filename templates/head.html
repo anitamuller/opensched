@@ -1,5 +1,5 @@
 <head>
-    <title>{%- if meta_title -%}{{ meta_title }}{%- else -%}FlaskBlog{%- endif -%}</title>
+    <title>{%- if meta_title -%}{{ meta_title }}{%- else -%}Sched{%- endif -%}</title>
 	<meta name="description" content="{{ meta_description }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
@@ -7,7 +7,11 @@
 	<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
 	<link href="{{ url_for('static', filename='css/mdmagick.css') }}" rel="stylesheet">
 	<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+
 	{%- block additional_css -%}{%- endblock -%}
 	<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/datepicker.css') }}" rel="stylesheet">
+
+
 </head>
