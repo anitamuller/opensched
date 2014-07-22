@@ -350,10 +350,10 @@ def login():
             else:
                 userClass.start_session(user_data['data'])
                 flash('You are logged in!', 'success')
-                return redirect(url_for('posts'))
+                return redirect(url_for('events'))
     else:
         if session.get('user'):
-            return redirect(url_for('posts'))
+            return redirect(url_for('events'))
 
     return render_template('login.html',
                            meta_title='Login',
