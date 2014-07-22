@@ -34,8 +34,8 @@ class Event:
                                               'name': event['name'],
                                               'summary': event['summary'],
                                               'description': event['description'],
-                                              'dateInit': event['dateInit'],
-                                              'dateEnd': event['dateEnd'],
+                                              'start': event['start'],
+                                              'end': event['end'],
                                               'permalink': event['permalink'],
                                               'tags': event['tags'],
                                               'author': event['author']})
@@ -151,8 +151,8 @@ class Event:
         event_data['name'] = cgi.escape(event_data['name'])
         event_data['summary'] = cgi.escape(event_data['summary'], quote=True)
         event_data['description'] = cgi.escape(event_data['description'], quote=True)
-        event_data['dateInit'] = cgi.escape(event_data['dateInit'], quote=True)
-        event_data['dateEnd'] = cgi.escape(event_data['dateEnd'], quote=True)
+        event_data['start'] = cgi.escape(event_data['start'], quote=True)
+        event_data['end'] = cgi.escape(event_data['end'], quote=True)
         permalink = random_string(12)
         event_data['permalink'] = permalink
 

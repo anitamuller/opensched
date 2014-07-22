@@ -1,5 +1,8 @@
 {%- extends 'index.html' -%}
-{%- block head -%}{%- include 'head.html' -%}{%- block additional_css -%}<link href="{{ url_for('static', filename='css/lightbox.css') }}" rel="stylesheet" media="screen">{%- endblock -%}{%- endblock -%}
+{%- block head -%}
+{%- include 'head.html' -%}
+{%- block additional_css -%}<link href="{{ url_for('static', filename='css/lightbox.css') }}" rel="stylesheet" media="screen">{%- endblock -%}
+{%- endblock -%}
 {%- block body -%}
 	{%- if event -%}
 		<div class="event clearfix">
@@ -26,10 +29,10 @@
 						{{ event['summary']|markdown }}
                         <div><h3>Description</h3></div>
 						{{ event['description']|markdown }}
-                        <div><h3>Date Init</h3></div>
-                        {{ event['dateInit'] }}
-                        <div><h3>Date End</h3></div>
-                       	{{ event['dateEnd']  }}
+                        <div><h3>Start date</h3></div>
+                        {{ event['start'] }}
+                        <div><h3>End date</h3></div>
+                       	{{ event['end'] }}
 					</div>
 					<div class="infopanel">
 						<div class="tags">
@@ -50,4 +53,6 @@
 	{%- endif -%}
 	{%- include 'sidebar.html' -%}
 {%- endblock -%}
-{%- block additional_js -%}<script src="{{ url_for('static', filename='js/lightbox-2.6.min.js') }}"></script>{%- endblock -%}
+{%- block additional_js -%}
+<script src="{{ url_for('static', filename='js/lightbox-2.6.min.js') }}"></script>
+{%- endblock -%}

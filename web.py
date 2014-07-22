@@ -252,8 +252,8 @@ def new_event():
             event_data = {'name': event_name,
                           'summary': event_summary,
                           'description': event_description,
-                          'dateInit': request.form.get('event-dateInit'),
-                          'dateEnd': request.form.get('event-dateEnd'),
+                          'start': request.form.get('event-start'),
+                          'end': request.form.get('event-end'),
                           'tags': tags_array,
                           'author': session['user']['username']}
 
