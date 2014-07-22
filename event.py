@@ -82,8 +82,8 @@ class Event:
         elif search is not None:
             cond = {'$or': [
                     {'name': {'$regex': search, '$options': 'i'}},
-                    {'description': {'$regex': search, '$options': 'i'}},
-                    {'preview': {'$regex': search, '$options': 'i'}}]}
+                    {'summary': {'$regex': search, '$options': 'i'}},
+                    {'description': {'$regex': search, '$options': 'i'}}]}
 
         return self.collection.find(cond).count()
 

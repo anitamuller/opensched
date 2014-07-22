@@ -9,7 +9,7 @@ class Settings:
         self.config = default_config
         self.config['PER_PAGE'] = 15
         self.config['SEARCH'] = False
-        self.config['BLOG_TITLE'] = 'Blog'
+        self.config['BLOG_TITLE'] = 'Sched'
         self.config['BLOG_DESCRIPTION'] = ''
 
         self.response = {'error': None, 'data': None}
@@ -33,10 +33,10 @@ class Settings:
             self.response['error'] = 'System error..'
 
     def is_installed(self):
-        posts_cnt = self.config['POSTS_COLLECTION'].find().count()
+        events_cnt= self.config['EVENTS_COLLECTION'].find().count()
         users_cnt = self.config['USERS_COLLECTION'].find().count()
         configs_cnt = self.config['SETTINGS_COLLECTION'].find().count()
-        if posts_cnt and users_cnt and configs_cnt:
+        if events_cnt and users_cnt and configs_cnt:
             session['installed'] = True
             return True
         else:
@@ -45,29 +45,22 @@ class Settings:
 
     def install(self, blog_data, user_data):
         import user
-        import post
+        import event
 
         userClass = user.User(self.config)
-        postClass = post.Post(self.config)
+        eventClass = event.Event(self.config)
         self.response['error'] = None
         try:
-            self.config['POSTS_COLLECTION'].ensure_index([('date', -1)])
-            self.config['POSTS_COLLECTION'].ensure_index(
+            self.config['EVENTS_COLLECTION'].ensure_index([('date', -1)])
+            self.config['EVENTS_COLLECTION'].ensure_index(
                 [('tags', 1), ('date', -1)])
-            self.config['POSTS_COLLECTION'].ensure_index([('permalink', 1)])
-            self.config['POSTS_COLLECTION'].ensure_index(
+            self.config['EVENTS_COLLECTION'].ensure_index([('permalink', 1)])
+            self.config['EVENTS_COLLECTION'].ensure_index(
                 [('query', 1), ('orderby', 1)])
             self.config['USERS_COLLECTION'].ensure_index([('date', 1)])
 
-            post_data = {'title': 'Hello World!',
-                         'preview': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod',
-                         'body': 'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam',
-                         'tags': [],
-                         'author': user_data['_id']}
-            post = postClass.validate_post_data(post_data)
-
             user_create = userClass.save_user(user_data)
-            post_create = postClass.create_new_post(post)
+
 
             if blog_data['per_page'].isdigit():
                 blog_settings_error = None
@@ -75,12 +68,10 @@ class Settings:
             else:
                 blog_settings_error = '"Per page" field need to be integer..'
 
-            if user_create['error'] or post_create['error'] or blog_settings_error:
+            if user_create['error'] or blog_settings_error:
                 self.response['error'] = []
                 self.response['error'].append(user_create['error'])
-                self.response['error'].append(post_create['error'])
                 self.response['error'].append(blog_settings_error)
-                self.config['POSTS_COLLECTION'].drop()
                 self.config['USERS_COLLECTION'].drop()
                 self.collection.drop()
             return self.response
