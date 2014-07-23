@@ -52,6 +52,13 @@
 								{%- endif -%}
 							    <input type="text" class="form-control" name="user-id" id="user-id" placeholder="Username" value="" required autocomplete="off">
 							</div>
+                            <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+								{%- if error and error_type == 'validate' -%}
+									<label class="control-label" for="user-name">Required field</label>
+								{%- endif -%}
+							    <input type="text" class="form-control" name="user-name" id="user-name" placeholder="Name" value="" required autocomplete="off">
+							</div>
+
 							<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 								{%- if error and error_type == 'validate' -%}
 									<label class="control-label" for="user-email">Required field</label>

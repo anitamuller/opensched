@@ -587,7 +587,7 @@ def install():
                 else:
                     userClass.start_session(user_login['data'])
                     flash('You are logged in!', 'success')
-                    return redirect(url_for('posts'))
+                    return redirect(url_for('events'))
     else:
         if settingsClass.is_installed():
             return redirect(url_for('index'))
