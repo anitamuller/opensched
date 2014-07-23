@@ -98,8 +98,8 @@ def events(page):
     count = eventClass.get_total_count()
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
 
-    if not events['data']:
-        abort(404)
+    #if not events['data']:
+    #    abort(404)
 
     return render_template('events.html', events=events['data'], pagination=pag, meta_title='Events')
 
