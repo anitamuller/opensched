@@ -6,14 +6,18 @@
 		{% set event_description = session['event-preview'].get('description', None) %}
         {% set event_start = session['event-preview'].get('start', None) %}
         {% set event_end = session['event-preview'].get('end', None) %}
+        {% set event_venue = session['event-preview'].get('venue', None) %}
 		{% set event_tags = session['event-preview'].get('tags', None) %}
+        {% set event_participants = session['event-preview'].get('participants', None) %}
 	{% else %}
 		{% set event_name = '' %}
 		{% set event_summary = '' %}
 		{% set event_description = '' %}
         {% set event_start = '' %}
         {% set event_end = '' %}
+        {% set event_venue = '' %}
 		{% set event_tags = '' %}
+        {% set event_participants = '' %}
 	{% endif %}
 <div class="event clearfix">
 		<div class="row">
@@ -47,16 +51,30 @@
 							{%- endif -%}
 						    <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event description" required>{{ event_description }}</textarea>
 					    </div>
+
+                        <div class="form-group">
+						    <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event Venue" value="{{ event_venue }}" required>
+					    </div>
+
                         <div class="event-date">
                             <label for="event-start">Start</label>
                             <input type="text" class="event-start" name="event-start" id="event-start" value="{{ event_start }}"/>
                             <label for="event-end">End</label>
                             <input type="text" class="event-end" name="event-end" id="event-end" value="{{ event_end }}"/>
                         </div>
+                        </br>
+
+
 						<div class="form-group">
 						    <label for="event-tags">Tags</label>
 						    <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ ','.join(event_tags) }}">
 					    </div>
+
+                        <div class="form-group">
+						    <label for="event-participants">Participants</label>
+						    <input type="text" name="event-participants" class="form-control" id="event-participants" placeholder="Comma separated" value="{{ ','.join(event_participants) }}">
+					    </div>
+
 						<div class="form-group">
 							<input type="hidden" name="event-preview" id="preview">
 							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">

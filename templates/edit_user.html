@@ -24,13 +24,22 @@
 							<div>
 								<fieldset>
 									<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
-										{%- if error and error_type == 'validate' -%}
+										<h5>Username</h5>
+                                        {%- if error and error_type == 'validate' -%}
 											<label class="control-label" for="user-username">Required field</label>
 										{%- endif -%}
 									    <input type="text" class="form-control" name="user-username" id="user-username" placeholder="Username" value="{{ user['_id'] }}" required autocomplete="off" disabled>
 									</div>
-									<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+                                    <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+                                        <h5>Name</h5>
 										{%- if error and error_type == 'validate' -%}
+											<label class="control-label" for="user-name">Required field</label>
+										{%- endif -%}
+									    <input type="text" class="form-control" name="user-name" id="user-name" placeholder="Name" value="{{ user['_id'] }}" required autocomplete="off" disabled>
+									</div>
+									<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+										<h5>Email</h5>
+                                        {%- if error and error_type == 'validate' -%}
 											<label class="control-label" for="user-email">Required field</label>
 										{%- endif -%}
 									    <input type="email" class="form-control" name="user-email" id="user-email" placeholder="Email" value="{{ user['email'] }}" required autocomplete="off">

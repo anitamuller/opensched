@@ -4,13 +4,13 @@
 {%- block additional_css -%}<link href="{{ url_for('static', filename='css/lightbox.css') }}" rel="stylesheet" media="screen">{%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
-	{%- if event -%}
-		<div class="event clearfix">
+	{%- if talk -%}
+		<div class="talk clearfix">
 			<div class="row">
 				<div class="col-lg-8">
 					<div class="page-header">
-						<h1>{{ event['name'] }}</h1>
-						<p><span class="icon-time">&nbsp;</span><i>Created by {{ event['author'] }}</i></p>
+						<h1>{{ talk['name'] }}</h1>
+						<p><span class="icon-time">&nbsp;</span><i>Speaker {{ talk['speaker'] }}</i></p>
 						<div class="social row-fluid">
 					        <!-- AddThis Button BEGIN -->
 							<div class="addthis_toolbox addthis_default_style addthis_16x16_style">
@@ -26,26 +26,40 @@
 					</div>
 					<div class="content article">
                         <div><h3>Summary</h3></div>
-						{{ event['summary']|markdown }}
+						{{ talk['summary']|markdown }}
                         <div><h3>Description</h3></div>
-						{{ event['description']|markdown }}
-                        <div><h3>Start date</h3></div>
-                        {{ event['start'] }}
-                        <div><h3>End date</h3></div>
-                       	{{ event['end'] }}
+						{{ talk['description']|markdown }}
+                        <div><h3>Date</h3></div>
+                        {{ talk['date'] }}
+                        <div><h3>Start time</h3></div>
+                        {{ talk['start'] }}
+                        <div><h3>End time</h3></div>
+                       	{{ talk['end'] }}
+                        <div><h3>Room</h3></div>
+                       	{{ talk['room'] }}
 					</div>
-					<div class="infopanel">
+
+                    <div class="infopanel">
+                        <div class="participants">
+							<i>participants:</i>
+							{%- if talk['participants'] -%}
+								{%- for participant in talk['participants'] -%}
+									&nbsp;<a href="/participant/{{ participant }}">{{ participant }}</a>
+								{%- endfor -%}
+							{%- endif -%}
+						</div>
+
 						<div class="tags">
 							<i>tags:</i>
-							{%- if event['tags'] -%}
-								{%- for tag in event['tags'] -%}
+							{%- if talk['tags'] -%}
+								{%- for tag in talk['tags'] -%}
 									&nbsp;<a href="/tag/{{ tag }}">{{ tag }}</a>
 								{%- endfor -%}
 							{%- endif -%}
 						</div>
 					</div>
 					<div class="preview-back">
-						<a href="{{ session.get('event-preview')['redirect'] }}" class="btn btn-primary btn-lg">< Back</a>
+						<a href="{{ session.get('talk-preview')['redirect'] }}" class="btn btn-primary btn-lg">< Back</a>
 					</div>
 				</div>
 			</div>

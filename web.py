@@ -6,8 +6,8 @@ from mdx_github_gists import GitHubGistExtension
 from mdx_strike import StrikeExtension
 from mdx_quote import QuoteExtension
 from werkzeug.contrib.atom import AtomFeed
-import post
 import event
+import talk
 import user
 import pagination
 import settings
@@ -32,44 +32,25 @@ def index(page):
     return render_template('index.html', events=events['data'], pagination=pag, meta_title=app.config['BLOG_TITLE'])
 
 
-@app.route('/tag/<tag>', defaults={'page': 1})
-@app.route('/tag/<tag>/page-<int:page>')
-def posts_by_tag(tag, page):
-    skip = (page - 1) * int(app.config['PER_PAGE'])
-    posts = postClass.get_posts(int(app.config['PER_PAGE']), skip, tag=tag)
-    count = postClass.get_total_count(tag=tag)
-    if not posts['data']:
-        abort(404)
-    pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    return render_template('index.html', posts=posts['data'], pagination=pag, meta_title='Posts by tag: ' + tag)
-
 
 @app.route('/tag/<tag>', defaults={'page': 1})
 @app.route('/tag/<tag>/page-<int:page>')
 def events_by_tag(tag, page):
     skip = (page - 1) * int(app.config['PER_PAGE'])
-    posts = postClass.get_posts(int(app.config['PER_PAGE']), skip, tag=tag)
-    count = postClass.get_total_count(tag=tag)
-    if not posts['data']:
+    events = eventClass.get_events(int(app.config['PER_PAGE']), skip, tag=tag)
+    count = eventClass.get_total_count(tag=tag)
+    if not events['data']:
         abort(404)
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    return render_template('index.html', posts=posts['data'], pagination=pag, meta_title='Posts by tag: ' + tag)
-
-@app.route('/post/<permalink>')
-def single_post(permalink):
-    post = postClass.get_post_by_permalink(permalink)
-    if not post['data']:
-        abort(404)
-    return render_template('single_post.html', post=post['data'], meta_title=app.config['BLOG_TITLE'] + '::' + post['data']['title'])
+    return render_template('index.html', events=events['data'], pagination=pag, meta_title='Events by tag: ' + tag)
 
 
-@app.route('/event/<permalink>')
+@app.route('/<permalink>')
 def single_event(permalink):
     event = eventClass.get_event_by_permalink(permalink)
     if not event['data']:
         abort(404)
     return render_template('single_event.html', event=event['data'], meta_title=app.config['BLOG_TITLE'] + '::' + event['data']['name'])
-
 
 
 @app.route('/q/<query>', defaults={'page': 1})
@@ -99,92 +80,12 @@ def search():
         return redirect(url_for('index'))
 
 
-@app.route('/newpost', methods=['GET', 'POST'])
-@login_required()
-def new_post():
-    error = False
-    error_type = 'validate'
-    if request.method == 'POST':
-        post_title = request.form.get('post-title').strip()
-        post_full = request.form.get('post-full')
-
-        if not post_title or not post_full:
-            error = True
-        else:
-            tags = cgi.escape(request.form.get('post-tags'))
-            tags_array = extract_tags(tags)
-            post_data = {'title': post_title,
-                         'preview': request.form.get('post-short'),
-                         'body': post_full,
-                         'tags': tags_array,
-                         'author': session['user']['username']}
-
-            post = postClass.validate_post_data(post_data)
-            if request.form.get('post-preview') == '1':
-                session['post-preview'] = post
-                session[
-                    'post-preview']['action'] = 'edit' if request.form.get('post-id') else 'add'
-                if request.form.get('post-id'):
-                    session[
-                        'post-preview']['redirect'] = url_for('post_edit', id=request.form.get('post-id'))
-                else:
-                    session['post-preview']['redirect'] = url_for('new_post')
-                return redirect(url_for('post_preview'))
-            else:
-                session.pop('post-preview', None)
-
-                if request.form.get('post-id'):
-                    response = postClass.edit_post(
-                        request.form['post-id'], post)
-                    if not response['error']:
-                        flash('Post updated!', 'success')
-                    else:
-                        flash(response['error'], 'error')
-                    return redirect(url_for('posts'))
-                else:
-                    response = postClass.create_new_post(post)
-                    if response['error']:
-                        error = True
-                        error_type = 'post'
-                        flash(response['error'], 'error')
-                    else:
-                        flash('New post created!', 'success')
-    else:
-        if session.get('post-preview') and session['post-preview']['action'] == 'edit':
-            session.pop('post-preview', None)
-    return render_template('new_post.html',
-                           meta_title='New post',
-                           error=error,
-                           error_type=error_type)
-
-
-@app.route('/post_preview')
-@login_required()
-def post_preview():
-    post = session.get('post-preview')
-    return render_template('preview.html', post=post, meta_title='Preview post::' + post['title'])
-
 @app.route('/event_preview')
 @login_required()
 def event_preview():
     event = session.get('event-preview')
-    return render_template('event-preview.html', event=event, meta_title='Preview event::' + event['name'])
+    return render_template('event_preview.html', event=event, meta_title='Preview event::' + event['name'])
 
-
-@app.route('/posts_list', defaults={'page': 1})
-@app.route('/posts_list/page-<int:page>')
-@login_required()
-def posts(page):
-    session.pop('post-preview', None)
-    skip = (page - 1) * int(app.config['PER_PAGE'])
-    posts = postClass.get_posts(int(app.config['PER_PAGE']), skip)
-    count = postClass.get_total_count()
-    pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-
-    if not posts['data']:
-        abort(404)
-
-    return render_template('posts.html', posts=posts['data'], pagination=pag, meta_title='Posts')
 
 
 @app.route('/events_list', defaults={'page': 1})
@@ -202,36 +103,6 @@ def events(page):
 
     return render_template('events.html', events=events['data'], pagination=pag, meta_title='Events')
 
-@app.route('/post_edit?id=<id>')
-@login_required()
-def post_edit(id):
-    post = postClass.get_post_by_id(id)
-    if post['error']:
-        flash(post['error'], 'error')
-        return redirect(url_for('posts'))
-
-    if session.get('post-preview') and session['post-preview']['action'] == 'add':
-        session.pop('post-preview', None)
-    return render_template('edit_post.html',
-                           meta_title='Edit post::' + post['data']['title'],
-                           post=post['data'],
-                           error=False,
-                           error_type=False)
-
-
-@app.route('/post_delete?id=<id>')
-@login_required()
-def post_del(id):
-    if postClass.get_total_count() > 1:
-        response = postClass.delete_post(id)
-        if response['data'] is True:
-            flash('Post removed!', 'success')
-        else:
-            flash(response['error'], 'error')
-    else:
-        flash('Need to be at least one post..', 'error')
-
-    return redirect(url_for('posts'))
 
 
 @app.route('/newevent', methods=['GET', 'POST'])
@@ -249,18 +120,25 @@ def new_event():
         else:
             tags = cgi.escape(request.form.get('event-tags'))
             tags_array = extract_tags(tags)
+
+            participants = cgi.escape(request.form.get('event-participants'))
+            participants_array = extract_tags(participants)
             event_data = {'name': event_name,
                           'summary': event_summary,
                           'description': event_description,
                           'start': request.form.get('event-start'),
                           'end': request.form.get('event-end'),
+                          'venue': request.form.get('event-venue'),
                           'tags': tags_array,
-                          'author': session['user']['username']}
+                          'participants': participants_array,
+                          'organizer': session['user']['username']}
 
 
             event = eventClass.validate_event_data(event_data)
+            event_with_permalink= eventClass.generate_permalink(event)
+
             if request.form.get('event-preview') == '1':
-                session['event-preview'] = event
+                session['event-preview'] = event_with_permalink
                 session[
                     'event-preview']['action'] = 'edit' if request.form.get('event-id') else 'add'
                 if request.form.get('event-id'):
@@ -319,7 +197,7 @@ def event_edit(id):
 @login_required()
 def event_del(id):
     if eventClass.get_total_count() >= 1:
-        response = eventClass.delete_post(id)
+        response = eventClass.delete_event(id)
         if response['data'] is True:
             flash('Event removed!', 'success')
         else:
@@ -328,6 +206,147 @@ def event_del(id):
         flash('Need to be at least one event..', 'error')
 
     return redirect(url_for('events'))
+
+
+
+
+
+@app.route('/newtalk', methods=['GET', 'POST'])
+@login_required()
+def new_talk():
+    error = False
+    error_type = 'validate'
+    if request.method == 'POST':
+        talk_name = request.form.get('talk-name').strip()
+        talk_summary = request.form.get('talk-summary')
+        talk_description = request.form.get('talk-description')
+
+        if not talk_name or not talk_summary or not talk_description:
+            error = True
+        else:
+            tags = cgi.escape(request.form.get('talk-tags'))
+            tags_array = extract_tags(tags)
+
+            participants = cgi.escape(request.form.get('talk-participants'))
+            participants_array = extract_tags(participants)
+
+            talk_data = {'name': talk_name,
+                            'summary': talk_summary,
+                            'description': talk_description,
+                            'date': request.form.get('talk-date'),
+                            'start': request.form.get('talk-start'),
+                            'end': request.form.get('talk-end'),
+                            'room': request.form.get('talk-room'),
+                            'tags': tags_array,
+                            'participants': participants_array,
+                            'speaker': request.form.get('talk-speaker')}
+
+
+            talk = talkClass.validate_talk_data(talk_data)
+            talk_with_permalink = talkClass.generate_permalink(talk)
+
+            if request.form.get('talk-preview') == '1':
+                session['talk-preview'] = talk_with_permalink
+                session[
+                    'talk-preview']['action'] = 'edit' if request.form.get('talk-id') else 'add'
+                if request.form.get('talk-id'):
+                    session[
+                        'talk-preview']['redirect'] = url_for('talk_edit', id=request.form.get('talk-id'))
+                else:
+                    session['talk-preview']['redirect'] = url_for('new_talk')
+                return redirect(url_for('talk_preview'))
+            else:
+                session.pop('talk-preview', None)
+
+                if request.form.get('talk-id'):
+                    response = talkClass.edit_talk(
+                        request.form['talk-id'], talk)
+                    if not response['error']:
+                        flash('Talk updated!', 'success')
+                    else:
+                        flash(response['error'], 'error')
+                    return redirect(url_for('talks'))
+                else:
+                    response = talkClass.create_new_talk(talk)
+                    if response['error']:
+                        error = True
+                        error_type = 'event'
+                        flash(response['error'], 'error')
+                    else:
+                        flash('New talk created!', 'success')
+    else:
+        if session.get('talk-preview') and session['talk-preview']['action'] == 'edit':
+            session.pop('talk-preview', None)
+    return render_template('new_talk.html',
+                           meta_title='New talk',
+                           error=error,
+                           error_type=error_type)
+
+
+
+
+
+@app.route('/talk_preview')
+@login_required()
+def talk_preview():
+    talk = session.get('talk-preview')
+    return render_template('talk_preview.html', talk=talk, meta_title='Preview talk::' + talk['name'])
+
+
+
+
+@app.route('/talk_edit?id=<id>')
+@login_required()
+def talk_edit(id):
+    talk = talkClass.get_talk_by_id(id)
+    if talk['error']:
+        flash(talk['error'], 'error')
+        return redirect(url_for('talks'))
+
+    if session.get('talk-preview') and session['talk-preview']['action'] == 'add':
+        session.pop('talk-preview', None)
+    return render_template('edit_talk.html',
+                           meta_title='Edit talk::' + talk['data']['name'],
+                           talk=talk['data'],
+                           error=False,
+                           error_type=False)
+
+
+@app.route('/talk_delete?id=<id>')
+@login_required()
+def talk_del(id):
+    if talkClass.get_total_count() >= 1:
+        response = talkClass.delete_talk(id)
+        if response['data'] is True:
+            flash('Talk removed!', 'success')
+        else:
+            flash(response['error'], 'error')
+    else:
+        flash('Need to be at least one talk..', 'error')
+
+    return redirect(url_for('talks'))
+
+
+
+@app.route('/talk/<permalink>')
+def single_talk(permalink):
+    talk = talkClass.get_talk_by_permalink(permalink)
+    if not talk['data']:
+        abort(404)
+    return render_template('single_talk.html', talk=talk['data'], meta_title=app.config['BLOG_TITLE'] + '::' + talk['data']['name'])
+
+
+
+@app.route('/tag/<tag>', defaults={'page': 1})
+@app.route('/tag/<tag>/page-<int:page>')
+def talks_by_tag(tag, page):
+    skip = (page - 1) * int(app.config['PER_PAGE'])
+    talks = talkClass.get_talks(int(app.config['PER_PAGE']), skip, tag=tag)
+    count = talkClass.get_total_count(tag=tag)
+    if not talks['data']:
+        abort(404)
+    pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
+    return render_template('index.html', talks=talks['data'], pagination=pag, meta_title='Talks by tag: ' + tag)
 
 
 
@@ -406,14 +425,15 @@ def delete_user(id):
 def save_user():
     post_data = {
         '_id': request.form.get('user-id', None).lower().strip(),
+        'name': request.form.get('user-name', None),
         'email': request.form.get('user-email', None),
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
         'new_pass_again': request.form.get('user-new-password-again', None),
         'update': request.form.get('user-update', False)
     }
-    if not post_data['email'] or not post_data['_id']:
-        flash('Username and Email are required..', 'error')
+    if not post_data['email'] or not post_data['name'] or not post_data['_id']:
+        flash('Name, Username and Email are required..', 'error')
         if post_data['update']:
                 return redirect(url_for('edit_user', id=post_data['_id']))
         else:
@@ -434,17 +454,16 @@ def save_user():
 
 @app.route('/recent_feed')
 def recent_feed():
-    feed = AtomFeed(app.config['BLOG_TITLE'] + '::Recent Articles',
+    feed = AtomFeed(app.config['BLOG_TITLE'] + '::Recent Events',
                     feed_url=request.url, url=request.url_root)
-    posts = postClass.get_posts(int(app.config['PER_PAGE']), 0)
-    for post in posts['data']:
-        post_entry = post['preview'] if post['preview'] else post['body']
-        feed.add(post['title'], md(post_entry),
+    events = eventClass.get_events(int(app.config['PER_PAGE']), 0)
+    for event in events['data']:
+        event_entry = event['summary'] if event['summary'] else event['description']
+        feed.add(event['name'], md(event_entry),
                  content_type='html',
-                 author=post['author'],
+                 organizer=event['organizer'],
                  url=make_external(
-                     url_for('single_post', permalink=post['permalink'])),
-                 updated=post['date'])
+                     url_for('single_event', permalink=event['permalink'])))
     return feed.get_response()
 
 
@@ -493,6 +512,7 @@ def install():
 
         user_data = {
             '_id': request.form.get('user-id', None).lower().strip(),
+            'name': request.form.get('user-name', None),
             'email': request.form.get('user-email', None),
             'new_pass': request.form.get('user-new-password', None),
             'new_pass_again': request.form.get('user-new-password-again', None),
@@ -575,15 +595,14 @@ def format_datetime_filter(input_value, format_="%a, %d %b %Y"):
 
 settingsClass = settings.Settings(app.config)
 eventClass = event.Event(app.config)
-postClass = post.Post(app.config)
+talkClass = talk.Talk(app.config)
 userClass = user.User(app.config)
 
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
 app.jinja_env.globals['meta_description'] = app.config['BLOG_DESCRIPTION']
-app.jinja_env.globals['recent_posts'] = postClass.get_posts(10, 0)['data']
 app.jinja_env.globals['recent_events'] = eventClass.get_events(10, 0)['data']
-app.jinja_env.globals['tags'] = postClass.get_tags()['data']
+app.jinja_env.globals['tags'] = eventClass.get_tags()['data']
 
 if not app.config['DEBUG']:
     import logging

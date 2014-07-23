@@ -4,66 +4,70 @@ from bson.objectid import ObjectId
 from helper_functions import *
 
 
-class Post:
+class Talk:
 
     def __init__(self, default_config):
-        self.collection = default_config['POSTS_COLLECTION']
+        self.collection = default_config['TALKS_COLLECTION']
         self.response = {'error': None, 'data': None}
         self.debug_mode = default_config['DEBUG']
 
-    def get_posts(self, limit, skip, tag=None, search=None):
+    def get_talks(self, limit, skip, tag=None, search=None):
         self.response['error'] = None
         cond = {}
         if tag is not None:
             cond = {'tags': tag}
         elif search is not None:
             cond = {'$or': [
-                    {'title': {'$regex': search, '$options': 'i'}},
-                    {'body': {'$regex': search, '$options': 'i'}},
-                    {'preview': {'$regex': search, '$options': 'i'}}]}
+                    {'name': {'$regex': search, '$options': 'i'}},
+                    {'summary': {'$regex': search, '$options': 'i'}},
+                    {'description': {'$regex': search, '$options': 'i'}},
+                    {'speaker': {'$regex': search, '$options': 'i'}}]}
+
         try:
             cursor = self.collection.find(cond).sort(
                 'date', direction=-1).skip(skip).limit(limit)
             self.response['data'] = []
-            for post in cursor:
-                if 'tags' not in post:
-                    post['tags'] = []
-                if 'comments' not in post:
-                    post['comments'] = []
-                if 'preview' not in post:
-                    post['preview'] = ''
+            for talk in cursor:
+                if 'tags' not in talk:
+                    talk['tags'] = []
 
-                self.response['data'].append({'id': post['_id'],
-                                              'title': post['title'],
-                                              'body': post['body'],
-                                              'preview': post['preview'],
-                                              'date': post['date'],
-                                              'permalink': post['permalink'],
-                                              'tags': post['tags'],
-                                              'author': post['author'],
-                                              'comments': post['comments']})
+                if 'participants' not in talk:
+                    talk['participants'] = []
+
+                self.response['data'].append({'id': talk['_id'],
+                                              'name': talk['name'],
+                                              'summary': talk['summary'],
+                                              'description': talk['description'],
+                                              'date': talk['date'],
+                                              'start': talk['start'],
+                                              'end': talk['end'],
+                                              'room': talk['room'],
+                                              'speaker': talk['speaker'],
+                                              'permalink': talk['permalink'],
+                                              'tags': talk['tags'],
+                                              'participants': talk['participants']})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Posts not found..'
+            self.response['error'] = 'Talks not found..'
 
         return self.response
 
-    def get_post_by_permalink(self, permalink):
+    def get_talk_by_permalink(self, permalink):
         self.response['error'] = None
         try:
             self.response['data'] = self.collection.find_one(
                 {'permalink': permalink})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Post not found..'
+            self.response['error'] = 'Talk not found..'
 
         return self.response
 
-    def get_post_by_id(self, post_id):
+    def get_talk_by_id(self, talk_id):
         self.response['error'] = None
         try:
             self.response['data'] = self.collection.find_one(
-                {'_id': ObjectId(post_id)})
+                {'_id': ObjectId(talk_id)})
             if self.response['data']:
                 if 'tags' not in self.response['data']:
                     self.response['data']['tags'] = ''
@@ -74,7 +78,7 @@ class Post:
                     self.response['data']['preview'] = ''
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Post not found..'
+            self.response['error'] = 'Talk not found..'
 
         return self.response
 
@@ -84,9 +88,10 @@ class Post:
             cond = {'tags': tag}
         elif search is not None:
             cond = {'$or': [
-                    {'title': {'$regex': search, '$options': 'i'}},
-                    {'body': {'$regex': search, '$options': 'i'}},
-                    {'preview': {'$regex': search, '$options': 'i'}}]}
+                    {'name': {'$regex': search, '$options': 'i'}},
+                    {'summary': {'$regex': search, '$options': 'i'}},
+                    {'description': {'$regex': search, '$options': 'i'}},
+                    {'speaker': {'$regex': search, '$options': 'i'}}]}
 
         return self.collection.find(cond).count()
 
@@ -111,59 +116,72 @@ class Post:
 
         return self.response
 
-    def create_new_post(self, post_data):
+    def create_new_talk(self, post_data):
         self.response['error'] = None
         try:
             self.response['data'] = self.collection.insert(post_data)
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Adding post error..'
+            self.response['error'] = 'Adding talk error..'
 
         return self.response
 
-    def edit_post(self, post_id, post_data):
+    def edit_talk(self, talk_id, talk_data):
         self.response['error'] = None
-        del post_data['date']
-        del post_data['permalink']
+        del talk_data['permalink']
 
         try:
             self.collection.update(
-                {'_id': ObjectId(post_id)}, {"$set": post_data}, upsert=False)
+                {'_id': ObjectId(talk_id)}, {"$set": talk_data}, upsert=False)
             self.response['data'] = True
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Post update error..'
+            self.response['error'] = 'Talk update error..'
 
         return self.response
 
-    def delete_post(self, post_id):
+    def delete_talk(self, talk_id):
         self.response['error'] = None
         try:
-            if self.get_post_by_id(post_id) and self.collection.remove({'_id': ObjectId(post_id)}):
+            if self.get_talk_by_id(talk_id) and self.collection.remove({'_id': ObjectId(talk_id)}):
                 self.response['data'] = True
             else:
                 self.response['data'] = False
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Deleting post error..'
+            self.response['error'] = 'Deleting talk error..'
 
         return self.response
 
     @staticmethod
-    def validate_post_data(post_data):
-        permalink = random_string(12)
-        #exp = re.compile('\W')
-        #whitespace = re.compile('\s')
-        #temp_title = whitespace.sub("_", post_data['title'])
-        #permalink = exp.sub('', temp_title)
+    def validate_talk_data(talk_data):
 
-        post_data['title'] = cgi.escape(post_data['title'])
-        post_data['preview'] = cgi.escape(post_data['preview'], quote=True)
-        post_data['body'] = cgi.escape(post_data['body'], quote=True)
-        post_data['date'] = datetime.datetime.utcnow()
-        post_data['permalink'] = permalink
+        talk_data['name'] = cgi.escape(talk_data['name'])
+        talk_data['summary'] = cgi.escape(talk_data['summary'], quote=True)
+        talk_data['description'] = cgi.escape(talk_data['description'], quote=True)
+        talk_data['date'] = cgi.escape(talk_data['date'], quote=True)
+        talk_data['start'] = cgi.escape(talk_data['start'], quote=True)
+        talk_data['end'] = cgi.escape(talk_data['end'], quote=True)
+        talk_data['room'] = cgi.escape(talk_data['room'], quote=True)
+        talk_data['speaker'] = cgi.escape(talk_data['speaker'], quote=True)
 
-        return post_data
+        return talk_data
+
+    def generate_permalink(self, talk_data):
+        cond = {'name': talk_data['name']}
+        talks_samename = self.collection.find(cond).count()
+
+        name_without_spaces=talk_data['name'].replace(" ", "_")
+        name_lower_without_spaces = name_without_spaces.lower()
+
+        if talks_samename == 0:
+            permalink = name_lower_without_spaces
+        else:
+            newpermalink = talks_samename + 1
+            permalink = name_lower_without_spaces + '-' + str(newpermalink)
+
+        talk_data['permalink'] = permalink
+        return talk_data
 
     @staticmethod
     def print_debug_info(msg, show=False):

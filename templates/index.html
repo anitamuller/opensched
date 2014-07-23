@@ -13,14 +13,12 @@
 									<div class="col-lg-8">
 										<div class="page-header">
 											<h1><a href="{{ url_for('single_event', permalink=event['permalink']) }}">{{ event['name'] }}</a></h1>
-											<p><span class="icon-time">&nbsp;</span><i>Created by {{ event['author'] }}</i></p>
+											<p><span class="icon-time">&nbsp;</span><i>Organized by {{ event['organizer'] }}</i></p>
 										</div>
 										<div class="content no-lightbox">
-											{%- if event['summary'] -%}
-												{{ event['summary']|markdown }}
-											{%- else -%}
-												{{ event['description']|markdown }}
-											{%- endif -%}
+											{{ event['summary']|markdown }}
+											{{ event['description']|markdown }}
+
 										</div>
 										<div class="infopanel">
 											<div class="tags">

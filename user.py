@@ -1,7 +1,6 @@
 import urllib
 import hashlib
 import re
-import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import session
 
@@ -10,6 +9,7 @@ class User:
 
     def __init__(self, default_config):
         self.collection = default_config['USERS_COLLECTION']
+        self.name = None
         self.username = None
         self.email = None
         self.session_key = 'user'
@@ -23,6 +23,7 @@ class User:
             if admin:
                 if self.validate_login(admin['password'], password):
                     self.username = admin['_id']
+                    self.name = admin['name']
                     self.email = admin['email']
                 else:
                     self.response['error'] = 'Password doesn\'t match..'
@@ -33,8 +34,9 @@ class User:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'System error..'
 
-        self.response['data'] = {'username':
-                                 self.username, 'email': self.email}
+        self.response['data'] = {'name': self.name,
+                                 'username':self.username,
+                                 'email': self.email}
         return self.response
 
     @staticmethod
@@ -54,12 +56,12 @@ class User:
     def get_users(self):
         self.response['error'] = None
         try:
-            users = self.collection.find().sort('date', direction=-1)
+            users = self.collection.find()
             self.response['data'] = []
             for user in users:
                 self.response['data'].append({'id': user['_id'],
-                                              'email': user['email'],
-                                              'date': user['date']})
+                                              'name': user['name'],
+                                              'email': user['email']})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Users not found..'
@@ -147,7 +149,7 @@ class User:
                         password_hash = generate_password_hash(
                             user_data['new_pass'], method='pbkdf2:sha256')
                         record = {'_id': user_data['_id'], 'password': password_hash, 'email': user_data[
-                            'email'], 'date': datetime.datetime.utcnow()}
+                            'email'], 'name': user_data['name']}
                         try:
                             self.collection.insert(record, safe=True)
                             self.response['data'] = True

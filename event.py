@@ -20,7 +20,8 @@ class Event:
             cond = {'$or': [
                     {'name': {'$regex': search, '$options': 'i'}},
                     {'summary': {'$regex': search, '$options': 'i'}},
-                    {'description': {'$regex': search, '$options': 'i'}}]}
+                    {'description': {'$regex': search, '$options': 'i'}},
+                    {'organizer': {'$regex': search, '$options': 'i'}}]}
 
         try:
             cursor = self.collection.find(cond).sort(
@@ -36,9 +37,9 @@ class Event:
                                               'description': event['description'],
                                               'start': event['start'],
                                               'end': event['end'],
+                                              'venue': event['venue'],
                                               'permalink': event['permalink'],
-                                              'tags': event['tags'],
-                                              'author': event['author']})
+                                              'tags': event['tags']})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Events not found..'
@@ -83,7 +84,8 @@ class Event:
             cond = {'$or': [
                     {'name': {'$regex': search, '$options': 'i'}},
                     {'summary': {'$regex': search, '$options': 'i'}},
-                    {'description': {'$regex': search, '$options': 'i'}}]}
+                    {'description': {'$regex': search, '$options': 'i'}},
+                    {'organizer': {'$regex': search, '$options': 'i'}}]}
 
         return self.collection.find(cond).count()
 
@@ -153,9 +155,24 @@ class Event:
         event_data['description'] = cgi.escape(event_data['description'], quote=True)
         event_data['start'] = cgi.escape(event_data['start'], quote=True)
         event_data['end'] = cgi.escape(event_data['end'], quote=True)
-        permalink = random_string(12)
-        event_data['permalink'] = permalink
+        event_data['venue'] = cgi.escape(event_data['venue'], quote=True)
 
+        return event_data
+
+    def generate_permalink(self, event_data):
+        cond = {'name': event_data['name']}
+        events_samename = self.collection.find(cond).count()
+
+        name_without_spaces=event_data['name'].replace(" ", "_")
+        name_lower_without_spaces = name_without_spaces.lower()
+
+        if events_samename == 0:
+            permalink = name_lower_without_spaces
+        else:
+            newpermalink = events_samename + 1
+            permalink = name_lower_without_spaces + '-' + str(newpermalink)
+
+        event_data['permalink'] = permalink
         return event_data
 
     @staticmethod

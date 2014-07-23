@@ -17,15 +17,6 @@ $(function(){
         $(el).replaceWith(anchor);
     });
 
-    $('#post-preview').on('click', function(){
-        var postForm = $('#post-form');
-        postForm.find('#preview').val('1');
-    });
-    $('#post-submit').on('click', function(){
-        var postForm = $('#post-form');
-        postForm.find('#preview').val('');
-    });
-
     $('#event-preview').on('click', function(){
         var eventForm = $('#event-form');
         eventForm.find('#preview').val('1');
@@ -33,6 +24,15 @@ $(function(){
     $('#event-submit').on('click', function(){
         var eventForm = $('#event-form');
         eventForm.find('#preview').val('');
+    });
+
+    $('#talk-preview').on('click', function(){
+        var talkForm = $('#talk-form');
+        talkForm.find('#preview').val('1');
+    });
+    $('#talk-submit').on('click', function(){
+        var talkForm = $('#talk-form');
+        talkForm.find('#preview').val('');
     });
 
     $('a.icon').on('click', function(){
@@ -45,6 +45,23 @@ $(document).ready(function() {
     $('.event-date').datepicker({
         inputs: $('.event-start, .event-end'),
         todayBtn: "linked"
+    });
+
+    $('.talk-date').datepicker({
+        inputs: $('.talk-date'),
+        todayBtn: "linked"
+    });
+
+
+    $('#talk-start').timepicker({
+        'forceRoundTime': true,
+        'minTime': '8:00am',
+        'maxTime': '10:00pm',
+    });
+    $('#talk-end').timepicker({
+        'forceRoundTime': true,
+        'minTime': '8:00am',
+        'maxTime': '10:00pm',
     });
 
 });

@@ -6,9 +6,14 @@
 		{% set event_description = session['event-preview'].get('description', None) %}
         {% set event_start = session['event-preview'].get('start', None) %}
         {% set event_end = session['event-preview'].get('end', None) %}
+        {% set event_venue = session['event-preview'].get('venue', None) %}
 		{% set event_tags = session['event-preview'].get('tags', None) %}
 		{% if tags %}
 			{% set event_tags = ','.join(tags) %}
+		{% endif %}
+        {% set event_participants = session['event-preview'].get('participants', None) %}
+        {% if participants %}
+			{% set event_participants = ','.join(participants) %}
 		{% endif %}
 	{% else %}
         {% set event_name = event.get('name') %}
@@ -16,7 +21,9 @@
 		{% set event_description = event.get('description') %}
         {% set event_start = event.get('start') %}
         {% set event_end = event.get('end') %}
+        {% set event_venue = event.get('venue') %}
 		{% set event_tags = event.get('tags') %}
+        {% set event_participants = event.get('participants') %}
   	{% endif %}
 	<div class="event clearfix">
 		<div class="row">
@@ -50,16 +57,28 @@
 							{%- endif -%}
 						    <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event Description" required>{{ event_description }}</textarea>
 					    </div>
+
+                        <div class="form-group">
+						    <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event Venue" value="{{ event_venue }}" required>
+					    </div>
+
                         <div class="event-date">
                             <label for="event-start">Start</label>
                             <input type="text" class="event-start" name="event-start" id="event-start" value="{{ event_start }}"/>
                             <label for="event-end">End</label>
                             <input type="text" class="event-end" name="event-end" id="event-end" value="{{ event_end }}"/>
                         </div>
-						<div class="form-group">
-						    <label for="event-tags">Tags</label>
+
+                        <div class="form-group">
+                            <label for="event-tags">Tags</label>
 						    <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ event_tags }}">
 					    </div>
+
+                        <div class="form-group">
+						    <label for="event-participants">Participants</label>
+						    <input type="text" name="event-participants" class="form-control" id="event-participants" placeholder="Comma separated" value="{{ ','.join(event_participants) }}">
+					    </div>
+
 						<div class="form-group">
 							<input type="hidden" name="event-preview" id="preview">
 							<input type="hidden" name="event-id" value="{{ event['_id'] }}">

@@ -172,3 +172,15 @@ input[type='checkbox'] {
     padding: 2px;
     margin-right: 10%;
 }
+
+
+.talk-date {
+    font-size: 14px;
+    margin-bottom: 2%;
+}
+
+.talk-date input {
+    width: 100px;
+    padding: 2px;
+    margin-right: 10%;
+}

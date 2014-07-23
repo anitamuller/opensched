@@ -25,7 +25,7 @@
 				        </div>
 					</div>
 					<div class="content article">
-						<div><h3>Summary</h3></div>
+                        <div><h3>Summary</h3></div>
 						{{ event['summary']|markdown }}
                         <div><h3>Description</h3></div>
 						{{ event['description']|markdown }}
@@ -35,17 +35,29 @@
                        	{{ event['end'] }}
                         <div><h3>Venue</h3></div>
                        	{{ event['venue'] }}
-
 					</div>
-					<div class="infopanel">
+
+                    <div class="infopanel">
+                        <div class="participants">
+							<i>participants:</i>
+							{%- if event['participants'] -%}
+								{%- for participant in event['participants'] -%}
+									&nbsp;<a href="/participant/{{ participant }}">{{ participant }}</a>
+								{%- endfor -%}
+							{%- endif -%}
+						</div>
+
 						<div class="tags">
 							<i>tags:</i>
 							{%- if event['tags'] -%}
 								{%- for tag in event['tags'] -%}
-									&nbsp;<a href="{{ url_for('events_by_tag', tag=tag) }}">{{ tag }}</a>
+									&nbsp;<a href="/tag/{{ tag }}">{{ tag }}</a>
 								{%- endfor -%}
 							{%- endif -%}
 						</div>
+					</div>
+					<div class="preview-back">
+						<a href="{{ session.get('event-preview')['redirect'] }}" class="btn btn-primary btn-lg">< Back</a>
 					</div>
 				</div>
 			</div>
@@ -53,7 +65,6 @@
 	{%- endif -%}
 	{%- include 'sidebar.html' -%}
 {%- endblock -%}
-
 {%- block additional_js -%}
 <script src="{{ url_for('static', filename='js/lightbox-2.6.min.js') }}"></script>
 {%- endblock -%}

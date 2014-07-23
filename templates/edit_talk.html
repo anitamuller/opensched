@@ -1,0 +1,115 @@
+{%- extends 'index.html' -%}
+{%- block body -%}
+	{% if session.get('talk-preview', None) %}
+		{% set talk_name = session['talk-preview'].get('name', None) %}
+		{% set talk_summary = session['talk-preview'].get('summary', None) %}
+		{% set talk_description = session['talk-preview'].get('description', None) %}
+        {% set talk_start = session['talk-preview'].get('start', None) %}
+        {% set talk_end = session['talk-preview'].get('end', None) %}
+        {% set talk_room = session['talk-preview'].get('room', None) %}
+        {% set talk_speaker = session['talk-preview'].get('speaker', None) %}
+		{% set talk_tags = session['talk-preview'].get('tags', None) %}
+		{% if tags %}
+			{% set talk_tags = ','.join(tags) %}
+		{% endif %}
+        {% set talk_participants = session['talk-preview'].get('participants', None) %}
+        {% if participants %}
+			{% set talk_participants = ','.join(participants) %}
+		{% endif %}
+	{% else %}
+        {% set talk_name = talk.get('name') %}
+		{% set talk_summary = talk.get('summary') %}
+		{% set talk_description = talk.get('description') %}
+        {% set talk_start = talk.get('start') %}
+        {% set talk_end = talk.get('end') %}
+        {% set talk_room = talk.get('room') %}
+        {% set talk_speaker = talk.get('speaker') %}
+		{% set talk_tags = talk.get('tags') %}
+        {% set talk_participants = talk.get('participants') %}
+  	{% endif %}
+	<div class="event clearfix">
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="page-header">
+					<h1>Edit Event</h1>
+				</div>
+				<div class="content">
+					{%- with messages = get_flashed_messages(with_categories=True) -%}
+						{%- if messages -%}
+							{%- for category, message in messages -%}
+								<div class="response">
+									<span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+								</div>
+							{%- endfor -%}
+						{%- endif -%}
+					{%- endwith -%}
+					<form id="post-form" role="form" method="post" action="{{ url_for('new_talk') }}">
+						<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+							{%- if error and error_type == 'validate' -%}
+								<label class="control-label" for="talk-name">Talk name</label>
+							{%- endif -%}
+						    <input type="text" class="form-control" name="talk-name" id="talk-name" placeholder="Talk Name" required value="{{ talk_name }}">
+					    </div>
+						<div class="form-group">
+						    <textarea id="talk-summary" name="talk-summary" class="form-control" rows="3" placeholder="Talk Summary">{{ talk_summary }}</textarea>
+					    </div>
+						<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+							{%- if error and error_type == 'validate' -%}
+								<label class="control-label" for="talk-description">Required field</label>
+							{%- endif -%}
+						    <textarea id="talk-description" name="talk-description" class="form-control" rows="6" placeholder="Talk Description" required>{{ talk_description }}</textarea>
+					    </div>
+
+                        <div class="form-group">
+						    <input type="text" class="form-control" name="talk-room" id="event-room" placeholder="Talk Room" value="{{ talk_room }}" required>
+					    </div>
+
+                        <div class="date">
+                            <div>
+                                <label for="talk-date">Date</label>
+                                <input type="text" class="talk-date" name="talk-date" id="talk-date" value="{{ talk_date }}"/>
+                            </div>
+                            <label for="talk-start">Start</label>
+                            <input type="text" class="talk-start" name="talk-start" id="talk-start" value="{{ talk_start }}"/>
+                            <label for="talk-end">End</label>
+                            <input type="text" class="talk-end" name="talk-end" id="talk-end" value="{{ talk_end }}"/>
+                        </div>
+
+
+                        <div class="form-group">
+						    <label for="talk-tags">Tags</label>
+						    <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ ','.join(talk_tags) }}">
+					    </div>
+
+                        <div class="form-group">
+						    <input type="text" class="form-control" name="talk-speaker" id="talk-speaker" placeholder="Speaker" value="{{ talk_speaker }}" required>
+					    </div>
+
+                        <div class="form-group">
+						    <label for="talk-participants">Participants</label>
+						    <input type="text" name="talk-participants" class="form-control" id="talk-participants" placeholder="Comma separated" value="{{ ','.join(talk_participants) }}">
+					    </div>
+
+						<div class="form-group">
+							<input type="hidden" name="talk-preview" id="preview">
+							<input type="hidden" name="talk-id" value="{{ event['_id'] }}">
+							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+						    <input id="talk-submit" type="submit" class="btn btn-primary" value="Submit">
+							<input id="talk-preview" type="submit" class="btn" value="Preview">
+					    </div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{%- endblock -%}
+{%- block scripts -%}
+	<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/a-tools.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/showdown.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
+{%- endblock -%}
