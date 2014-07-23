@@ -123,6 +123,7 @@ def new_event():
 
             participants = cgi.escape(request.form.get('event-participants'))
             participants_array = extract_tags(participants)
+
             event_data = {'name': event_name,
                           'summary': event_summary,
                           'description': event_description,

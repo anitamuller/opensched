@@ -15,6 +15,7 @@
         {% if participants %}
 			{% set event_participants = ','.join(participants) %}
 		{% endif %}
+
 	{% else %}
         {% set event_name = event.get('name') %}
 		{% set event_summary = event.get('summary') %}
