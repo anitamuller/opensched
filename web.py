@@ -350,6 +350,40 @@ def talks_by_tag(tag, page):
 
 
 
+@app.route('/newparticipant', methods=['GET', 'POST'])
+@login_required()
+def new_participant(event):
+    error = False
+    error_type = 'validate'
+    if request.method == 'POST':
+        participant_name = request.form.get('participant-name').strip()
+        participant_email = request.form.get('participant-email')
+
+        if not participant_name or not participant_email:
+            error = True
+        else:
+            participant_data = {'name': participant_name,
+                                'email': participant_email}
+
+            #response = userClass.create_new_user(participant_data)
+            #if response['error']:
+             #   error = True
+              #  error_type = 'add-participant'
+               # flash(response['error'], 'error')
+            #else:
+             #   flash('New participant created!', 'success')
+
+            return render_template('edit_event.html',
+                                    meta_title='Edit event::' + event['data']['name'],
+                                    error=error,
+                                    error_type=error_type)
+
+
+
+
+
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
