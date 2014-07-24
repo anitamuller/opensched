@@ -1,10 +1,11 @@
 {%- extends 'index.html' -%}
 {%- block body -%}
+{% set event_permalink= session.get('event-permalink', None) %}
 	<div class="post clearfix">
 		<div class="row">
 			<div class="col-lg-8">
 				<div class="page-header">
-					<h1>Add User</h1>
+					<h1>Add Participant</h1>
 				</div>
 				<div class="content">
 					{%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -16,12 +17,8 @@
 							{%- endfor -%}
 						{%- endif -%}
 					{%- endwith -%}
-					<form class="form-user" role="form" method="post" action="{{ url_for('save_user') }}">
-						<div class="photo-user">
-							<img src="{{ gravatar_url }}" class="img-circle">
-						</div>
-						<div>
-							<fieldset>
+					<form class="form-participant" role="form" method="post" action="{{ url_for('save_participant') }}">
+						<fieldset>
 							<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 								{%- if error and error_type == 'validate' -%}
 									<label class="control-label" for="user-id">Required field</label>
@@ -41,24 +38,11 @@
 							    <input type="email" class="form-control" name="user-email" id="user-email" placeholder="Email" value="" required autocomplete="off">
 							</div>
 						</fieldset>
-						<fieldset>
-						<legend>Password section</legend>
-							<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
-								{%- if error and error_type == 'validate' -%}
-									<label class="control-label" for="user-new-password">Required field</label>
-								{%- endif -%}
-							    <input type="password" class="form-control" name="user-new-password" id="user-new-password" placeholder="Password" value="" required autocomplete="off">
-							</div>
-							<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
-								{%- if error and error_type == 'validate' -%}
-									<label class="control-label" for="user-new-password-again">Required field</label>
-								{%- endif -%}
-							    <input type="password" class="form-control" name="user-new-password-again" id="user-new-password-again" placeholder="Repeat Password" value="" required autocomplete="off">
-							</div>
-						</fieldset>
+
 						<div class="form-group">
 							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                            <input name="user-active" type="hidden" value="1">
+                            <input name="user-active" type="hidden" value="0">
+                            <input type="hidden" name="participant-event" value="{{ event_permalink }}">
 						    <input id="post-submit" type="submit" class="btn btn-primary" value="Submit">
 					    </div>
 						</div>

@@ -218,6 +218,8 @@ def event_del(id):
 @app.route('/newtalk', methods=['GET', 'POST'])
 @login_required()
 def new_talk():
+    import pdb
+    pdb.set_trace()
     error = False
     error_type = 'validate'
     if request.method == 'POST':
@@ -235,15 +237,16 @@ def new_talk():
             participants_array = extract_tags(participants)
 
             talk_data = {'name': talk_name,
-                            'summary': talk_summary,
-                            'description': talk_description,
-                            'date': request.form.get('talk-date'),
-                            'start': request.form.get('talk-start'),
-                            'end': request.form.get('talk-end'),
-                            'room': request.form.get('talk-room'),
-                            'tags': tags_array,
-                            'participants': participants_array,
-                            'speaker': request.form.get('talk-speaker')}
+                         'summary': talk_summary,
+                         'description': talk_description,
+                         'date': request.form.get('talk-date'),
+                         'start': request.form.get('talk-start'),
+                         'end': request.form.get('talk-end'),
+                         'room': request.form.get('talk-room'),
+                         'tags': tags_array,
+                         'participants': participants_array,
+                         'speaker': request.form.get('talk-speaker')}
+
 
 
             talk = talkClass.validate_talk_data(talk_data)
@@ -272,11 +275,12 @@ def new_talk():
                     return redirect(url_for('talks'))
                 else:
                     response = talkClass.create_new_talk(talk)
-                    event_permalink = request.form.get('talk-event')
+                    #event_permalink = request.form.get('talk-event')
 
-                    response_add_talk_event = eventClass.add_new_talk(event_permalink, talk)
+                    #response_add_talk_event = eventClass.add_new_talk(event_permalink, talk)
 
-                    if response['error'] or response_add_talk_event['error']:
+                    #if response['error'] or response_add_talk_event['error']:
+                    if response['error']:
                         error = True
                         error_type = 'event'
                         flash(response['error'], 'error')
@@ -358,39 +362,10 @@ def talks_by_tag(tag, page):
 
 
 
-@app.route('/newparticipant', methods=['GET', 'POST'])
+@app.route('/add_participant')
 @login_required()
-def new_participant(event):
-    error = False
-    error_type = 'validate'
-    if request.method == 'POST':
-        participant_name = request.form.get('participant-name').strip()
-        participant_email = request.form.get('participant-email')
-
-        if not participant_name or not participant_email:
-            error = True
-        else:
-            participant_data = {'name': participant_name,
-                                'email': participant_email}
-
-            #response = userClass.create_new_user(participant_data)
-            #if response['error']:
-             #   error = True
-              #  error_type = 'add-participant'
-               # flash(response['error'], 'error')
-            #else:
-             #   flash('New participant created!', 'success')
-
-            return render_template('edit_event.html',
-                                    meta_title='Edit event::' + event['data']['name'],
-                                    error=error,
-                                    error_type=error_type)
-
-
-
-
-
-
+def add_participant():
+    return render_template('add_participant.html', meta_title='Add participant')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -484,6 +459,7 @@ def save_user():
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
         'new_pass_again': request.form.get('user-new-password-again', None),
+        'active': request.form.get('user-active', None),
         'update': request.form.get('user-update', False)
     }
     if not post_data['email'] or not post_data['name'] or not post_data['_id']:
@@ -504,6 +480,34 @@ def save_user():
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
     return redirect(url_for('edit_user', id=post_data['_id']))
+
+@app.route('/save_participant', methods=['POST'])
+@login_required()
+def save_participant():
+    event_permalink = session.get('participant-event', None)
+    event = eventClass.get_event_by_permalink(event_permalink)
+    #event_id = event['data']['id']
+
+    post_data = {
+        '_id': request.form.get('user-id', None).lower().strip(),
+        'name': request.form.get('user-name', None),
+        'email': request.form.get('user-email', None),
+        'active': request.form.get('user-active', None)
+    }
+    if not post_data['email'] or not post_data['name'] or not post_data['_id']:
+        flash('Name, Username and Email are required..', 'error')
+        return redirect(url_for('add_participant'))
+    else:
+        user = userClass.save_participant(post_data)
+        #if user['error']:
+         #   flash(user['error'], 'error')
+          #  return redirect(url_for('add_participant'))
+        #else:
+        message = 'Participant added!'
+        flash(message, 'success')
+    #return redirect(url_for('edit_event', id=event_id))
+    return redirect(url_for('events'))
+
 
 
 @app.route('/recent_feed')

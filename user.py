@@ -149,7 +149,7 @@ class User:
                         password_hash = generate_password_hash(
                             user_data['new_pass'], method='pbkdf2:sha256')
                         record = {'_id': user_data['_id'], 'password': password_hash, 'email': user_data[
-                            'email'], 'name': user_data['name']}
+                            'email'], 'name': user_data['name'], 'active': user_data['active']}
                         try:
                             self.collection.insert(record, safe=True)
                             self.response['data'] = True
@@ -163,6 +163,32 @@ class User:
         else:
             self.response['error'] = 'Error..'
         return self.response
+
+    def save_participant(self, user_data):
+        self.response['error'] = None
+        if user_data:
+            if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['email']):
+                self.response['error'] = 'Email is invalid..'
+                return self.response
+
+            exist_user = self.collection.find_one({'_id': user_data['_id']})
+            if exist_user:
+                self.response['error'] = 'Username already exists..'
+                return self.response
+            else:
+                record = {'_id': user_data['_id'], 'email': user_data['email'],
+                          'name': user_data['name'], 'active': user_data['active']}
+
+                try:
+                    self.collection.insert(record, safe=True)
+                    self.response['data'] = True
+                except Exception, e:
+                    self.print_debug_info(e, self.debug_mode)
+                    self.response['error'] = 'Create user user error..'
+        else:
+            self.response['error'] = 'Error..'
+            return self.response
+
 
     @staticmethod
     def print_debug_info(msg, show=False):
