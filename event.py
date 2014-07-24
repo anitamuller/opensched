@@ -30,7 +30,8 @@ class Event:
             for event in cursor:
                 if 'tags' not in event:
                     event['tags'] = []
-
+                if 'talks' not in event:
+                    event['talks'] = {}
                 self.response['data'].append({'id': event['_id'],
                                               'name': event['name'],
                                               'summary': event['summary'],
@@ -39,7 +40,10 @@ class Event:
                                               'end': event['end'],
                                               'venue': event['venue'],
                                               'permalink': event['permalink'],
-                                              'tags': event['tags']})
+                                              'organizer': event['organizer'],
+                                              'tags': event['tags'],
+                                              'talks': event['talks']
+                })
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Events not found..'
@@ -119,6 +123,13 @@ class Event:
             self.response['error'] = 'Adding event error..'
 
         return self.response
+
+    def add_new_talk(self, permalink, talk):
+        self.response['data'] = self.collection.find_one({'permalink': permalink})
+        talks = self.response['data']['talks']
+        talks_whit_new_talk = talks.append({talk})
+        self.collection.update({'permalink': permalink},
+                               {'talks': talks_whit_new_talk})
 
     def edit_event(self, event_id, event_data):
         self.response['error'] = None

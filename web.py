@@ -181,6 +181,9 @@ def new_event():
 @login_required()
 def event_edit(id):
     event = eventClass.get_event_by_id(id)
+    session['event-permalink'] = event['data']['permalink']
+
+
     if event['error']:
         flash(event['error'], 'error')
         return redirect(url_for('events'))
@@ -269,7 +272,11 @@ def new_talk():
                     return redirect(url_for('talks'))
                 else:
                     response = talkClass.create_new_talk(talk)
-                    if response['error']:
+                    event_permalink = request.form.get('talk-event')
+
+                    response_add_talk_event = eventClass.add_new_talk(event_permalink, talk)
+
+                    if response['error'] or response_add_talk_event['error']:
                         error = True
                         error_type = 'event'
                         flash(response['error'], 'error')

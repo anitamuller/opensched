@@ -80,8 +80,7 @@
 						<div class="form-group">
 							<input type="hidden" name="event-preview" id="preview">
 							<input type="hidden" name="event-id" value="{{ event['_id'] }}">
-                            {% set session['id_event'] = {{ event['_id']}} %}
-							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+                           	<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
 						    <input id="event-submit" type="submit" class="btn btn-primary" value="Submit">
 							<input id="event-preview" type="submit" class="btn" value="Preview">
 					    </div>
