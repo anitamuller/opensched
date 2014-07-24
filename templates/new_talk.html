@@ -37,6 +37,7 @@
 							{%- endfor -%}
 						{%- endif -%}
 					{%- endwith -%}
+                    <p>session.get(id_event)</p>
 					<form id="talk-form" role="form" method="post" action="{{ url_for('new_talk') }}">
 						<div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
 							{%- if error and error_type == 'validate' -%}

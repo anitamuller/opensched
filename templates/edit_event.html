@@ -14,6 +14,8 @@
         {% set event_participants = session['event-preview'].get('participants', None) %}
         {% if participants %}
 			{% set event_participants = ','.join(participants) %}
+
+
 		{% endif %}
 
 	{% else %}
@@ -78,13 +80,23 @@
 						<div class="form-group">
 							<input type="hidden" name="event-preview" id="preview">
 							<input type="hidden" name="event-id" value="{{ event['_id'] }}">
+                            {% set session['id_event'] = {{ event['_id']}} %}
 							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
 						    <input id="event-submit" type="submit" class="btn btn-primary" value="Submit">
 							<input id="event-preview" type="submit" class="btn" value="Preview">
 					    </div>
+
+
+
                         <a href="{{ url_for('new_participant') }}" class="response btn btn-primary">Add Participants</a>
                         <a href="{{ url_for('new_talk') }}" class="response btn btn-primary">Add talks</a>
-					</form>
+
+
+
+
+
+
+                    </form>
 				</div>
 			</div>
 		</div>
