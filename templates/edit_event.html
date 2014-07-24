@@ -58,28 +58,23 @@
 							{%- endif -%}
 						    <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event Description" required>{{ event_description }}</textarea>
 					    </div>
-
                         <div class="form-group">
 						    <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event Venue" value="{{ event_venue }}" required>
 					    </div>
-
-                        <div class="event-date">
+                        <div id="event-date" class="event-date">
                             <label for="event-start">Start</label>
                             <input type="text" class="event-start" name="event-start" id="event-start" value="{{ event_start }}"/>
                             <label for="event-end">End</label>
                             <input type="text" class="event-end" name="event-end" id="event-end" value="{{ event_end }}"/>
                         </div>
-
                         <div class="form-group">
                             <label for="event-tags">Tags</label>
 						    <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ event_tags }}">
 					    </div>
-
                         <div class="form-group">
 						    <label for="event-participants">Participants</label>
 						    <input type="text" name="event-participants" class="form-control" id="event-participants" placeholder="Comma separated" value="{{ event_participants }}">
 					    </div>
-
 						<div class="form-group">
 							<input type="hidden" name="event-preview" id="preview">
 							<input type="hidden" name="event-id" value="{{ event['_id'] }}">
@@ -87,14 +82,8 @@
 						    <input id="event-submit" type="submit" class="btn btn-primary" value="Submit">
 							<input id="event-preview" type="submit" class="btn" value="Preview">
 					    </div>
-
-                        </br>
                         <a href="{{ url_for('new_participant') }}" class="response btn btn-primary">Add Participants</a>
-
-                        </br>
                         <a href="{{ url_for('new_talk') }}" class="response btn btn-primary">Add talks</a>
-
-
 					</form>
 				</div>
 			</div>
@@ -109,5 +98,5 @@
 	<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-    <script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
 {%- endblock -%}

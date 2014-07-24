@@ -59,37 +59,30 @@
 							{%- endif -%}
 						    <textarea id="talk-description" name="talk-description" class="form-control" rows="6" placeholder="Talk Description" required>{{ talk_description }}</textarea>
 					    </div>
-
                         <div class="form-group">
 						    <input type="text" class="form-control" name="talk-room" id="event-room" placeholder="Talk Room" value="{{ talk_room }}" required>
 					    </div>
-
-                        <div class="date">
-                            <div>
-                                <label for="talk-date">Date</label>
-                                <input type="text" class="talk-date" name="talk-date" id="talk-date" value="{{ talk_date }}"/>
-                            </div>
+                        <div id="event-date" class="event-date">
+                            <label for="talk-date">Date</label>
+                            <input type="text" class="talk-date" name="talk-date" id="talk-date" value="{{ talk_date }}"/>
+                        </div>
+                        <div class="talk-time">
                             <label for="talk-start">Start</label>
                             <input type="text" class="talk-start" name="talk-start" id="talk-start" value="{{ talk_start }}"/>
                             <label for="talk-end">End</label>
                             <input type="text" class="talk-end" name="talk-end" id="talk-end" value="{{ talk_end }}"/>
                         </div>
-
-
                         <div class="form-group">
 						    <label for="talk-tags">Tags</label>
 						    <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ ','.join(talk_tags) }}">
 					    </div>
-
                         <div class="form-group">
 						    <input type="text" class="form-control" name="talk-speaker" id="talk-speaker" placeholder="Speaker" value="{{ talk_speaker }}" required>
 					    </div>
-
                         <div class="form-group">
 						    <label for="talk-participants">Participants</label>
 						    <input type="text" name="talk-participants" class="form-control" id="talk-participants" placeholder="Comma separated" value="{{ ','.join(talk_participants) }}">
 					    </div>
-
 						<div class="form-group">
 							<input type="hidden" name="talk-preview" id="preview">
 							<input type="hidden" name="talk-id" value="{{ event['_id'] }}">
@@ -111,5 +104,6 @@
 	<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-    <script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/timepicker.js') }}"></script>
 {%- endblock -%}

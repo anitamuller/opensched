@@ -38,28 +38,22 @@ $(function(){
     $('a.icon').on('click', function(){
         return confirm('Are you sure?');
     });
+
+    $('#event-date').datepicker({
+        inputs: $('#event-start, #event-end, #talk-date'),
+        todayBtn: 'linked'
+    });
+
+    $('#talk-start').timepicker();
+
+    $('#talk-end').timepicker();
 });
 
 $(document).ready(function() {
 
-    $('.event-date').datepicker({
-        inputs: $('.event-start, .event-end')
-    });
-
-    $('.talk-date').datepicker({
-        inputs: $('.talk-date')
-    });
 
 
-    $('#talk-start').timepicker({
-        'forceRoundTime': true,
-        'minTime': '8:00am',
-        'maxTime': '10:00pm',
-    });
-    $('#talk-end').timepicker({
-        'forceRoundTime': true,
-        'minTime': '8:00am',
-        'maxTime': '10:00pm',
-    });
+
+
 
 });
