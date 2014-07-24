@@ -43,13 +43,11 @@ $(function(){
 $(document).ready(function() {
 
     $('.event-date').datepicker({
-        inputs: $('.event-start, .event-end'),
-        todayBtn: "linked"
+        inputs: $('.event-start, .event-end')
     });
 
     $('.talk-date').datepicker({
-        inputs: $('.talk-date'),
-        todayBtn: "linked"
+        inputs: $('.talk-date')
     });
 
 

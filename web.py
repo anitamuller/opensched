@@ -421,6 +421,10 @@ def logout():
         flash('You are logged out!', 'success')
     return redirect(url_for('login'))
 
+@app.route('/dashboard')
+@login_required()
+def dashboard():
+    return render_template('dashboard.html')
 
 @app.route('/users')
 @login_required()
