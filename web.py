@@ -447,6 +447,14 @@ def edit_user(id):
     return render_template('edit_user.html', user=user['data'], meta_title='Edit user')
 
 
+@app.route('/view_user?id=<id>')
+@login_required()
+def view_user(id):
+    user = userClass.get_user(id)
+    return render_template('view_user.html', user=user['data'], meta_title='View user')
+
+
+
 @app.route('/delete_user?id=<id>')
 @login_required()
 def delete_user(id):

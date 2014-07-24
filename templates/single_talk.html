@@ -10,7 +10,8 @@
 				<div class="col-lg-8">
 					<div class="page-header">
 						<h1>{{ talk['name'] }}</h1>
-						<p><span class="icon-time">&nbsp;</span><i>Speaker {{ talk['speaker'] }}</i></p>
+						<p><span class="icon-time">&nbsp;</span>
+                        <td>Organized by <a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></td></p>
 						<div class="social row-fluid">
 					        <!-- AddThis Button BEGIN -->
 							<div class="addthis_toolbox addthis_default_style addthis_16x16_style">
