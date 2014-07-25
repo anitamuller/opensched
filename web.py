@@ -430,7 +430,7 @@ def users_list():
 @login_required()
 def add_user():
     gravatar_url = userClass.get_gravatar_link()
-    role_list = ['admin', 'organizer', 'assistant']
+    role_list = ['admin', 'organizer', 'assistant', 'speaker']
     return render_template('add_user.html', role_list=role_list, gravatar_url=gravatar_url, meta_title='Add user')
 
 
@@ -438,7 +438,7 @@ def add_user():
 @login_required()
 def edit_user(id):
     user = userClass.get_user(id)
-    role_list = ['admin', 'organizer', 'assistant']
+    role_list = ['admin', 'organizer', 'assistant', 'speaker']
     return render_template('edit_user.html', user=user['data'], role_list=role_list, meta_title='Edit user')
 
 
