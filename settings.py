@@ -9,7 +9,7 @@ class Settings:
         self.config = default_config
         self.config['PER_PAGE'] = 15
         self.config['SEARCH'] = False
-        self.config['BLOG_TITLE'] = 'Sched'
+        self.config['BLOG_TITLE'] = 'OpenSched'
         self.config['BLOG_DESCRIPTION'] = ''
 
         self.response = {'error': None, 'data': None}
@@ -45,10 +45,9 @@ class Settings:
 
     def install(self, blog_data, user_data):
         import user
-        import event
 
         userClass = user.User(self.config)
-        eventClass = event.Event(self.config)
+
         self.response['error'] = None
         try:
             self.config['EVENTS_COLLECTION'].ensure_index([('date', -1)])
@@ -60,7 +59,6 @@ class Settings:
             self.config['USERS_COLLECTION'].ensure_index([('date', 1)])
 
             user_create = userClass.save_user(user_data)
-
 
             if blog_data['per_page'].isdigit():
                 blog_settings_error = None

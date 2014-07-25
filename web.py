@@ -32,7 +32,6 @@ def index(page):
     return render_template('index.html', events=events['data'], pagination=pag, meta_title=app.config['BLOG_TITLE'])
 
 
-
 @app.route('/tag/<tag>', defaults={'page': 1})
 @app.route('/tag/<tag>/page-<int:page>')
 def events_by_tag(tag, page):
@@ -87,7 +86,6 @@ def event_preview():
     return render_template('event_preview.html', event=event, meta_title='Preview event::' + event['name'])
 
 
-
 @app.route('/events_list', defaults={'page': 1})
 @app.route('/events_list/page-<int:page>')
 @login_required()
@@ -102,7 +100,6 @@ def events(page):
     #    abort(404)
 
     return render_template('events.html', events=events['data'], pagination=pag, meta_title='Events')
-
 
 
 @app.route('/newevent', methods=['GET', 'POST'])
@@ -176,7 +173,6 @@ def new_event():
                            error_type=error_type)
 
 
-
 @app.route('/event_edit?id=<id>')
 @login_required()
 def event_edit(id):
@@ -211,15 +207,9 @@ def event_del(id):
 
     return redirect(url_for('events'))
 
-
-
-
-
 @app.route('/newtalk', methods=['GET', 'POST'])
 @login_required()
 def new_talk():
-    import pdb
-    pdb.set_trace()
     error = False
     error_type = 'validate'
     if request.method == 'POST':
@@ -246,8 +236,6 @@ def new_talk():
                          'tags': tags_array,
                          'participants': participants_array,
                          'speaker': request.form.get('talk-speaker')}
-
-
 
             talk = talkClass.validate_talk_data(talk_data)
             talk_with_permalink = talkClass.generate_permalink(talk)
@@ -294,18 +282,11 @@ def new_talk():
                            error=error,
                            error_type=error_type)
 
-
-
-
-
 @app.route('/talk_preview')
 @login_required()
 def talk_preview():
     talk = session.get('talk-preview')
     return render_template('talk_preview.html', talk=talk, meta_title='Preview talk::' + talk['name'])
-
-
-
 
 @app.route('/talk_edit?id=<id>')
 @login_required()
@@ -323,7 +304,6 @@ def talk_edit(id):
                            error=False,
                            error_type=False)
 
-
 @app.route('/talk_delete?id=<id>')
 @login_required()
 def talk_del(id):
@@ -339,14 +319,12 @@ def talk_del(id):
     return redirect(url_for('talks'))
 
 
-
 @app.route('/talk/<permalink>')
 def single_talk(permalink):
     talk = talkClass.get_talk_by_permalink(permalink)
     if not talk['data']:
         abort(404)
     return render_template('single_talk.html', talk=talk['data'], meta_title=app.config['BLOG_TITLE'] + '::' + talk['data']['name'])
-
 
 
 @app.route('/tag/<tag>', defaults={'page': 1})
@@ -359,7 +337,6 @@ def talks_by_tag(tag, page):
         abort(404)
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
     return render_template('index.html', talks=talks['data'], pagination=pag, meta_title='Talks by tag: ' + tag)
-
 
 
 @app.route('/add_participant')
@@ -403,10 +380,13 @@ def logout():
         flash('You are logged out!', 'success')
     return redirect(url_for('login'))
 
+
 @app.route('/dashboard')
 @login_required()
 def dashboard():
-    return render_template('dashboard.html')
+    events_created = eventClass.get_total_count()
+    return render_template('dashboard.html', event=events_created)
+
 
 @app.route('/users')
 @login_required()
@@ -419,14 +399,16 @@ def users_list():
 @login_required()
 def add_user():
     gravatar_url = userClass.get_gravatar_link()
-    return render_template('add_user.html', gravatar_url=gravatar_url, meta_title='Add user')
+    role_list = ['admin', 'organizer', 'assistant']
+    return render_template('add_user.html', role_list=role_list, gravatar_url=gravatar_url, meta_title='Add user')
 
 
 @app.route('/edit_user?id=<id>')
 @login_required()
 def edit_user(id):
     user = userClass.get_user(id)
-    return render_template('edit_user.html', user=user['data'], meta_title='Edit user')
+    role_list = ['admin', 'organizer', 'assistant']
+    return render_template('edit_user.html', user=user['data'], role_list=role_list, meta_title='Edit user')
 
 
 @app.route('/view_user?id=<id>')
@@ -459,6 +441,7 @@ def save_user():
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
         'new_pass_again': request.form.get('user-new-password-again', None),
+        'role' : request.form.get('user-role', None),
         'active': request.form.get('user-active', None),
         'update': request.form.get('user-update', False)
     }
@@ -507,7 +490,6 @@ def save_participant():
         flash(message, 'success')
     #return redirect(url_for('edit_event', id=event_id))
     return redirect(url_for('events'))
-
 
 
 @app.route('/recent_feed')
@@ -574,6 +556,8 @@ def install():
             'email': request.form.get('user-email', None),
             'new_pass': request.form.get('user-new-password', None),
             'new_pass_again': request.form.get('user-new-password-again', None),
+            'role': 'admin',
+            'active': '1',
             'update': False
         }
         blog_data = {

@@ -12,6 +12,8 @@ class User:
         self.name = None
         self.username = None
         self.email = None
+        self.role = None
+        self.active = None
         self.session_key = 'user'
         self.response = {'error': None, 'data': None}
         self.debug_mode = default_config['DEBUG']
@@ -61,7 +63,8 @@ class User:
             for user in users:
                 self.response['data'].append({'id': user['_id'],
                                               'name': user['name'],
-                                              'email': user['email']})
+                                              'email': user['email'],
+                                              'role': user['role']})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Users not found..'
@@ -131,8 +134,11 @@ class User:
                             return self.response
                     else:
                         try:
+                            record = {'name': user_data['name'],
+                                      'email': user_data['email'],
+                                      'role': user_data['role']}
                             self.collection.update(
-                                {'_id': user_data['_id']}, {'$set': {'email': user_data['email']}}, upsert=False, multi=False)
+                                {'_id': user_data['_id']}, {'$set': record}, upsert=False, multi=False)
                             self.response['data'] = True
                         except Exception, e:
                             self.print_debug_info(e, self.debug_mode)
@@ -148,8 +154,9 @@ class User:
                     if user_data['new_pass'] and user_data['new_pass'] == user_data['new_pass_again']:
                         password_hash = generate_password_hash(
                             user_data['new_pass'], method='pbkdf2:sha256')
-                        record = {'_id': user_data['_id'], 'password': password_hash, 'email': user_data[
-                            'email'], 'name': user_data['name'], 'active': user_data['active']}
+                        record = {'_id': user_data['_id'], 'password': password_hash,
+                                  'email': user_data['email'], 'name': user_data['name'],
+                                  'role': user_data['role'], 'active': user_data['active']}
                         try:
                             self.collection.insert(record, safe=True)
                             self.response['data'] = True
@@ -177,7 +184,8 @@ class User:
                 return self.response
             else:
                 record = {'_id': user_data['_id'], 'email': user_data['email'],
-                          'name': user_data['name'], 'active': user_data['active']}
+                          'name': user_data['name'], 'active': user_data['active'],
+                          'role': user_data['role']}
 
                 try:
                     self.collection.insert(record, safe=True)

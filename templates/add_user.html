@@ -56,6 +56,16 @@
 							    <input type="password" class="form-control" name="user-new-password-again" id="user-new-password-again" placeholder="Repeat Password" value="" required autocomplete="off">
 							</div>
 						</fieldset>
+                        <fieldset>
+                        <legend>Role</legend>
+                            <div class="form-group">
+                                <select name="user-role" width="300px">
+                                    {% for option in role_list %}
+                                    <option name="{{ option }}" selected>{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </fieldset>
 						<div class="form-group">
 							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                             <input name="user-active" type="hidden" value="1">
