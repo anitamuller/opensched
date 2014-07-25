@@ -35,7 +35,7 @@
 							{%- for talk in talks -%}
 							<tr>
 
-								<td><a title="Preview" href="{{ url_for('single_talk', permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
+								<td><a title="Preview" href="{{ url_for('single_talk', event_permalink=event_permalink ,permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
                                 <td>{{ talk['summary'] }}</td>
                                 <td>{{ talk['date']  }}</td>
 								<td>{{ talk['start'] }}</td>

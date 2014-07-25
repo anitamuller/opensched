@@ -338,8 +338,8 @@ def talk_del(id):
     return redirect(url_for('talks'))
 
 
-@app.route('/talk/<permalink>')
-def single_talk(permalink):
+@app.route('/<event_permalink>/<permalink>')
+def single_talk(event_permalink, permalink):
     talk = talkClass.get_talk_by_permalink(permalink)
     return render_template('single_talk.html', talk=talk['data'], meta_title=app.config['BLOG_TITLE'] + '::' + talk['data']['name'])
 
