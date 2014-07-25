@@ -98,9 +98,6 @@ def events(page):
     count = eventClass.get_total_count()
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
 
-    #if not events['data']:
-    #    abort(404)
-
     return render_template('events.html', events=events['data'], pagination=pag, meta_title='Events')
 
 
@@ -121,8 +118,7 @@ def new_event():
             tags = cgi.escape(request.form.get('event-tags'))
             tags_array = extract_tags(tags)
 
-            participants = cgi.escape(request.form.get('event-participants'))
-            participants_array = extract_tags(participants)
+
 
             event_data = {'name': event_name,
                           'summary': event_summary,
@@ -131,8 +127,9 @@ def new_event():
                           'end': request.form.get('event-end'),
                           'venue': request.form.get('event-venue'),
                           'tags': tags_array,
-                          'participants': participants_array,
-                          'organizer': session['user']['username']}
+                          'organizer': session['user']['username'],
+                          'talks': [],
+                          'participants': []}
 
 
             event = eventClass.validate_event_data(event_data)
@@ -233,9 +230,6 @@ def new_talk():
             tags = cgi.escape(request.form.get('talk-tags'))
             tags_array = extract_tags(tags)
 
-            participants = cgi.escape(request.form.get('talk-participants'))
-            participants_array = extract_tags(participants)
-
             talk_data = {'name': talk_name,
                          'summary': talk_summary,
                          'description': talk_description,
@@ -244,7 +238,7 @@ def new_talk():
                          'end': request.form.get('talk-end'),
                          'room': request.form.get('talk-room'),
                          'tags': tags_array,
-                         'participants': participants_array,
+                         'participants': [],
                          'speaker': request.form.get('talk-speaker')}
 
 
@@ -275,11 +269,9 @@ def new_talk():
                     return redirect(url_for('talks'))
                 else:
                     response = talkClass.create_new_talk(talk)
-                    #event_permalink = request.form.get('talk-event')
+                    event_permalink = request.form.get('talk-event')
+                    response_add_talk_event = eventClass.add_new_talk(event_permalink, talk)
 
-                    #response_add_talk_event = eventClass.add_new_talk(event_permalink, talk)
-
-                    #if response['error'] or response_add_talk_event['error']:
                     if response['error']:
                         error = True
                         error_type = 'event'
@@ -328,7 +320,23 @@ def talk_edit(id):
 @login_required()
 def talk_del(id):
     if talkClass.get_total_count() >= 1:
+        talk = talkClass.get_talk_by_id(id)
+
+        import pdb
+        pdb.set_trace()
+
+        talk_permalink = talk['data']['permalink']
+
+        import pdb
+        pdb.set_trace()
+
         response = talkClass.delete_talk(id)
+        event_permalink= session.get('event-permalink')
+        event = eventClass.get_event_by_permalink(event_permalink)
+        event_talks = event['data']['talks']
+        event_talks.remove(talk_permalink)
+        eventClass.modify_talks_event(event_permalink, event_talks)
+
         if response['data'] is True:
             flash('Talk removed!', 'success')
         else:
@@ -343,8 +351,6 @@ def talk_del(id):
 @app.route('/talk/<permalink>')
 def single_talk(permalink):
     talk = talkClass.get_talk_by_permalink(permalink)
-    if not talk['data']:
-        abort(404)
     return render_template('single_talk.html', talk=talk['data'], meta_title=app.config['BLOG_TITLE'] + '::' + talk['data']['name'])
 
 
@@ -361,6 +367,21 @@ def talks_by_tag(tag, page):
     return render_template('index.html', talks=talks['data'], pagination=pag, meta_title='Talks by tag: ' + tag)
 
 
+@app.route('/<event_permalink>/talks')
+def talks_by_event(event_permalink):
+    event = eventClass.get_event_by_permalink(event_permalink)
+    event_name = event['data']['name']
+    talks_permalinks = eventClass.get_talks_by_event(event_permalink)
+
+    list_talks = []
+
+    for talk in talks_permalinks:
+        talk_complete = talkClass.get_talk_by_permalink(str(talk))
+        object_talk= talk_complete['data']
+        list_talks.append(object_talk)
+
+
+    return render_template('talks.html', talks=list_talks, meta_title='Talks by event: ' + event_name)
 
 @app.route('/add_participant')
 @login_required()
