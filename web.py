@@ -335,7 +335,7 @@ def talk_del(id):
     else:
         flash('Need to be at least one talk..', 'error')
 
-    return redirect(url_for('talks'))
+    return redirect(url_for('events'))
 
 
 @app.route('/<event_permalink>/<permalink>')
