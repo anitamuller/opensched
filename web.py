@@ -271,7 +271,11 @@ def new_talk():
     else:
         if session.get('talk-preview') and session['talk-preview']['action'] == 'edit':
             session.pop('talk-preview', None)
+
+    speakers = userClass.get_users_by_role("speaker")
+
     return render_template('new_talk.html',
+                           speakers_list=speakers,
                            meta_title='New talk',
                            error=error,
                            error_type=error_type)

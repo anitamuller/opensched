@@ -162,7 +162,7 @@ class Talk:
         talk_data['start'] = cgi.escape(talk_data['start'], quote=True)
         talk_data['end'] = cgi.escape(talk_data['end'], quote=True)
         talk_data['room'] = cgi.escape(talk_data['room'], quote=True)
-        talk_data['speaker'] = cgi.escape(talk_data['speaker'], quote=True)
+
 
         return talk_data
 

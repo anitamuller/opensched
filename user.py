@@ -70,6 +70,16 @@ class User:
             self.response['error'] = 'Users not found..'
         return self.response
 
+    def get_users_by_role(self, role):
+        users = self.collection.find({'role': role})
+        list = []
+
+        for user in users:
+            list.append(str(user['_id']))
+
+        return list
+
+
     def get_user(self, user_id):
         self.response['error'] = None
         try:
