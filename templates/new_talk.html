@@ -10,7 +10,6 @@
         {% set talk_end = session['talk-preview'].get('end', None) %}
         {% set talk_room = session['talk-preview'].get('room', None) %}
 		{% set talk_tags = session['talk-preview'].get('tags', None) %}
-        {% set talk_participants = session['talk-preview'].get('participants', None) %}
         {% set talk_speaker = session['talk-preview'].get('speaker', None) %}
 
 	{% else %}
@@ -22,7 +21,6 @@
         {% set talk_end = '' %}
         {% set talk_room = '' %}
 		{% set talk_tags = '' %}
-        {% set talk_participants = '' %}
         {% set talk_speaker = '' %}
 
 	{% endif %}
@@ -80,10 +78,7 @@
                         <div class="form-group">
 						    <input type="text" class="form-control" name="talk-speaker" id="talk-speaker" placeholder="Speaker" value="{{ talk_speaker }}" required>
 					    </div>
-                        <div class="form-group">
-						    <label for="talk-participants">Participants</label>
-						    <input type="text" name="talk-participants" class="form-control" id="talk-participants" placeholder="Comma separated" value="{{ ','.join(talk_participants) }}">
-					    </div>
+
 						<div class="form-group">
 							<input type="hidden" name="talk-preview" id="preview">
                             <input type="hidden" name="talk-event" value="{{ event_permalink }}">

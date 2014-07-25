@@ -208,8 +208,6 @@ def event_del(id):
 @app.route('/newtalk', methods=['GET', 'POST'])
 @login_required()
 def new_talk():
-    import pdb
-    pdb.set_trace()
     error = False
     error_type = 'validate'
     if request.method == 'POST':

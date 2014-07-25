@@ -185,7 +185,7 @@ class User:
             else:
                 record = {'_id': user_data['_id'], 'email': user_data['email'],
                           'name': user_data['name'], 'active': user_data['active'],
-                          'role': user_data['role']}
+                          'role': 'assistant'}
 
                 try:
                     self.collection.insert(record, safe=True)

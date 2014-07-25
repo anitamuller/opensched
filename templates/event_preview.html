@@ -38,16 +38,7 @@
 					</div>
 
                     <div class="infopanel">
-                        <div class="participants">
-							<i>participants:</i>
-							{%- if event['participants'] -%}
-								{%- for participant in event['participants'] -%}
-									&nbsp;<a href="/participant/{{ participant }}">{{ participant }}</a>
-								{%- endfor -%}
-							{%- endif -%}
-						</div>
-
-						<div class="tags">
+                        <div class="tags">
 							<i>tags:</i>
 							{%- if event['tags'] -%}
 								{%- for tag in event['tags'] -%}

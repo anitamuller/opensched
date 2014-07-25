@@ -94,6 +94,7 @@
                      </div>
                      <a href="{{ url_for('add_participant') }}" class="response btn btn-primary">Add Participants</a>
                      <a href="{{ url_for('new_talk') }}" class="response btn btn-primary">Add talks</a>
+                     <a href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}" class="response btn btn-primary">List talks</a>
                   </form>
                </div>
             </div>
