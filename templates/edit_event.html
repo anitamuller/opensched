@@ -92,7 +92,7 @@
                         <input id="event-submit" type="submit" class="btn btn-primary" value="Submit">
                         <input id="event-preview" type="submit" class="btn" value="Preview">
                      </div>
-                     <a href="{{ url_for('add_participant') }}" class="response btn btn-primary">Add Participants</a>
+                     <a href="{{ url_for('add_participant_event') }}" class="response btn btn-primary">Add Participants</a>
                      <a href="{{ url_for('new_talk') }}" class="response btn btn-primary">Add talks</a>
                      <a href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}" class="response btn btn-primary">List talks</a>
                   </form>

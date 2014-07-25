@@ -256,7 +256,7 @@ def new_talk():
                         flash('Talk updated!', 'success')
                     else:
                         flash(response['error'], 'error')
-                    return redirect(url_for('talks'))
+                    return redirect(url_for('events'))
                 else:
                     response = talkClass.create_new_talk(talk)
                     event_permalink = request.form.get('talk-event')
@@ -288,6 +288,8 @@ def talk_preview():
 @login_required()
 def talk_edit(id):
     talk = talkClass.get_talk_by_id(id)
+    session['talk-permalink'] = talk['data']['permalink']
+
     if talk['error']:
         flash(talk['error'], 'error')
         return redirect(url_for('talks'))
@@ -366,11 +368,15 @@ def talks_by_event(event_permalink):
 
     return render_template('talks.html', talks=list_talks, meta_title='Talks by event: ' + event_name)
 
-@app.route('/add_participant')
+@app.route('/add_participant_event')
 @login_required()
-def add_participant():
-    return render_template('add_participant.html', meta_title='Add participant')
+def add_participant_event():
+    return render_template('add_participant_event.html', meta_title='Add participant')
 
+@app.route('/add_participant_talk')
+@login_required()
+def add_participant_talk():
+    return render_template('add_participant_talk.html', meta_title='Add participant')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -489,12 +495,11 @@ def save_user():
             flash(message, 'success')
     return redirect(url_for('edit_user', id=post_data['_id']))
 
-@app.route('/save_participant', methods=['POST'])
+@app.route('/save_participant_event', methods=['POST'])
 @login_required()
-def save_participant():
-    event_permalink = session.get('participant-event', None)
+def save_participant_event():
+    event_permalink = session.get('event-permalink', None)
     event = eventClass.get_event_by_permalink(event_permalink)
-    #event_id = event['data']['id']
 
     post_data = {
         '_id': request.form.get('user-id', None).lower().strip(),
@@ -507,14 +512,40 @@ def save_participant():
         return redirect(url_for('add_participant'))
     else:
         user = userClass.save_participant(post_data)
-        #if user['error']:
-         #   flash(user['error'], 'error')
-          #  return redirect(url_for('add_participant'))
-        #else:
+        participant_username = request.form.get('user-id', None)
+        response_add_participant_event = eventClass.add_new_participant(event_permalink, participant_username)
         message = 'Participant added!'
         flash(message, 'success')
-    #return redirect(url_for('edit_event', id=event_id))
+
+    #return redirect(url_for('edit_event', id=str(event['data']['_id'])))
     return redirect(url_for('events'))
+
+
+@app.route('/save_participant_talk', methods=['POST'])
+@login_required()
+def save_participant_talk():
+    talk_permalink = session.get('talk-permalink', None)
+    talk = talkClass.get_talk_by_permalink(talk_permalink)
+
+    post_data = {
+        '_id': request.form.get('user-id', None).lower().strip(),
+        'name': request.form.get('user-name', None),
+        'email': request.form.get('user-email', None),
+        'active': request.form.get('user-active', None)
+    }
+    if not post_data['email'] or not post_data['name'] or not post_data['_id']:
+        flash('Name, Username and Email are required..', 'error')
+        return redirect(url_for('add_participant_event'))
+    else:
+        user = userClass.save_participant(post_data)
+        participant_username = request.form.get('user-id', None)
+        response_add_participant_talk = talkClass.add_new_participant(talk_permalink, participant_username)
+        message = 'Participant added!'
+        flash(message, 'success')
+
+    #return redirect(url_for('edit_event', id=str(event['data']['_id'])))
+    return redirect(url_for('events'))
+
 
 
 

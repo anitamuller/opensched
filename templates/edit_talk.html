@@ -2,10 +2,12 @@
 {%- block body -%}
 
     {% set event_permalink= session.get('event-permalink', None) %}
+
 	{% if session.get('talk-preview', None) %}
 		{% set talk_name = session['talk-preview'].get('name', None) %}
 		{% set talk_summary = session['talk-preview'].get('summary', None) %}
 		{% set talk_description = session['talk-preview'].get('description', None) %}
+        {% set talk_date = session['talk-preview'].get('date', None) %}
         {% set talk_start = session['talk-preview'].get('start', None) %}
         {% set talk_end = session['talk-preview'].get('end', None) %}
         {% set talk_room = session['talk-preview'].get('room', None) %}
@@ -14,20 +16,18 @@
 		{% if tags %}
 			{% set talk_tags = ','.join(tags) %}
 		{% endif %}
-        {% set talk_participants = session['talk-preview'].get('participants', None) %}
-        {% if participants %}
-			{% set talk_participants = ','.join(participants) %}
-		{% endif %}
+
 	{% else %}
         {% set talk_name = talk.get('name') %}
 		{% set talk_summary = talk.get('summary') %}
 		{% set talk_description = talk.get('description') %}
+        {% set talk_date = talk.get('date') %}
         {% set talk_start = talk.get('start') %}
         {% set talk_end = talk.get('end') %}
         {% set talk_room = talk.get('room') %}
         {% set talk_speaker = talk.get('speaker') %}
 		{% set talk_tags = talk.get('tags') %}
-        {% set talk_participants = talk.get('participants') %}
+
   	{% endif %}
 	<div class="event clearfix">
 		<div class="row">
@@ -76,25 +76,24 @@
                         </div>
                         <div class="form-group">
 						    <label for="talk-tags">Tags</label>
-						    <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ ','.join(talk_tags) }}">
+						    <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ talk_tags }}">
 					    </div>
                         <div class="form-group">
+                            <label for="talk-speaker">Speaker</label>
 						    <input type="text" class="form-control" name="talk-speaker" id="talk-speaker" placeholder="Speaker" value="{{ talk_speaker }}" required>
 					    </div>
-                        <div class="form-group">
-						    <label for="talk-participants">Participants</label>
-						    <input type="text" name="talk-participants" class="form-control" id="talk-participants" placeholder="Comma separated" value="{{ ','.join(talk_participants) }}">
-					    </div>
+
 						<div class="form-group">
 							<input type="hidden" name="talk-preview" id="preview">
 							<input type="hidden" name="talk-id" value="{{ talk['_id'] }}">
                             <input type="hidden" name="event-permalink" value="{{ event_permalink }}">
+                            <input type="hidden" name="talk-permalink" value="{{ talk['permalink'] }}">
 							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
 						    <input id="talk-submit" type="submit" class="btn btn-primary" value="Submit">
 							<input id="talk-preview" type="submit" class="btn" value="Preview">
 					    </div>
 
-                        <a href="{{ url_for('add_participant') }}" class="response btn btn-primary">Add Participants</a>
+                        <a href="{{ url_for('add_participant_talk') }}" class="response btn btn-primary">Add Participants</a>
 					</form>
 				</div>
 			</div>

@@ -150,6 +150,8 @@ class Talk:
 
         return self.response
 
+
+
     @staticmethod
     def validate_talk_data(talk_data):
 

@@ -161,9 +161,6 @@ class Event:
         self.response['data'] = self.collection.find_one(
                      {'permalink': permalink})
 
-        import pdb
-        pdb.set_trace()
-
         event_participants = self.response['data']['participants']
         event_participants.append(username_participant)
 

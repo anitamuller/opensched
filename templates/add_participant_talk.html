@@ -1,6 +1,6 @@
 {%- extends 'index.html' -%}
 {%- block body -%}
-{% set event_permalink= session.get('event-permalink', None) %}
+{% set talk_permalink= session.get('talk-permalink', None) %}
 	<div class="post clearfix">
 		<div class="row">
 			<div class="col-lg-8">
@@ -17,7 +17,7 @@
 							{%- endfor -%}
 						{%- endif -%}
 					{%- endwith -%}
-					<form class="form-participant" role="form" method="post" action="{{ url_for('save_participant') }}">
+					<form class="form-participant" role="form" method="post" action="{{ url_for('save_participant_talk') }}">
 						<fieldset>
 							<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 								{%- if error and error_type == 'validate' -%}
