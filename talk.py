@@ -1,5 +1,6 @@
 import datetime
 import cgi
+import event
 from bson.objectid import ObjectId
 from helper_functions import *
 
@@ -53,13 +54,8 @@ class Talk:
         return self.response
 
     def get_talk_by_permalink(self, permalink):
-        self.response['error'] = None
-        try:
-            self.response['data'] = self.collection.find_one(
+        self.response['data'] = self.collection.find_one(
                 {'permalink': permalink})
-        except Exception, e:
-            self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Talk not found..'
 
         return self.response
 
@@ -145,6 +141,7 @@ class Talk:
         try:
             if self.get_talk_by_id(talk_id) and self.collection.remove({'_id': ObjectId(talk_id)}):
                 self.response['data'] = True
+
             else:
                 self.response['data'] = False
         except Exception, e:
@@ -182,6 +179,40 @@ class Talk:
 
         talk_data['permalink'] = permalink
         return talk_data
+
+
+    def add_new_participant(self, permalink, username_participant):
+        self.response['data'] = self.collection.find_one(
+                     {'permalink': permalink})
+
+        import pdb
+        pdb.set_trace()
+
+        talk_participants = self.response['data']['participants']
+        talk_participants.append(username_participant)
+
+        new_talk = self.response['data']
+
+        talk_name = new_talk['name']
+        talk_summary = new_talk['summary']
+        talk_description = new_talk['description']
+        talk_speaker = new_talk['speaker']
+        talk_permalink = new_talk['permalink']
+        talk_room = new_talk['room']
+        talk_date = new_talk['date']
+        talk_start = new_talk['start']
+        talk_end = new_talk['end']
+        talk_tags = new_talk['tags']
+
+        self.collection.update({'permalink': permalink},
+                               {'name': talk_name, 'summary': talk_summary,
+                                'description': talk_description, 'speaker': talk_speaker,
+                                'permalink': talk_permalink, 'venue': talk_room,
+                                'date': talk_date,'start': talk_start, 'end': talk_end,
+                                'participants': talk_participants, 'tags': talk_tags
+                                })
+
+
 
     @staticmethod
     def print_debug_info(msg, show=False):

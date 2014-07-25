@@ -31,7 +31,10 @@ class Event:
                 if 'tags' not in event:
                     event['tags'] = []
                 if 'talks' not in event:
-                    event['talks'] = {}
+                    event['talks'] = []
+                if 'participants' not in event:
+                    event['participants'] = []
+
                 self.response['data'].append({'id': event['_id'],
                                               'name': event['name'],
                                               'summary': event['summary'],
@@ -42,7 +45,8 @@ class Event:
                                               'permalink': event['permalink'],
                                               'organizer': event['organizer'],
                                               'tags': event['tags'],
-                                              'talks': event['talks']
+                                              'talks': event['talks'],
+                                              'participants': event['participants']
                 })
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
@@ -125,11 +129,91 @@ class Event:
         return self.response
 
     def add_new_talk(self, permalink, talk):
-        self.response['data'] = self.collection.find_one({'permalink': permalink})
-        talks = self.response['data']['talks']
-        talks_whit_new_talk = talks.append({talk})
+        self.response['data'] = self.collection.find_one(
+                     {'permalink': permalink})
+
+        event_talks = self.response['data']['talks']
+        event_talks.append(talk['permalink'])
+
+        new_event = self.response['data']
+
+        event_name = new_event['name']
+        event_summary = new_event['summary']
+        event_description = new_event['description']
+        event_organizer = new_event['organizer']
+        event_permalink = new_event['permalink']
+        event_venue = new_event['venue']
+        event_start = new_event['start']
+        event_end = new_event['end']
+        event_participants = new_event['participants']
+        event_tags = new_event['tags']
+
         self.collection.update({'permalink': permalink},
-                               {'talks': talks_whit_new_talk})
+                               {'name': event_name, 'summary': event_summary,
+                                'description': event_description, 'organizer': event_organizer,
+                                'permalink': event_permalink, 'venue': event_venue,
+                                'start': event_start, 'end': event_end,
+                                'participants': event_participants, 'tags': event_tags,
+                                'talks': event_talks
+                                })
+
+    def add_new_participant(self, permalink, username_participant):
+        self.response['data'] = self.collection.find_one(
+                     {'permalink': permalink})
+
+        import pdb
+        pdb.set_trace()
+
+        event_participants = self.response['data']['participants']
+        event_participants.append(username_participant)
+
+        new_event = self.response['data']
+
+        event_name = new_event['name']
+        event_summary = new_event['summary']
+        event_description = new_event['description']
+        event_organizer = new_event['organizer']
+        event_permalink = new_event['permalink']
+        event_venue = new_event['venue']
+        event_start = new_event['start']
+        event_end = new_event['end']
+        event_talks = new_event['talks']
+        event_tags = new_event['tags']
+
+        self.collection.update({'permalink': permalink},
+                               {'name': event_name, 'summary': event_summary,
+                                'description': event_description, 'organizer': event_organizer,
+                                'permalink': event_permalink, 'venue': event_venue,
+                                'start': event_start, 'end': event_end,
+                                'participants': event_participants, 'tags': event_tags,
+                                'talks': event_talks
+                                })
+
+    def modify_talks_event(self, permalink, talks):
+        self.response['data'] = self.collection.find_one(
+                     {'permalink': permalink})
+        new_event = self.response['data']
+
+        event_name = new_event['name']
+        event_summary = new_event['summary']
+        event_description = new_event['description']
+        event_organizer = new_event['organizer']
+        event_permalink = new_event['permalink']
+        event_venue = new_event['venue']
+        event_start = new_event['start']
+        event_end = new_event['end']
+        event_participants = new_event['participants']
+        event_tags = new_event['tags']
+        event_talks = talks
+
+        self.collection.update({'permalink': permalink},
+                               {'name': event_name, 'summary': event_summary,
+                                'description': event_description, 'organizer': event_organizer,
+                                'permalink': event_permalink, 'venue': event_venue,
+                                'start': event_start, 'end': event_end,
+                                'participants': event_participants, 'tags': event_tags,
+                                'talks': event_talks
+                                })
 
     def edit_event(self, event_id, event_data):
         self.response['error'] = None
@@ -185,6 +269,16 @@ class Event:
 
         event_data['permalink'] = permalink
         return event_data
+
+    def get_talks_by_event(self, permalink):
+
+        self.response['data'] = self.collection.find_one(
+                {'permalink': permalink})
+
+        talks = self.response['data']['talks']
+
+        return talks
+
 
     @staticmethod
     def print_debug_info(msg, show=False):

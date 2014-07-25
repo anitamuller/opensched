@@ -45,9 +45,7 @@
 
 					<form id="talk-form" role="form" method="post" action="{{ url_for('new_talk') }}">
 
-                        <input type="text" class="talk-event" name="talk-event" id="talk-event" value="{{ event_permalink }}"/>
-
-						<div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                        <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
 							{%- if error and error_type == 'validate' -%}
 								<label class="control-label" for="talk-name">Required field</label>
 							{%- endif -%}
