@@ -1,113 +1,118 @@
 {%- extends 'index.html' -%}
+{%- block head -%}
+{%- include 'head.html' -%}
+{%- block additional_css -%}
+<link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
+{%- endblock -%}
+{%- endblock -%}
 {%- block body -%}
-	{% if session.get('event-preview', None) %}
-		{% set event_name = session['event-preview'].get('name', None) %}
-		{% set event_summary = session['event-preview'].get('summary', None) %}
-		{% set event_description = session['event-preview'].get('description', None) %}
-        {% set event_start = session['event-preview'].get('start', None) %}
-        {% set event_end = session['event-preview'].get('end', None) %}
-        {% set event_venue = session['event-preview'].get('venue', None) %}
-		{% set event_tags = session['event-preview'].get('tags', None) %}
-		{% if tags %}
-			{% set event_tags = ','.join(tags) %}
-		{% endif %}
-        {% set event_participants = session['event-preview'].get('participants', None) %}
-        {% if participants %}
-			{% set event_participants = ','.join(participants) %}
-
-
-		{% endif %}
-
-	{% else %}
-        {% set event_name = event.get('name') %}
-		{% set event_summary = event.get('summary') %}
-		{% set event_description = event.get('description') %}
-        {% set event_start = event.get('start') %}
-        {% set event_end = event.get('end') %}
-        {% set event_venue = event.get('venue') %}
-		{% set event_tags = event.get('tags') %}
-        {% set event_participants = event.get('participants') %}
-  	{% endif %}
-	<div class="event clearfix">
-		<div class="row">
-			<div class="col-lg-8">
-				<div class="page-header">
-					<h1>Edit Event</h1>
-				</div>
-				<div class="content">
-					{%- with messages = get_flashed_messages(with_categories=True) -%}
-						{%- if messages -%}
-							{%- for category, message in messages -%}
-								<div class="response">
-									<span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-								</div>
-							{%- endfor -%}
-						{%- endif -%}
-					{%- endwith -%}
-					<form id="post-form" role="form" method="post" action="{{ url_for('new_event') }}">
-						<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
-							{%- if error and error_type == 'validate' -%}
-								<label class="control-label" for="event-name">Event name</label>
-							{%- endif -%}
-						    <input type="text" class="form-control" name="event-name" id="event-name" placeholder="Event Name" required value="{{ event_name }}">
-					    </div>
-						<div class="form-group">
-						    <textarea id="event-summary" name="event-summary" class="form-control" rows="3" placeholder="Event Summary">{{ event_summary }}</textarea>
-					    </div>
-						<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
-							{%- if error and error_type == 'validate' -%}
-								<label class="control-label" for="event-description">Required field</label>
-							{%- endif -%}
-						    <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event Description" required>{{ event_description }}</textarea>
-					    </div>
-                        <div class="form-group">
-						    <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event Venue" value="{{ event_venue }}" required>
-					    </div>
-                        <div id="event-date" class="event-date">
-                            <label for="event-start">Start</label>
-                            <input type="text" class="event-start" name="event-start" id="event-start" value="{{ event_start }}"/>
-                            <label for="event-end">End</label>
-                            <input type="text" class="event-end" name="event-end" id="event-end" value="{{ event_end }}"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="event-tags">Tags</label>
-						    <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ event_tags }}">
-					    </div>
-                        <div class="form-group">
-						    <label for="event-participants">Participants</label>
-						    <input type="text" name="event-participants" class="form-control" id="event-participants" placeholder="Comma separated" value="{{ event_participants }}">
-					    </div>
-						<div class="form-group">
-							<input type="hidden" name="event-preview" id="preview">
-							<input type="hidden" name="event-id" value="{{ event['_id'] }}">
-                           	<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-						    <input id="event-submit" type="submit" class="btn btn-primary" value="Submit">
-							<input id="event-preview" type="submit" class="btn" value="Preview">
-					    </div>
-
-
-
-                        <a href="{{ url_for('add_participant') }}" class="response btn btn-primary">Add Participants</a>
-                        <a href="{{ url_for('new_talk') }}" class="response btn btn-primary">Add talks</a>
-
-
-
-
-
-
-                    </form>
-				</div>
-			</div>
-		</div>
-	</div>
+<div id="wrapper">
+   {%- include 'side_nav.html' -%}
+   <div id="page-wrapper">
+      {% if session.get('event-preview', None) %}
+      {% set event_name = session['event-preview'].get('name', None) %}
+      {% set event_summary = session['event-preview'].get('summary', None) %}
+      {% set event_description = session['event-preview'].get('description', None) %}
+      {% set event_start = session['event-preview'].get('start', None) %}
+      {% set event_end = session['event-preview'].get('end', None) %}
+      {% set event_venue = session['event-preview'].get('venue', None) %}
+      {% set event_tags = session['event-preview'].get('tags', None) %}
+      {% if tags %}
+      {% set event_tags = ','.join(tags) %}
+      {% endif %}
+      {% set event_participants = session['event-preview'].get('participants', None) %}
+      {% if participants %}
+      {% set event_participants = ','.join(participants) %}
+      {% endif %}
+      {% else %}
+      {% set event_name = event.get('name') %}
+      {% set event_summary = event.get('summary') %}
+      {% set event_description = event.get('description') %}
+      {% set event_start = event.get('start') %}
+      {% set event_end = event.get('end') %}
+      {% set event_venue = event.get('venue') %}
+      {% set event_tags = event.get('tags') %}
+      {% set event_participants = event.get('participants') %}
+      {% endif %}
+      <div class="event clearfix">
+         <div class="row">
+            <div class="col-lg-8">
+               <div class="page-header">
+                  <h1>Edit Event</h1>
+               </div>
+               <div class="content">
+                  {%- with messages = get_flashed_messages(with_categories=True) -%}
+                  {%- if messages -%}
+                  {%- for category, message in messages -%}
+                  <div class="response">
+                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                  </div>
+                  {%- endfor -%}
+                  {%- endif -%}
+                  {%- endwith -%}
+                  <form id="post-form" role="form" method="post" action="{{ url_for('new_event') }}">
+                     <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+                        {%- if error and error_type == 'validate' -%}
+                        <label class="control-label" for="event-name">Event name</label>
+                        {%- endif -%}
+                        <input type="text" class="form-control" name="event-name" id="event-name" placeholder="Event Name" required value="{{ event_name }}">
+                     </div>
+                     <div class="form-group">
+                        <textarea id="event-summary" name="event-summary" class="form-control" rows="3" placeholder="Event Summary">{{ event_summary }}</textarea>
+                     </div>
+                     <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+                        {%- if error and error_type == 'validate' -%}
+                        <label class="control-label" for="event-description">Required field</label>
+                        {%- endif -%}
+                        <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event Description" required>{{ event_description }}</textarea>
+                     </div>
+                     <div class="form-group">
+                        <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event Venue" value="{{ event_venue }}" required>
+                     </div>
+                     <div id="event-date" class="event-date">
+                        <label for="event-start">Start</label>
+                        <input type="text" class="event-start" name="event-start" id="event-start" value="{{ event_start }}"/>
+                        <label for="event-end">End</label>
+                        <input type="text" class="event-end" name="event-end" id="event-end" value="{{ event_end }}"/>
+                     </div>
+                     <div class="form-group">
+                        <label for="event-tags">Tags</label>
+                        <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ event_tags }}">
+                     </div>
+                     <div class="form-group">
+                        <label for="event-participants">Participants</label>
+                        <input type="text" name="event-participants" class="form-control" id="event-participants" placeholder="Comma separated" value="{{ event_participants }}">
+                     </div>
+                     <div class="form-group">
+                        <input type="hidden" name="event-preview" id="preview">
+                        <input type="hidden" name="event-id" value="{{ event['_id'] }}">
+                        <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+                        <input id="event-submit" type="submit" class="btn btn-primary" value="Submit">
+                        <input id="event-preview" type="submit" class="btn" value="Preview">
+                     </div>
+                     <a href="{{ url_for('add_participant') }}" class="response btn btn-primary">Add Participants</a>
+                     <a href="{{ url_for('new_talk') }}" class="response btn btn-primary">Add talks</a>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
 {%- endblock -%}
 {%- block scripts -%}
-	<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/a-tools.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/showdown.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-    <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/a-tools.js') }}"></script>
+<script src="{{ url_for('static', filename='js/showdown.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
+<script src="{{ url_for('static', filename='js/timepicker.js') }}"></script>
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{{ url_for('static', filename='js/plugins/metisMenu/metisMenu.min.js') }}"></script>
+<!-- Custom Theme JavaScript -->
+<script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
 {%- endblock -%}

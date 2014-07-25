@@ -385,7 +385,7 @@ def logout():
 @login_required()
 def dashboard():
     events_created = eventClass.get_total_count()
-    return render_template('dashboard.html', event=events_created)
+    return render_template('dashboard.html', events_created=events_created)
 
 
 @app.route('/users')
