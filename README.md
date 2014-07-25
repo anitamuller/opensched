@@ -1,13 +1,6 @@
-# flask-blog
+# OpenSched
 
-simple blog ~~engine~~ written on [Flask](http://flask.pocoo.org/)
-
-# Demo:
-you can try it [here](http://flask-blog-demo.herokuapp.com/)
-
-login:demo
-
-pass:demo
+Simple and open event scheduler and agenda builder app ~~engine~~ written on [Flask](http://flask.pocoo.org/)
 
 # Under the hood:
 - [Python](http://python.org/)
@@ -20,8 +13,8 @@ pass:demo
 
 
 # What it can:
-- create/preview/update/delete articles;
-- create/update/delete users;
+- create/preview/update/delete events;
+- create/update/delete participants;
 - search;
 - atom feed.
 
@@ -30,17 +23,10 @@ pass:demo
 - [AddThis](http://www.addthis.com/) social buttons;
 - [Gravatar](http://gravatar.com) for userpic.
 
-
-# To Do:
-- mongoDB text search
-- comments maybe
-- drafts
-
-
 # Installation:
-`git clone https://github.com/dmaslov/flask-blog.git`
+`git clone https://github.com/vkmc/opensched.git`
 
-`cd flask-blog`
+`cd opensched`
 
 `virtualenv --no-site-packages ./env`
 
@@ -54,8 +40,6 @@ After this edit the `config.py` file
 - Replace the `CONNECTION_STRING` variable with your own connection string;
 
 - Replace the `DATABASE` variable to your own one;
-
-- If the default collection names don't work for you please replace the `POSTS_COLLECTION`, `USERS_COLLECTION` and `USERS_COLLECTION` variables to any names you like;
 
 - If you use this code on a production sever replace the `DEBUG` variable with `False`.
 
@@ -122,5 +106,4 @@ The word will be replaced with a working gist tag.
 # Upd:
 Don't need to highlight text to add a link or an image anymore. Now you can simply click some tag in the editor menu and put a link. The 'Markdown' tag will be created automatically with a highlighted temporary description. The existing pasting algorithm works as it did before.
 
-# FORK
-Base for opensched project
+# Forked from flask-blog by dmaslov
