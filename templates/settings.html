@@ -17,30 +17,30 @@
                         {%- endif -%}
                     {%- endwith -%}
 
-	                <form role="form" method="post" action="{{ url_for('blog_settings') }}">
+	                <form role="form" method="post" action="{{ url_for('site_settings') }}">
                         <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                             {%- if error and error_type == 'validate' -%}
-                                <label class="control-label" for="blog-title">Required field</label>
+                                <label class="control-label" for="site-title">Required field</label>
 	                        {%- else -%}
-	                            <label class="control-label" for="blog-title">OpenSched Title</label>
+	                            <label class="control-label" for="site-title">OpenSched Title</label>
                             {%- endif -%}
-                            <input type="text" class="form-control" name="blog-title" id="blog-title" placeholder="OpenSched Title" value="{{ default_settings['BLOG_TITLE'] }}" required autocomplete="off">
+                            <input type="text" class="form-control" name="site-title" id="site-title" placeholder="OpenSched Title" value="{{ default_settings['site_TITLE'] }}" required autocomplete="off">
                         </div>
 	                    <div class="form-group">
-	                        <label class="control-label" for="blog-description">OpenSched Description</label>
-                            <input type="text" class="form-control" name="blog-description" id="blog-description" placeholder="OpenSched Description" value="{{ default_settings['BLOG_DESCRIPTION'] }}" autocomplete="off">
+	                        <label class="control-label" for="site-description">OpenSched Description</label>
+                            <input type="text" class="form-control" name="site-description" id="site-description" placeholder="OpenSched Description" value="{{ default_settings['site_DESCRIPTION'] }}" autocomplete="off">
                         </div>
                         <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                             {%- if error and error_type == 'validate' -%}
-                                <label class="control-label" for="blog-perpage">Required field</label>
+                                <label class="control-label" for="site-perpage">Required field</label>
 	                        {%- else -%}
-	                            <label class="control-label" for="blog-perpage">Events per page</label>
+	                            <label class="control-label" for="site-perpage">Events per page</label>
                             {%- endif -%}
-                            <input type="number" min="1" class="form-control" name="blog-perpage" id="blog-perpage" placeholder="Events per page" value="{{ default_settings['PER_PAGE'] }}" required autocomplete="off">
+                            <input type="number" min="1" class="form-control" name="site-perpage" id="site-perpage" placeholder="Events per page" value="{{ default_settings['PER_PAGE'] }}" required autocomplete="off">
                         </div>
                         <div class="checkbox">
 						    <label>
-						        <input type="checkbox" name="blog-text-search" disabled> Use <abbr title="MongoDB version 2.4.6 with textSearchEnabled=true required. Otherwise $regex search will be used."> Text Search</abbr>
+						        <input type="checkbox" name="site-text-search" disabled> Use <abbr title="MongoDB version 2.4.6 with textSearchEnabled=true required. Otherwise $regex search will be used."> Text Search</abbr>
 						    </label>
 					    </div>
                         <div class="form-group">

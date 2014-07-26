@@ -25,22 +25,22 @@
 	                        <legend>Sched section</legend>
                             <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 	                            {%- if error and error_type == 'validate' -%}
-	                                <label class="control-label" for="blog-title">Required field</label>
+	                                <label class="control-label" for="site-title">Required field</label>
 	                            {%- endif -%}
-	                            <input type="text" class="form-control" name="blog-title" id="blog-title" placeholder="Sched Title" required autocomplete="off">
+	                            <input type="text" class="form-control" name="site-title" id="site-title" placeholder="Sched Title" required autocomplete="off">
 	                        </div>
                             <div class="form-group">
-	                            <input type="text" class="form-control" name="blog-description" id="blog-description" placeholder="Sched Description" autocomplete="off">
+	                            <input type="text" class="form-control" name="site-description" id="site-description" placeholder="Sched Description" autocomplete="off">
 	                        </div>
 	                        <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 	                            {%- if error and error_type == 'validate' -%}
-	                                <label class="control-label" for="blog-perpage">Required field</label>
+	                                <label class="control-label" for="site-perpage">Required field</label>
 	                            {%- endif -%}
-	                            <input type="number" min="1" class="form-control" name="blog-perpage" id="blog-perpage" placeholder="Events per page (default {{ default_settings['PER_PAGE'] }})" required autocomplete="off">
+	                            <input type="number" min="1" class="form-control" name="site-perpage" id="site-perpage" placeholder="Events per page (default {{ default_settings['PER_PAGE'] }})" required autocomplete="off">
 	                        </div>
                             <div class="checkbox">
 							    <label>
-							        <input type="checkbox" name="blog-text-search" disabled> Use <abbr title="MongoDB version 2.4.6 with textSearchEnabled=true required. Otherwise $regex search will be used."> Text Search</abbr>
+							        <input type="checkbox" name="site-text-search" disabled> Use <abbr title="MongoDB version 2.4.6 with textSearchEnabled=true required. Otherwise $regex search will be used."> Text Search</abbr>
 							    </label>
 						    </div>
                         </fieldset>

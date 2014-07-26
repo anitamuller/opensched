@@ -1,114 +1,128 @@
 {%- extends 'index.html' -%}
+{%- block head -%}
+{%- include 'head.html' -%}
+{%- block additional_css -%}
+<link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
+{%- endblock -%}
+{%- endblock -%}
 {%- block body -%}
-{% set event_permalink= session.get('event-permalink', None) %}
-{% if session.get('talk-preview') %}
-		{% set talk_name = session['talk-preview'].get('name', None) %}
-		{% set talk_summary = session['talk-preview'].get('summary', None) %}
-		{% set talk_description = session['talk-preview'].get('description', None) %}
-        {% set talk_date = session['talk-preview'].get('date', None) %}
-        {% set talk_start = session['talk-preview'].get('start', None) %}
-        {% set talk_end = session['talk-preview'].get('end', None) %}
-        {% set talk_room = session['talk-preview'].get('room', None) %}
-		{% set talk_tags = session['talk-preview'].get('tags', None) %}
-        {% set talk_speaker = session['talk-preview'].get('speaker', None) %}
-
-	{% else %}
-		{% set talk_name = '' %}
-		{% set talk_summary = '' %}
-		{% set talk_description = '' %}
-        {% set talk_date = '' %}
-        {% set talk_start = '' %}
-        {% set talk_end = '' %}
-        {% set talk_room = '' %}
-		{% set talk_tags = '' %}
-        {% set talk_speaker = '' %}
-
-	{% endif %}
-<div class="talk clearfix">
-		<div class="row">
-			<div class="col-lg-8">
-				<div class="page-header">
-					<h1>New talk</h1>
-				</div>
-				<div class="content">
-					{%- with messages = get_flashed_messages(with_categories=True) -%}
-						{%- if messages -%}
-							{%- for category, message in messages -%}
-								<div class="response">
-									<span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-								</div>
-							{%- endfor -%}
-						{%- endif -%}
-					{%- endwith -%}
-
-					<form id="talk-form" role="form" method="post" action="{{ url_for('new_talk') }}">
-
-                        <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
-							{%- if error and error_type == 'validate' -%}
-								<label class="control-label" for="talk-name">Required field</label>
-							{%- endif -%}
-						    <input type="text" class="form-control" name="talk-name" id="talk-name" placeholder="Name" value="{{ talk_name }}" required>
-					    </div>
-						<div class="form-group">
-						    <textarea id="talk-summary" name="talk-summary" class="form-control" rows="3" placeholder="Short summary of the talk">{{ talk_summary }}</textarea>
-					    </div>
-						<div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
-							{%- if error and error_type == 'validate' -%}
-								<label class="control-label" for="talk-description">Required field</label>
-							{%- endif -%}
-						    <textarea id="talk-description" name="talk-description" class="form-control" rows="6" placeholder="Description of the talk" required>{{ talk_description }}</textarea>
-					    </div>
-                        <div class="form-group">
-						    <input type="text" class="form-control" name="talk-room" id="talk-room" placeholder="Room" value="{{ talk_room }}" required>
-					    </div>
-                        <div id="event-date" class="event-date">
-                            <label for="talk-date">Date</label>
-                            <input type="text" class="talk-date" name="talk-date" id="talk-date" value="{{ talk_date }}"/>
-                        </div>
-                        <div class="talk-time">
-                            <label for="talk-start">Start</label>
-                            <input type="text" class="talk-start" name="talk-start" id="talk-start" value="{{ talk_start }}"/>
-                            <label for="talk-end">End</label>
-                            <input type="text" class="talk-end" name="talk-end" id="talk-end" value="{{ talk_end }}"/>
-                        </div>
-						<div class="form-group">
-						    <label for="talk-tags">Tags</label>
-						    <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ ','.join(talk_tags) }}">
-					    </div>
-
-                        <fieldset>
+<div id="wrapper">
+   {%- include 'side_nav.html' -%}
+   <div id="page-wrapper">
+      {% set event_permalink= session.get('event-permalink', None) %}
+      {% if session.get('talk-preview') %}
+      {% set talk_name = session['talk-preview'].get('name', None) %}
+      {% set talk_summary = session['talk-preview'].get('summary', None) %}
+      {% set talk_description = session['talk-preview'].get('description', None) %}
+      {% set talk_date = session['talk-preview'].get('date', None) %}
+      {% set talk_start = session['talk-preview'].get('start', None) %}
+      {% set talk_end = session['talk-preview'].get('end', None) %}
+      {% set talk_room = session['talk-preview'].get('room', None) %}
+      {% set talk_tags = session['talk-preview'].get('tags', None) %}
+      {% set talk_speaker = session['talk-preview'].get('speaker', None) %}
+      {% else %}
+      {% set talk_name = '' %}
+      {% set talk_summary = '' %}
+      {% set talk_description = '' %}
+      {% set talk_date = '' %}
+      {% set talk_start = '' %}
+      {% set talk_end = '' %}
+      {% set talk_room = '' %}
+      {% set talk_tags = '' %}
+      {% set talk_speaker = '' %}
+      {% endif %}
+      <div class="talk clearfix">
+         <div class="row">
+            <div class="col-lg-8">
+               <div class="page-header">
+                  <h1>New talk</h1>
+               </div>
+               <div class="content">
+                  {%- with messages = get_flashed_messages(with_categories=True) -%}
+                  {%- if messages -%}
+                  {%- for category, message in messages -%}
+                  <div class="response">
+                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                  </div>
+                  {%- endfor -%}
+                  {%- endif -%}
+                  {%- endwith -%}
+                  <form id="talk-form" role="form" method="post" action="{{ url_for('new_talk') }}">
+                     <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                        {%- if error and error_type == 'validate' -%}
+                        <label class="control-label" for="talk-name">Required field</label>
+                        {%- endif -%}
+                        <input type="text" class="form-control" name="talk-name" id="talk-name" placeholder="Name" value="{{ talk_name }}" required>
+                     </div>
+                     <div class="form-group">
+                        <textarea id="talk-summary" name="talk-summary" class="form-control" rows="3" placeholder="Short summary of the talk">{{ talk_summary }}</textarea>
+                     </div>
+                     <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                        {%- if error and error_type == 'validate' -%}
+                        <label class="control-label" for="talk-description">Required field</label>
+                        {%- endif -%}
+                        <textarea id="talk-description" name="talk-description" class="form-control" rows="6" placeholder="Description of the talk" required>{{ talk_description }}</textarea>
+                     </div>
+                     <div class="form-group">
+                        <input type="text" class="form-control" name="talk-room" id="talk-room" placeholder="Room" value="{{ talk_room }}" required>
+                     </div>
+                     <div id="event-date" class="event-date">
+                        <label for="talk-date">Date</label>
+                        <input type="text" class="talk-date" name="talk-date" id="talk-date" value="{{ talk_date }}"/>
+                     </div>
+                     <div class="talk-time">
+                        <label for="talk-start">Start</label>
+                        <input type="text" class="talk-start" name="talk-start" id="talk-start" value="{{ talk_start }}"/>
+                        <label for="talk-end">End</label>
+                        <input type="text" class="talk-end" name="talk-end" id="talk-end" value="{{ talk_end }}"/>
+                     </div>
+                     <div class="form-group">
+                        <label for="talk-tags">Tags</label>
+                        <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ ','.join(talk_tags) }}">
+                     </div>
+                     <fieldset>
                         <legend>Speaker</legend>
-                            <div class="form-group">
-                                <select name="talk-speaker" width="300px">
-                                    {% for option in speakers_list %}
-                                    <option name="{{ option }}" selected>{{ option }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </fieldset>
-
-
-
-						<div class="form-group">
-							<input type="hidden" name="talk-preview" id="preview">
-                            <input type="hidden" name="talk-event" value="{{ event_permalink }}">
-							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-						    <input id="talk-submit" type="submit" class="btn btn-primary" value="Submit">
-							<input id="talk-preview" type="submit" class="btn" value="Preview">
-					    </div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+                        <div class="form-group">
+                           <select name="talk-speaker" width="300px">
+                              {% for option in speakers_list %}
+                              <option name="{{ option }}" selected>{{ option }}</option>
+                              {% endfor %}
+                           </select>
+                        </div>
+                     </fieldset>
+                     <div class="form-group">
+                        <input type="hidden" name="talk-preview" id="preview">
+                        <input type="hidden" name="talk-event" value="{{ event_permalink }}">
+                        <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+                        <input id="talk-submit" type="submit" class="btn btn-primary" value="Submit">
+                        <input id="talk-preview" type="submit" class="btn" value="Preview">
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
 {%- endblock -%}
 {%- block scripts -%}
-	<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/a-tools.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/showdown.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-    <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/timepicker.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/a-tools.js') }}"></script>
+<script src="{{ url_for('static', filename='js/showdown.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mdmagick.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
+<script src="{{ url_for('static', filename='js/timepicker.js') }}"></script>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{{ url_for('static', filename='js/plugins/metisMenu/metisMenu.min.js') }}"></script>
+<!-- Custom Theme JavaScript -->
+<script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
 {%- endblock -%}

@@ -3,7 +3,9 @@
 		<ul class="nav navbar-nav">
 			<li><a href="{{ url_for('index') }}" class="navbar-brand">Home</a></li>
 		{% if session.user %}
+            {% if session.user.role == 'admin' %}
             <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            {% endif %}
 			<li><a href="{{ url_for('logout') }}">Logout</a></li>
 		{% else %}
 			<li><a href="{{ url_for('login') }}">Login</a></li>
@@ -19,10 +21,6 @@
 	<div class="navbar-collapse collapse" id="navbar-main">
 		<ul class="nav navbar-nav">
 			<li><a href="{{ url_for('recent_feed') }}" class="icon-rss"></a></li>
-		{% if session.user %}
-			<li><a href="{{ url_for('users_list') }}">Users</a></li>
-		    <li><a href="{{ url_for('blog_settings') }}">Settings</a></li>
-		{% endif %}
 		</ul>
 		<form class="navbar-form navbar-right search-form" method="post" action="{{ url_for('search') }}">
             <input type="text" name="query" class="form-control col-lg-8" placeholder="Search">

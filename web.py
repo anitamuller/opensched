@@ -29,7 +29,7 @@ def index(page):
     events = eventClass.get_events(int(app.config['PER_PAGE']), skip)
     count = eventClass.get_total_count()
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    return render_template('index.html', events=events['data'], pagination=pag, meta_title=app.config['BLOG_TITLE'])
+    return render_template('index.html', events=events['data'], pagination=pag, meta_title=app.config['SITE_TITLE'])
 
 
 @app.route('/tag/<tag>', defaults={'page': 1})
@@ -49,7 +49,7 @@ def single_event(permalink):
     event = eventClass.get_event_by_permalink(permalink)
     if not event['data']:
         abort(404)
-    return render_template('single_event.html', event=event['data'], meta_title=app.config['BLOG_TITLE'] + '::' + event['data']['name'])
+    return render_template('single_event.html', event=event['data'], meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
 
 @app.route('/q/<query>', defaults={'page': 1})
@@ -101,6 +101,7 @@ def events(page):
 
 @app.route('/newevent', methods=['GET', 'POST'])
 @login_required()
+@privileged_user()
 def new_event():
     error = False
     error_type = 'validate'
@@ -115,8 +116,6 @@ def new_event():
             tags = cgi.escape(request.form.get('event-tags'))
             tags_array = extract_tags(tags)
 
-
-
             event_data = {'name': event_name,
                           'summary': event_summary,
                           'description': event_description,
@@ -127,7 +126,6 @@ def new_event():
                           'organizer': session['user']['username'],
                           'talks': [],
                           'participants': []}
-
 
             event = eventClass.validate_event_data(event_data)
             event_with_permalink= eventClass.generate_permalink(event)
@@ -161,6 +159,7 @@ def new_event():
                         flash(response['error'], 'error')
                     else:
                         flash('New event created!', 'success')
+                        return redirect(url_for('events'))
     else:
         if session.get('event-preview') and session['event-preview']['action'] == 'edit':
             session.pop('event-preview', None)
@@ -172,6 +171,7 @@ def new_event():
 
 @app.route('/event_edit?id=<id>')
 @login_required()
+@privileged_user()
 def event_edit(id):
     event = eventClass.get_event_by_id(id)
     session['event-permalink'] = event['data']['permalink']
@@ -192,6 +192,7 @@ def event_edit(id):
 
 @app.route('/event_delete?id=<id>')
 @login_required()
+@privileged_user()
 def event_del(id):
     if eventClass.get_total_count() >= 1:
         response = eventClass.delete_event(id)
@@ -207,6 +208,7 @@ def event_del(id):
 
 @app.route('/newtalk', methods=['GET', 'POST'])
 @login_required()
+@privileged_user()
 def new_talk():
     error = False
     error_type = 'validate'
@@ -283,6 +285,7 @@ def new_talk():
 
 @app.route('/talk_preview')
 @login_required()
+@privileged_user()
 def talk_preview():
     talk = session.get('talk-preview')
     return render_template('talk_preview.html', talk=talk, meta_title='Preview talk::' + talk['name'])
@@ -290,6 +293,7 @@ def talk_preview():
 
 @app.route('/talk_edit?id=<id>')
 @login_required()
+@privileged_user()
 def talk_edit(id):
     talk = talkClass.get_talk_by_id(id)
     session['talk-permalink'] = talk['data']['permalink']
@@ -309,6 +313,7 @@ def talk_edit(id):
 
 @app.route('/talk_delete?id=<id>')
 @login_required()
+@privileged_user()
 def talk_del(id):
     if talkClass.get_total_count() >= 1:
         talk = talkClass.get_talk_by_id(id)
@@ -341,7 +346,7 @@ def talk_del(id):
 @app.route('/<event_permalink>/<permalink>')
 def single_talk(event_permalink, permalink):
     talk = talkClass.get_talk_by_permalink(permalink)
-    return render_template('single_talk.html', talk=talk['data'], meta_title=app.config['BLOG_TITLE'] + '::' + talk['data']['name'])
+    return render_template('single_talk.html', talk=talk['data'], meta_title=app.config['SITE_TITLE'] + '::' + talk['data']['name'])
 
 
 @app.route('/tag/<tag>', defaults={'page': 1})
@@ -374,11 +379,13 @@ def talks_by_event(event_permalink):
 
 @app.route('/add_participant_event')
 @login_required()
+@privileged_user()
 def add_participant_event():
     return render_template('add_participant_event.html', meta_title='Add participant')
 
 @app.route('/add_participant_talk')
 @login_required()
+@privileged_user()
 def add_participant_talk():
     return render_template('add_participant_talk.html', meta_title='Add participant')
 
@@ -419,12 +426,14 @@ def logout():
 
 @app.route('/dashboard')
 @login_required()
+@privileged_user()
 def dashboard():
     events_created = eventClass.get_total_count()
     return render_template('dashboard.html', events_created=events_created)
 
 @app.route('/users')
 @login_required()
+@privileged_user()
 def users_list():
     users = userClass.get_users()
     return render_template('users.html', users=users['data'], meta_title='Users')
@@ -432,6 +441,7 @@ def users_list():
 
 @app.route('/add_user')
 @login_required()
+@privileged_user()
 def add_user():
     gravatar_url = userClass.get_gravatar_link()
     role_list = ['admin', 'organizer', 'assistant', 'speaker']
@@ -440,6 +450,7 @@ def add_user():
 
 @app.route('/edit_user?id=<id>')
 @login_required()
+@privileged_user()
 def edit_user(id):
     user = userClass.get_user(id)
     role_list = ['admin', 'organizer', 'assistant', 'speaker']
@@ -448,6 +459,7 @@ def edit_user(id):
 
 @app.route('/view_user?id=<id>')
 @login_required()
+@privileged_user()
 def view_user(id):
     user = userClass.get_user(id)
     return render_template('view_user.html', user=user['data'], meta_title='View user')
@@ -456,6 +468,7 @@ def view_user(id):
 
 @app.route('/delete_user?id=<id>')
 @login_required()
+@privileged_user()
 def delete_user(id):
     if id != session['user']['username']:
         user = userClass.delete_user(id)
@@ -468,6 +481,7 @@ def delete_user(id):
 
 @app.route('/save_user', methods=['POST'])
 @login_required()
+@privileged_user()
 def save_user():
     post_data = {
         '_id': request.form.get('user-id', None).lower().strip(),
@@ -497,10 +511,11 @@ def save_user():
         else:
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
-    return redirect(url_for('edit_user', id=post_data['_id']))
+    return redirect(url_for('users_list'))
 
 @app.route('/save_participant_event', methods=['POST'])
 @login_required()
+@privileged_user()
 def save_participant_event():
     event_permalink = session.get('event-permalink', None)
     event = eventClass.get_event_by_permalink(event_permalink)
@@ -527,6 +542,7 @@ def save_participant_event():
 
 @app.route('/save_participant_talk', methods=['POST'])
 @login_required()
+@privileged_user()
 def save_participant_talk():
     talk_permalink = session.get('talk-permalink', None)
     talk = talkClass.get_talk_by_permalink(talk_permalink)
@@ -555,7 +571,7 @@ def save_participant_talk():
 
 @app.route('/recent_feed')
 def recent_feed():
-    feed = AtomFeed(app.config['BLOG_TITLE'] + '::Recent Events',
+    feed = AtomFeed(app.config['SITE_TITLE'] + '::Recent Events',
                     feed_url=request.url, url=request.url_root)
     events = eventClass.get_events(int(app.config['PER_PAGE']), 0)
     for event in events['data']:
@@ -570,28 +586,28 @@ def recent_feed():
 
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required()
-def blog_settings():
+def site_settings():
     error = None
     error_type = 'validate'
     if request.method == 'POST':
-        blog_data = {
-            'title': request.form.get('blog-title', None),
-            'description': request.form.get('blog-description', None),
-            'per_page': request.form.get('blog-perpage', None),
-            'text_search': request.form.get('blog-text-search', None)
+        site_data = {
+            'title': request.form.get('site-title', None),
+            'description': request.form.get('site-description', None),
+            'per_page': request.form.get('site-perpage', None),
+            'text_search': request.form.get('site-text-search', None)
         }
-        blog_data['text_search'] = 1 if blog_data['text_search'] else 0
-        for key, value in blog_data.items():
+        site_data['text_search'] = 1 if site_data['text_search'] else 0
+        for key, value in site_data.items():
             if not value and key != 'text_search' and key != 'description':
                 error = True
                 break
         if not error:
-            update_result = settingsClass.update_settings(blog_data)
+            update_result = settingsClass.update_settings(site_data)
             if update_result['error']:
                 flash(update_result['error'], 'error')
             else:
                 flash('Settings updated!', 'success')
-                return redirect(url_for('blog_settings'))
+                return redirect(url_for('site_settings'))
 
     return render_template('settings.html',
                            default_settings=app.config,
@@ -609,7 +625,7 @@ def install():
     error_type = 'validate'
     if request.method == 'POST':
         user_error = False
-        blog_error = False
+        site_error = False
 
         user_data = {
             '_id': request.form.get('user-id', None).lower().strip(),
@@ -621,27 +637,27 @@ def install():
             'new_pass_again': request.form.get('user-new-password-again', None),
             'update': False
         }
-        blog_data = {
-            'title': request.form.get('blog-title', None),
-            'description': request.form.get('blog-description', None),
-            'per_page': request.form.get('blog-perpage', None),
-            'text_search': request.form.get('blog-text-search', None)
+        site_data = {
+            'title': request.form.get('site-title', None),
+            'description': request.form.get('site-description', None),
+            'per_page': request.form.get('site-perpage', None),
+            'text_search': request.form.get('site-text-search', None)
         }
-        blog_data['text_search'] = 1 if blog_data['text_search'] else 0
+        site_data['text_search'] = 1 if site_data['text_search'] else 0
 
         for key, value in user_data.items():
             if not value and key != 'update':
                 user_error = True
                 break
-        for key, value in blog_data.items():
+        for key, value in site_data.items():
             if not value and key != 'text_search' and key != 'description':
-                blog_error = True
+                site_error = True
                 break
 
-        if user_error or blog_error:
+        if user_error or site_error:
             error = True
         else:
-            install_result = settingsClass.install(blog_data, user_data)
+            install_result = settingsClass.install(site_data, user_data)
             if install_result['error']:
                 for i in install_result['error']:
                     if i is not None:
@@ -679,7 +695,7 @@ def csrf_protect():
 @app.before_request
 def is_installed():
     app.config = settingsClass.get_config()
-    app.jinja_env.globals['meta_description'] = app.config['BLOG_DESCRIPTION']
+    app.jinja_env.globals['meta_description'] = app.config['SITE_DESCRIPTION']
     if not session.get('installed', None):
         if url_for('static', filename='') not in request.path and request.path != url_for('install'):
             if not settingsClass.is_installed():
@@ -703,7 +719,7 @@ userClass = user.User(app.config)
 
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
-app.jinja_env.globals['meta_description'] = app.config['BLOG_DESCRIPTION']
+app.jinja_env.globals['meta_description'] = app.config['SITE_DESCRIPTION']
 app.jinja_env.globals['recent_events'] = eventClass.get_events(10, 0)['data']
 app.jinja_env.globals['tags'] = eventClass.get_tags()['data']
 

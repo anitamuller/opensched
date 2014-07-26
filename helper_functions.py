@@ -49,3 +49,18 @@ def login_required():
             return f(*args, **kwargs)
         return wrapped
     return wrapper
+
+def privileged_user():
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if not session.get('user'):
+                flash('You must be logged in..', 'error')
+                return redirect(url_for('login'))
+            elif session.get('user').get('role') != 'admin' and\
+                                    session.get('user').get('role') != 'organizer':
+                flash('Not authorized..', 'error')
+                return redirect(url_for('index'))
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper

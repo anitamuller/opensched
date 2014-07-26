@@ -9,8 +9,8 @@ class Settings:
         self.config = default_config
         self.config['PER_PAGE'] = 15
         self.config['SEARCH'] = False
-        self.config['BLOG_TITLE'] = 'OpenSched'
-        self.config['BLOG_DESCRIPTION'] = ''
+        self.config['SITE_TITLE'] = 'OpenSched'
+        self.config['SITE_DESCRIPTION'] = 'Open event scheduler and agenda builder app'
 
         self.response = {'error': None, 'data': None}
         self.debug_mode = default_config['DEBUG']
@@ -23,10 +23,10 @@ class Settings:
                     'per_page', self.config['PER_PAGE'])
                 self.config['SEARCH'] = cursor.get(
                     'use_search', self.config['SEARCH'])
-                self.config['BLOG_TITLE'] = cursor.get(
-                    'title', self.config['BLOG_TITLE'])
-                self.config['BLOG_DESCRIPTION'] = cursor.get(
-                    'description', self.config['BLOG_DESCRIPTION'])
+                self.config['SITE_TITLE'] = cursor.get(
+                    'title', self.config['SITE_TITLE'])
+                self.config['SITE_DESCRIPTION'] = cursor.get(
+                    'description', self.config['SITE_DESCRIPTION'])
             return self.config
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
@@ -43,7 +43,7 @@ class Settings:
             session['installed'] = False
             return False
 
-    def install(self, blog_data, user_data):
+    def install(self, site_data, user_data):
         import user
 
         userClass = user.User(self.config)
@@ -60,16 +60,16 @@ class Settings:
 
             user_create = userClass.save_user(user_data)
 
-            if blog_data['per_page'].isdigit():
-                blog_settings_error = None
-                self.collection.insert(blog_data)
+            if site_data['per_page'].isdigit():
+                site_settings_error = None
+                self.collection.insert(site_data)
             else:
-                blog_settings_error = '"Per page" field need to be integer..'
+                site_settings_error = '"Per page" field need to be integer..'
 
-            if user_create['error'] or blog_settings_error:
+            if user_create['error'] or site_settings_error:
                 self.response['error'] = []
                 self.response['error'].append(user_create['error'])
-                self.response['error'].append(blog_settings_error)
+                self.response['error'].append(site_settings_error)
                 self.config['USERS_COLLECTION'].drop()
                 self.collection.drop()
             return self.response

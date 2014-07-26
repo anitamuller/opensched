@@ -13,7 +13,7 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a class="active" href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a class="active" href="{{ url_for('site_settings') }}"><i class="fa fa-dashboard fa-fw"></i> Settings</a>
                         </li>
                         {% if session.user.username == 'admin' %}
                         <li>

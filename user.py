@@ -21,12 +21,13 @@ class User:
     def login(self, username, password):
         self.response['error'] = None
         try:
-            admin = self.collection.find_one({'_id': username})
-            if admin:
-                if self.validate_login(admin['password'], password):
-                    self.username = admin['_id']
-                    self.name = admin['name']
-                    self.email = admin['email']
+            user = self.collection.find_one({'_id': username})
+            if user:
+                if self.validate_login(user['password'], password):
+                    self.username = user['_id']
+                    self.name = user['name']
+                    self.email = user['email']
+                    self.role = user['role']
                 else:
                     self.response['error'] = 'Password doesn\'t match..'
             else:
@@ -38,7 +39,8 @@ class User:
 
         self.response['data'] = {'name': self.name,
                                  'username':self.username,
-                                 'email': self.email}
+                                 'email': self.email,
+                                 'role': self.role}
         return self.response
 
     @staticmethod
