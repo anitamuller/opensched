@@ -125,6 +125,7 @@ class Talk:
     def edit_talk(self, talk_id, talk_data):
         self.response['error'] = None
         del talk_data['permalink']
+        talk_data = self.generate_permalink(talk_data)
 
         talk_participants = self.get_talk_by_id(talk_id)
         talk_participants_ = talk_participants['data']['participants']
