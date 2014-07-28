@@ -101,16 +101,20 @@ def events(page):
 
 @app.route('/result')
 @login_required()
-def events_as_attendee_or_speaker():
+def events_by_role():
     user_id = session['user']['username']
     #user_id = 'guess4'
     result_attendee = []
     result_speaker = []
 
-    events = eventClass.events_by_user_attendee(user_id)
+    events_attendee, events_organizer = eventClass.events_by_role(user_id)
+
+    import pdb
+    pdb.set_trace()
+
     list_events_attendee = []
 
-    for event in events['data']:
+    for event in events_attendee:
         list_talks_attendee = []
         list_talks_speaker = []
         list_events_attendee.append(str(event['permalink']))
@@ -127,7 +131,8 @@ def events_as_attendee_or_speaker():
         result_speaker.append({str(event['permalink']): list_talks_speaker})
 
 
-    return render_template('result.html', result_attendee=result_attendee, result_speaker=result_speaker, meta_title='Events and talks as attendee')
+
+    return render_template('result.html', result_attendee=result_attendee, result_speaker=result_speaker, result_organizer= events_organizer, meta_title='Events and talks as attendee')
 
 @app.route('/newevent', methods=['GET', 'POST'])
 @login_required()

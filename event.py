@@ -86,13 +86,15 @@ class Event:
         return self.response
 
 
-    def events_by_user_attendee(self, user_id):
+    def events_by_role(self, user_id):
         list_attendee = []
-        self.response['error'] = None
+
+        events_attendee = []
+        events_organizer = []
 
         try:
             cursor = self.collection.find()
-            self.response['data'] = []
+
             for event in cursor:
                 if 'talks' not in event:
                     event['talks'] = []
@@ -100,15 +102,19 @@ class Event:
                     event['participants'] = []
                 else:
                     if user_id in event['participants']:
-                        self.response['data'].append({'permalink': event['permalink'],
-                                                      'talks': event['talks'],
-                                                      'participants': event['participants']
-                        })
+                        events_attendee.append({'permalink': event['permalink'],
+                                                'talks': event['talks'],
+                                                'participants': event['participants']
+                                                })
+
+                    if user_id == event['organizer']:
+                        events_organizer.append(str(event['permalink']))
+
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Events not found..'
 
-        return self.response
+
+        return events_attendee, events_organizer
 
     def events_by_user_attendee2(self, user_id):
         list_attendee = []
