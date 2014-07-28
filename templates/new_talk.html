@@ -11,27 +11,26 @@
 <div id="wrapper">
    {%- include 'side_nav.html' -%}
    <div id="page-wrapper">
-      {% set event_permalink= session.get('event-permalink', None) %}
       {% if session.get('talk-preview') %}
-      {% set talk_name = session['talk-preview'].get('name', None) %}
-      {% set talk_summary = session['talk-preview'].get('summary', None) %}
-      {% set talk_description = session['talk-preview'].get('description', None) %}
-      {% set talk_date = session['talk-preview'].get('date', None) %}
-      {% set talk_start = session['talk-preview'].get('start', None) %}
-      {% set talk_end = session['talk-preview'].get('end', None) %}
-      {% set talk_room = session['talk-preview'].get('room', None) %}
-      {% set talk_tags = session['talk-preview'].get('tags', None) %}
-      {% set talk_speaker = session['talk-preview'].get('speaker', None) %}
+        {% set talk_name = session['talk-preview'].get('name', None) %}
+        {% set talk_summary = session['talk-preview'].get('summary', None) %}
+        {% set talk_description = session['talk-preview'].get('description', None) %}
+        {% set talk_date = session['talk-preview'].get('date', None) %}
+        {% set talk_start = session['talk-preview'].get('start', None) %}
+        {% set talk_end = session['talk-preview'].get('end', None) %}
+        {% set talk_room = session['talk-preview'].get('room', None) %}
+        {% set talk_tags = session['talk-preview'].get('tags', None) %}
+        {% set talk_speaker = session['talk-preview'].get('speaker', None) %}
       {% else %}
-      {% set talk_name = '' %}
-      {% set talk_summary = '' %}
-      {% set talk_description = '' %}
-      {% set talk_date = '' %}
-      {% set talk_start = '' %}
-      {% set talk_end = '' %}
-      {% set talk_room = '' %}
-      {% set talk_tags = '' %}
-      {% set talk_speaker = '' %}
+        {% set talk_name = '' %}
+        {% set talk_summary = '' %}
+        {% set talk_description = '' %}
+        {% set talk_date = '' %}
+        {% set talk_start = '' %}
+        {% set talk_end = '' %}
+        {% set talk_room = '' %}
+        {% set talk_tags = '' %}
+        {% set talk_speaker = '' %}
       {% endif %}
       <div class="talk clearfix">
          <div class="row">
@@ -49,7 +48,7 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <form id="talk-form" role="form" method="post" action="{{ url_for('new_talk') }}">
+                  <form id="talk-form" role="form" method="post" action="{{ url_for('new_talk', event_permalink=event_permalink) }}">
                      <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="talk-name">Required field</label>
@@ -94,7 +93,7 @@
                      </fieldset>
                      <div class="form-group">
                         <input type="hidden" name="talk-preview" id="preview">
-                        <input type="hidden" name="talk-event" value="{{ event_permalink }}">
+                        <input type="hidden" name="talk-event" value="">
                         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                         <input id="talk-submit" type="submit" class="btn btn-primary" value="Submit">
                         <input id="talk-preview" type="submit" class="btn" value="Preview">
