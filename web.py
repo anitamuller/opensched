@@ -99,6 +99,36 @@ def events(page):
     return render_template('events.html', events=events['data'], pagination=pag, meta_title='Events')
 
 
+@app.route('/result')
+@login_required()
+def events_as_attendee_or_speaker():
+    user_id = session['user']['username']
+    #user_id = 'guess4'
+    result_attendee = []
+    result_speaker = []
+
+    events = eventClass.events_by_user_attendee(user_id)
+    list_events_attendee = []
+
+    for event in events['data']:
+        list_talks_attendee = []
+        list_talks_speaker = []
+        list_events_attendee.append(str(event['permalink']))
+        list_talks = event['talks']
+
+        for talk in list_talks:
+            aux_talk = talkClass.get_talk_by_permalink(talk)
+            if user_id in aux_talk['data']['participants']:
+                list_talks_attendee.append(str(aux_talk['data']['permalink']))
+            if user_id in aux_talk['data']['speaker']:
+                list_talks_speaker.append(str(aux_talk['data']['permalink']))
+
+        result_attendee.append({str(event['permalink']): list_talks_attendee})
+        result_speaker.append({str(event['permalink']): list_talks_speaker})
+
+
+    return render_template('result.html', result_attendee=result_attendee, result_speaker=result_speaker, meta_title='Events and talks as attendee')
+
 @app.route('/newevent', methods=['GET', 'POST'])
 @login_required()
 @privileged_user()
@@ -303,8 +333,13 @@ def talk_edit(event_permalink, id):
 
     if session.get('talk-preview') and session['talk-preview']['action'] == 'add':
         session.pop('talk-preview', None)
+
+    speakers = userClass.get_users_by_role("speaker")
+
+
     return render_template('edit_talk.html',
                            meta_title='Edit talk::' + talk['data']['name'],
+                           speakers_list=speakers,
                            talk=talk['data'],
                            error=False,
                            error_type=False)
@@ -557,8 +592,6 @@ def save_participant_talk():
     return redirect(url_for('events'))
 
 
-
-
 @app.route('/recent_feed')
 def recent_feed():
     feed = AtomFeed(app.config['SITE_TITLE'] + '::Recent Events',
@@ -723,3 +756,6 @@ if not app.config['DEBUG']:
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)),
             debug=app.config['DEBUG'])
+
+
+

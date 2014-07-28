@@ -85,6 +85,44 @@ class Event:
 
         return self.response
 
+
+    def events_by_user_attendee(self, user_id):
+        list_attendee = []
+        self.response['error'] = None
+
+        try:
+            cursor = self.collection.find()
+            self.response['data'] = []
+            for event in cursor:
+                if 'talks' not in event:
+                    event['talks'] = []
+                if 'participants' not in event:
+                    event['participants'] = []
+                else:
+                    if user_id in event['participants']:
+                        self.response['data'].append({'permalink': event['permalink'],
+                                                      'talks': event['talks'],
+                                                      'participants': event['participants']
+                        })
+        except Exception, e:
+            self.print_debug_info(e, self.debug_mode)
+            self.response['error'] = 'Events not found..'
+
+        return self.response
+
+    def events_by_user_attendee2(self, user_id):
+        list_attendee = []
+
+        cursor = self.collection.find()
+        for event in cursor:
+            if user_id in event['participants']:
+                list_attendee.append(event['permalink'])
+
+
+        return list_attendee
+
+
+
     def get_total_count(self, tag=None, search=None):
         cond = {}
         if tag is not None:

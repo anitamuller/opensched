@@ -51,7 +51,7 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <form id="post-form" role="form" method="post" action="{{ url_for('new_talk', event_permalink=event_permalink) }}">
+                  <form id="post-form" role="form" method="post" action="{{ url_for('new_talk') }}">
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="talk-name">Talk name</label>
@@ -84,10 +84,16 @@
                         <label for="talk-tags">Tags</label>
                         <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ talk_tags }}">
                      </div>
-                     <div class="form-group">
-                        <label for="talk-speaker">Speaker</label>
-                        <input type="text" class="form-control" name="talk-speaker" id="talk-speaker" placeholder="Speaker" value="{{ talk_speaker }}" required>
-                     </div>
+                     <fieldset>
+                        <legend>Speaker</legend>
+                        <div class="form-group">
+                           <select name="talk-speaker" width="300px">
+                              {% for option in speakers_list %}
+                              <option name="{{ option }}" selected>{{ option }}</option>
+                              {% endfor %}
+                           </select>
+                        </div>
+                     </fieldset>
                      <div class="form-group">
                         <input type="hidden" name="talk-preview" id="preview">
                         <input type="hidden" name="talk-id" value="{{ talk['_id'] }}">
@@ -97,7 +103,7 @@
                         <input id="talk-submit" type="submit" class="btn btn-primary" value="Submit">
                         <input id="talk-preview" type="submit" class="btn" value="Preview">
                      </div>
-                     <!--<a href="{{ url_for('add_participant_talk') }}" class="response btn btn-primary">Add Participants</a>-->
+                     <a href="{{ url_for('add_participant_talk') }}" class="response btn btn-primary">Add Participants</a>
                   </form>
                </div>
             </div>

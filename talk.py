@@ -126,9 +126,26 @@ class Talk:
         self.response['error'] = None
         del talk_data['permalink']
 
+        talk_participants = self.get_talk_by_id(talk_id)
+        talk_participants_ = talk_participants['data']['participants']
+
+
         try:
+            record = {'name': talk_data['name'],
+                      'summary': talk_data['summary'],
+                      'description': talk_data['description'],
+                      'date': talk_data['date'],
+                      'start': talk_data['start'],
+                      'end': talk_data['end'],
+                      'room': talk_data['room'],
+                      'speaker': talk_data['speaker'],
+                      'permalink': talk_data['permalink'],
+                      'tags': talk_data['tags'],
+                      'participants': talk_participants_}
+
             self.collection.update(
-                {'_id': ObjectId(talk_id)}, {"$set": talk_data}, upsert=False)
+                {'_id': ObjectId(talk_id)}, {'$set': record}, upsert=False, multi=False)
+
             self.response['data'] = True
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
@@ -186,9 +203,6 @@ class Talk:
     def add_new_participant(self, permalink, username_participant):
         self.response['data'] = self.collection.find_one(
                      {'permalink': permalink})
-
-        import pdb
-        pdb.set_trace()
 
         talk_participants = self.response['data']['participants']
         talk_participants.append(username_participant)
