@@ -52,6 +52,9 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
+                  <a href="{{ url_for('add_participant_event', event_permalink=event['permalink']) }}" class="response btn btn-primary">Add Participants</a>
+                  <a href="{{ url_for('new_talk', event_permalink=event['permalink']) }}" class="response btn btn-primary">Add talks</a>
+                  <a href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}" class="response btn btn-primary">List talks</a>
                   <form id="post-form" role="form" method="post" action="{{ url_for('new_event') }}">
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
@@ -92,9 +95,6 @@
                         <input id="event-submit" type="submit" class="btn btn-primary" value="Submit">
                         <input id="event-preview" type="submit" class="btn" value="Preview">
                      </div>
-                     <a href="{{ url_for('add_participant_event') }}" class="response btn btn-primary">Add Participants</a>
-                     <a href="{{ url_for('new_talk') }}" class="response btn btn-primary">Add talks</a>
-                     <a href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}" class="response btn btn-primary">List talks</a>
                   </form>
                </div>
             </div>

@@ -46,7 +46,8 @@ class Event:
                                               'organizer': event['organizer'],
                                               'tags': event['tags'],
                                               'talks': event['talks'],
-                                              'participants': event['participants']
+                                              'participants': event['participants'],
+                                              'attendance': len(event['participants'])
                 })
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)

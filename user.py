@@ -17,6 +17,8 @@ class User:
         self.email = None
         self.role = None
         self.active = None
+        self.speaker_at = None
+        self.attendee_at = None
         self.session_key = 'user'
         self.response = {'error': None, 'data': None}
         self.debug_mode = default_config['DEBUG']
@@ -171,7 +173,8 @@ class User:
                             user_data['new_pass'], method='pbkdf2:sha256')
                         record = {'_id': user_data['_id'], 'password': password_hash,
                                   'email': user_data['email'], 'name': user_data['name'],
-                                  'role': user_data['role'], 'active': user_data['active']}
+                                  'role': user_data['role'], 'active': user_data['active'],
+                                  'speaker_at': [], 'attendee_at': []}
                         try:
                             self.collection.insert(record, safe=True)
                             self.response['data'] = True
@@ -186,7 +189,7 @@ class User:
             self.response['error'] = 'Error..'
         return self.response
 
-    def save_participant(self, user_data):
+    def save_participant(self, event_id, user_data):
         self.response['error'] = None
         if user_data:
             if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['email']):
@@ -200,7 +203,7 @@ class User:
             else:
                 record = {'_id': user_data['_id'], 'email': user_data['email'],
                           'name': user_data['name'], 'active': user_data['active'],
-                          'role': 'assistant'}
+                          'role': 'assistant', 'attendee_at': event_id}
 
                 try:
                     self.collection.insert(record, safe=True)
