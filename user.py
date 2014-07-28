@@ -3,6 +3,9 @@ import hashlib
 import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import session
+import event
+import talk
+
 
 
 class User:
@@ -81,7 +84,6 @@ class User:
 
         return list
 
-
     def get_user(self, user_id):
         self.response['error'] = None
         try:
@@ -93,6 +95,7 @@ class User:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'User not found..'
         return self.response
+
 
     @staticmethod
     def get_gravatar_link(email=''):

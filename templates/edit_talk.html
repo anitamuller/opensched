@@ -78,10 +78,17 @@
 						    <label for="talk-tags">Tags</label>
 						    <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ talk_tags }}">
 					    </div>
+
+                        <fieldset>
+                        <legend>Speaker</legend>
                         <div class="form-group">
-                            <label for="talk-speaker">Speaker</label>
-						    <input type="text" class="form-control" name="talk-speaker" id="talk-speaker" placeholder="Speaker" value="{{ talk_speaker }}" required>
-					    </div>
+                           <select name="talk-speaker" width="300px">
+                              {% for option in speakers_list %}
+                              <option name="{{ option }}" selected>{{ option }}</option>
+                              {% endfor %}
+                           </select>
+                        </div>
+                     </fieldset>
 
 						<div class="form-group">
 							<input type="hidden" name="talk-preview" id="preview">
@@ -93,7 +100,7 @@
 							<input id="talk-preview" type="submit" class="btn" value="Preview">
 					    </div>
 
-                        <!--<a href="{{ url_for('add_participant_talk') }}" class="response btn btn-primary">Add Participants</a>-->
+                        <a href="{{ url_for('add_participant_talk') }}" class="response btn btn-primary">Add Participants</a>
 					</form>
 				</div>
 			</div>
