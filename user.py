@@ -198,7 +198,7 @@ class User:
             self.response['error'] = 'Error..'
         return self.response
 
-    def save_participant(self, event_id, user_data):
+    def save_attendee(self, event_permalink, user_data):
         self.response['error'] = None
         if user_data:
             if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['email']):
@@ -206,13 +206,21 @@ class User:
                 return self.response
 
             exist_user = self.collection.find_one({'_id': user_data['_id']})
+
+            # Aca tendriamos que actualizar la colleccion attendee_at
+            # speaker_at y/o organizer_at del usuario al que se le agrega
+            # el evento de acuerdo al rol especificado en el form
+
             if exist_user:
                 self.response['error'] = 'Username already exists..'
                 return self.response
             else:
+
+            # Aca se crea un nuevo usuario asique solamente inicializamos
+
                 record = {'_id': user_data['_id'], 'email': user_data['email'],
                           'name': user_data['name'], 'active': user_data['active'],
-                          'role': 'assistant', 'attendee_at': event_id}
+                          'role': 'assistant', 'attendee_at': event_permalink}
 
                 try:
                     self.collection.insert(record, safe=True)

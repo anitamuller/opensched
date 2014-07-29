@@ -5,7 +5,7 @@
 		<div class="row">
 			<div class="col-lg-8">
 				<div class="page-header">
-					<h1>Add Participant</h1>
+					<h1>Invite people to the talk</h1>
 				</div>
 				<div class="content">
 					{%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -17,13 +17,13 @@
 							{%- endfor -%}
 						{%- endif -%}
 					{%- endwith -%}
-					<form class="form-participant" role="form" method="post" action="{{ url_for('save_participant_talk') }}">
+					<form class="form-attendee" role="form" method="post" action="{{ url_for('save_attendee_talk', event_permalink, talk_permalink) }}">
 						<fieldset>
 							<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 								{%- if error and error_type == 'validate' -%}
-									<label class="control-label" for="user-id">Required field</label>
+									<label class="control-label" for="new-user-id">Required field</label>
 								{%- endif -%}
-							    <input type="text" class="form-control" name="user-id" id="user-id" placeholder="Username" value="" required autocomplete="off">
+							    <input type="text" class="form-control" name="user-id" id="new-user-id" placeholder="Username" value="" required autocomplete="off">
 							</div>
                             <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 								{%- if error and error_type == 'validate' -%}
@@ -38,14 +38,12 @@
 							    <input type="email" class="form-control" name="user-email" id="user-email" placeholder="Email" value="" required autocomplete="off">
 							</div>
 						</fieldset>
-
 						<div class="form-group">
 							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                             <input name="user-active" type="hidden" value="0">
-                            <input type="hidden" name="participant-event" value="{{ event_permalink }}">
-						    <input id="post-submit" type="submit" class="btn btn-primary" value="Submit">
+                            <input type="hidden" name="attendee-event" value="{{ event_permalink }}">
+						    <input id="user-submit" type="submit" class="btn btn-primary" value="Submit">
 					    </div>
-						</div>
 					</form>
 				</div>
 			</div>

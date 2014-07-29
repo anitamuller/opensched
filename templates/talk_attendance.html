@@ -13,10 +13,9 @@
    <div id="page-wrapper">
       <div class="row">
          <div class="col-lg-12">
-
             <div class="page-header">
-               <h1>Attendance</h1>
                {%- if users -%}
+               <h1>{{ talk_name }} Attendance</h1>
             </div>
             <div class="content">
                {%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -28,7 +27,6 @@
                {%- endfor -%}
                {%- endif -%}
                {%- endwith -%}
-
                <table class="table table-striped">
                   <tr>
                      <th>Name</th>
@@ -60,7 +58,12 @@
                </table>
             </div>
             {%- else -%}
-                <td><h4>No attendance at this talk</h4></td>
+            <div class="page-header">
+                <h2>No people invited to {{ talk_name }} :(</h2>
+            </div>
+            <div class="content">
+                <a title="Invite attendees to talk" href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk_permalink) }}" class="response btn btn-primary">Invite people</a>
+            </div>
             {%- endif -%}
          </div>
       </div>

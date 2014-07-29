@@ -32,8 +32,8 @@ class Event:
                     event['tags'] = []
                 if 'talks' not in event:
                     event['talks'] = []
-                if 'participants' not in event:
-                    event['participants'] = []
+                if 'attendees' not in event:
+                    event['attendees'] = []
 
                 self.response['data'].append({'id': event['_id'],
                                               'name': event['name'],
@@ -46,8 +46,8 @@ class Event:
                                               'organizer': event['organizer'],
                                               'tags': event['tags'],
                                               'talks': event['talks'],
-                                              'participants': event['participants'],
-                                              'attendance': len(event['participants'])
+                                              'attendees': event['attendees'],
+                                              'attendance': len(event['attendees'])
                 })
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
@@ -98,13 +98,13 @@ class Event:
             for event in cursor:
                 if 'talks' not in event:
                     event['talks'] = []
-                if 'participants' not in event:
-                    event['participants'] = []
+                if 'attendees' not in event:
+                    event['attendees'] = []
                 else:
-                    if user_id in event['participants']:
+                    if user_id in event['attendees']:
                         events_attendee.append({'permalink': event['permalink'],
                                                 'talks': event['talks'],
-                                                'participants': event['participants']
+                                                'attendees': event['attendees']
                                                 })
 
                     if user_id == event['organizer']:
@@ -121,7 +121,7 @@ class Event:
 
         cursor = self.collection.find()
         for event in cursor:
-            if user_id in event['participants']:
+            if user_id in event['attendees']:
                 list_attendee.append(event['permalink'])
 
 
@@ -190,7 +190,7 @@ class Event:
         event_venue = new_event['venue']
         event_start = new_event['start']
         event_end = new_event['end']
-        event_participants = new_event['participants']
+        event_attendees = new_event['attendees']
         event_tags = new_event['tags']
 
         self.collection.update({'permalink': permalink},
@@ -198,16 +198,16 @@ class Event:
                                 'description': event_description, 'organizer': event_organizer,
                                 'permalink': event_permalink, 'venue': event_venue,
                                 'start': event_start, 'end': event_end,
-                                'participants': event_participants, 'tags': event_tags,
+                                'attendees': event_attendees, 'tags': event_tags,
                                 'talks': event_talks
                                 })
 
-    def add_new_participant(self, permalink, username_participant):
+    def add_new_attendee(self, permalink, username_attendee):
         self.response['data'] = self.collection.find_one(
                      {'permalink': permalink})
 
-        event_participants = self.response['data']['participants']
-        event_participants.append(username_participant)
+        event_attendees = self.response['data']['attendees']
+        event_attendees.append(username_attendee)
 
         new_event = self.response['data']
 
@@ -227,7 +227,7 @@ class Event:
                                 'description': event_description, 'organizer': event_organizer,
                                 'permalink': event_permalink, 'venue': event_venue,
                                 'start': event_start, 'end': event_end,
-                                'participants': event_participants, 'tags': event_tags,
+                                'attendees': event_attendees, 'tags': event_tags,
                                 'talks': event_talks
                                 })
 
@@ -244,7 +244,7 @@ class Event:
         event_venue = new_event['venue']
         event_start = new_event['start']
         event_end = new_event['end']
-        event_participants = new_event['participants']
+        event_attendees = new_event['attendees']
         event_tags = new_event['tags']
         event_talks = talks
 
@@ -253,7 +253,7 @@ class Event:
                                 'description': event_description, 'organizer': event_organizer,
                                 'permalink': event_permalink, 'venue': event_venue,
                                 'start': event_start, 'end': event_end,
-                                'participants': event_participants, 'tags': event_tags,
+                                'attendees': event_attendees, 'tags': event_tags,
                                 'talks': event_talks
                                 })
 

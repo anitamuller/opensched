@@ -11,12 +11,11 @@
 <div id="wrapper">
    {%- include 'side_nav.html' -%}
    <div id="page-wrapper">
-      {% set event_permalink = session.get('event-permalink', None) %}
       <div class="clearfix">
          <div class="row">
             <div class="col-lg-8">
                <div class="page-header">
-                  <h1>Add Participant</h1>
+                  <h1>Invite people to the event</h1>
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -28,7 +27,7 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <form class="form-participant" role="form" method="post" action="{{ url_for('save_participant_event') }}">
+                  <form class="form-attendee" role="form" method="post" action="{{ url_for('save_attendee_event', event_permalink=event_permalink) }}">
                      <fieldset>
                         <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                            {%- if error and error_type == 'validate' -%}
@@ -59,8 +58,7 @@
                      <div class="form-group">
                         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                         <input name="user-active" type="hidden" value="0">
-                        <input type="hidden" name="participant-event" value="{{ event_permalink }}">
-                        <input id="post-submit" type="submit" class="btn btn-primary" value="Submit">
+                        <input id="user-submit" type="submit" class="btn btn-primary" value="Submit">
                      </div>
                   </form>
                </div>

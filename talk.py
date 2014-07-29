@@ -32,8 +32,8 @@ class Talk:
                 if 'tags' not in talk:
                     talk['tags'] = []
 
-                if 'participants' not in talk:
-                    talk['participants'] = []
+                if 'attendees' not in talk:
+                    talk['attendees'] = []
 
                 self.response['data'].append({'id': talk['_id'],
                                               'name': talk['name'],
@@ -46,8 +46,8 @@ class Talk:
                                               'speaker': talk['speaker'],
                                               'permalink': talk['permalink'],
                                               'tags': talk['tags'],
-                                              'participants': talk['participants'],
-                                              'attendance': len(talk['participants'])})
+                                              'attendees': talk['attendees'],
+                                              'attendance': len(talk['attendees'])})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Talks not found..'
@@ -128,8 +128,8 @@ class Talk:
         del talk_data['permalink']
         talk_data = self.generate_permalink(talk_data)
 
-        talk_participants = self.get_talk_by_id(talk_id)
-        talk_participants_ = talk_participants['data']['participants']
+        talk_attendees = self.get_talk_by_id(talk_id)
+        talk_attendees_ = talk_attendees['data']['attendees']
 
 
         try:
@@ -143,7 +143,7 @@ class Talk:
                       'speaker': talk_data['speaker'],
                       'permalink': talk_data['permalink'],
                       'tags': talk_data['tags'],
-                      'participants': talk_participants_}
+                      'attendees': talk_attendees_}
 
             self.collection.update(
                 {'_id': ObjectId(talk_id)}, {'$set': record}, upsert=False, multi=False)
@@ -202,12 +202,12 @@ class Talk:
         return talk_data
 
 
-    def add_new_participant(self, permalink, username_participant):
+    def add_new_attendee(self, permalink, username_attendee):
         self.response['data'] = self.collection.find_one(
                      {'permalink': permalink})
 
-        talk_participants = self.response['data']['participants']
-        talk_participants.append(username_participant)
+        talk_attendees = self.response['data']['attendees']
+        talk_attendees.append(username_attendee)
 
         new_talk = self.response['data']
 
@@ -227,7 +227,7 @@ class Talk:
                                 'description': talk_description, 'speaker': talk_speaker,
                                 'permalink': talk_permalink, 'venue': talk_room,
                                 'date': talk_date,'start': talk_start, 'end': talk_end,
-                                'participants': talk_participants, 'tags': talk_tags
+                                'attendees': talk_attendees, 'tags': talk_tags
                                 })
 
 

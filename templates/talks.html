@@ -48,12 +48,14 @@
                         <td>{{ talk['start'] }}</td>
                         <td>{{ talk['end'] }}</td>
                         <td>{{ talk['room'] }}</td>
-                        <td><a title="{{ talk['name'] }} attendance" href="{{ url_for('attendance_at_talk', talk_permalink=talk['permalink']) }}" >{{ talk['attendance'] }}</a></td>
+                        <td><a title="{{ talk['name'] }} attendance" href="{{ url_for('talk_attendance', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" >{{ talk['attendance'] }}</a></td>
                         <td><div class="btn-group">
                                 <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-gear"></i>  <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
+                                    <li><a title="Add attendees to talk" href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}">Invite people</a></li>
+                                    <li class="divider"></li>
                                     <li><a title="Edit talk" href="{{ url_for('talk_edit', event_permalink=event_permalink, id=talk['_id']) }}">Edit talk</a></li>
                                     <li><a title="Delete talk" href="{{ url_for('talk_del', event_permalink=event_permalink, id=talk['_id']) }}">Delete talk</a></li>
                                 </ul>

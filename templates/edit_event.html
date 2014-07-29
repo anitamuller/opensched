@@ -22,9 +22,9 @@
       {% if tags %}
       {% set event_tags = ','.join(tags) %}
       {% endif %}
-      {% set event_participants = session['event-preview'].get('participants', None) %}
-      {% if participants %}
-      {% set event_participants = ','.join(participants) %}
+      {% set event_attendees = session['event-preview'].get('attendees', None) %}
+      {% if attendees %}
+      {% set event_attendees = ','.join(attendees) %}
       {% endif %}
       {% else %}
       {% set event_name = event.get('name') %}
@@ -34,7 +34,7 @@
       {% set event_end = event.get('end') %}
       {% set event_venue = event.get('venue') %}
       {% set event_tags = event.get('tags') %}
-      {% set event_participants = event.get('participants') %}
+      {% set event_attendees = event.get('attendees') %}
       {% endif %}
       <div class="event clearfix">
          <div class="row">
@@ -52,7 +52,7 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <a href="{{ url_for('add_participant_event', event_permalink=event['permalink']) }}" class="response btn btn-primary">Add Participants</a>
+                  <a href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}" class="response btn btn-primary">Add attendees</a>
                   <a href="{{ url_for('new_talk', event_permalink=event['permalink']) }}" class="response btn btn-primary">Add talks</a>
                   <a href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}" class="response btn btn-primary">List talks</a>
                   <form id="post-form" role="form" method="post" action="{{ url_for('new_event') }}">
@@ -85,8 +85,8 @@
                         <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ event_tags }}">
                      </div>
                      <div class="form-group">
-                        <label for="event-participants">Participants</label>
-                        <input type="text" name="event-participants" class="form-control" id="event-participants" placeholder="Comma separated" value="{{ event_participants }}">
+                        <label for="event-attendees">attendees</label>
+                        <input type="text" name="event-attendees" class="form-control" id="event-attendees" placeholder="Comma separated" value="{{ event_attendees }}">
                      </div>
                      <div class="form-group">
                         <input type="hidden" name="event-preview" id="preview">

@@ -14,7 +14,8 @@ Simple and open event scheduler and agenda builder app ~~engine~~ written on [Fl
 
 # What it can:
 - create/preview/update/delete events;
-- create/update/delete participants;
+- create/preview/update/delete sessions (talks);
+- create/update/delete users;
 - search;
 - atom feed.
 

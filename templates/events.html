@@ -46,7 +46,7 @@
                         <td>{{ event['start'] }}</td>
                         <td>{{ event['end'] }}</td>
                         <td>{{ event['venue'] }}</td>
-                        <td><a title="{{ event['name'] }} attendance" href="{{ url_for('attendance_at_event', event_permalink=event['permalink']) }}" >{{ event['attendance'] }}</a></td>
+                        <td><a title="{{ event['name'] }} attendance" href="{{ url_for('event_attendance', event_permalink=event['permalink']) }}" >{{ event['attendance'] }}</a></td>
                         <td><div class="btn-group">
                                 <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-gear"></i>  <span class="caret"></span>
@@ -55,7 +55,7 @@
                                 <li><a title="List talks" href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}">List talks</a></li>
                                 <li class="divider"></li>
                                 <li><a title="Add talks to event" href="{{ url_for('new_talk', event_permalink=event['permalink']) }}">Add talks</a></li>
-                                <li><a title="Add participants to event" href="{{ url_for('add_participant_event', event_permalink=event['permalink']) }}">Add participants</a></li>
+                                <li><a title="Invite attendees to event" href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}">Invite people</a></li>
                                 <li class="divider"></li>
                                 <li><a title="Edit event" href="{{ url_for('event_edit', id=event['id']) }}">Edit event</a></li>
                                 <li><a title="Delete event" href="{{ url_for('event_del', id=event['id']) }}">Delete</a></li>
@@ -71,7 +71,9 @@
                   <h1>Events not found...</h1>
                </div>
                {% if session.user and session.user.role == 'admin' %}
-                    <div><a href="{{ url_for('new_event') }}" class="response btn btn-primary">Add new</a></div>
+               <div>
+                    <a href="{{ url_for('new_event') }}" class="response btn btn-primary">Add new</a>
+               </div>
                {% endif %}
                {%- endif -%}
             </div>
