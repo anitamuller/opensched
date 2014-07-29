@@ -319,6 +319,7 @@ class Event:
         self.response['data'] = self.collection.find_one(
                 {'permalink': permalink})
 
+
         talks = self.response['data']['talks']
 
         return talks

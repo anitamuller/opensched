@@ -401,8 +401,10 @@ def talks_by_event(event_permalink):
 
     for talk in talks_permalinks:
         talk_complete = talkClass.get_talk_by_permalink(str(talk))
-        object_talk= talk_complete['data']
-        list_talks.append(object_talk)
+        import pdb
+        pdb.set_trace()
+        talk_complete['data']['attendance'] = len(talk_complete['data']['participants'])
+        list_talks.append(talk_complete['data'])
 
     return render_template('talks.html', event_permalink=event_permalink, talks=list_talks,
                            meta_title='Talks by event: ' + event_name)
@@ -419,6 +421,40 @@ def add_participant_event(event_permalink):
 @privileged_user()
 def add_participant_talk():
     return render_template('add_participant_talk.html', meta_title='Add participant')
+
+
+
+
+@app.route('/<event_permalink>/attendance')
+def attendance_at_event(event_permalink):
+    event = eventClass.get_event_by_permalink(event_permalink)
+    event_name = event['data']['name']
+    attendance = event['data']['participants']
+    list_attendance = []
+
+    for attendee in attendance:
+        user = userClass.get_user_by_username(str(attendee))
+        list_attendance.append(user)
+
+    return render_template('event_attendance.html', event_permalink=event_permalink, users=list_attendance,
+                           meta_title='Attendance at event: ' + event_name)
+
+
+@app.route('/<talk_permalink>/attendance')
+def attendance_at_talk(talk_permalink):
+    talk = talkClass.get_talk_by_permalink(talk_permalink)
+    talk_name = talk['data']['name']
+    attendance = talk['data']['participants']
+    list_attendance = []
+
+    for attendee in attendance:
+        user = userClass.get_user_by_username(str(attendee))
+        list_attendance.append(user)
+
+    return render_template('talk_attendance.html', talk_permalink=talk_permalink, users=list_attendance,
+                           meta_title='Attendance at talk: ' + talk_name)
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -576,6 +612,7 @@ def save_participant_event():
 @privileged_user()
 def save_participant_talk():
     talk_permalink = session.get('talk-permalink', None)
+
     talk = talkClass.get_talk_by_permalink(talk_permalink)
 
     post_data = {

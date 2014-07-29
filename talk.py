@@ -46,7 +46,8 @@ class Talk:
                                               'speaker': talk['speaker'],
                                               'permalink': talk['permalink'],
                                               'tags': talk['tags'],
-                                              'participants': talk['participants']})
+                                              'participants': talk['participants'],
+                                              'attendance': len(talk['participants'])})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Talks not found..'

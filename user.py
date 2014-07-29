@@ -77,6 +77,15 @@ class User:
             self.response['error'] = 'Users not found..'
         return self.response
 
+    def get_user_by_username(self, username):
+        try:
+            user = self.collection.find_one({'_id': username})
+        except Exception, e:
+            self.print_debug_info(e, self.debug_mode)
+
+        return user
+
+
     def get_users_by_role(self, role):
         users = self.collection.find({'role': role})
         list = []
