@@ -109,9 +109,6 @@ def events_by_role():
 
     events_attendee, events_organizer = eventClass.events_by_role(user_id)
 
-    import pdb
-    pdb.set_trace()
-
     list_events_attendee = []
 
     for event in events_attendee:
@@ -322,7 +319,8 @@ def new_talk(event_permalink):
 @privileged_user()
 def talk_preview(event_permalink):
     talk = session.get('talk-preview')
-    return render_template('talk_preview.html', talk=talk, meta_title='Preview talk::' + talk['name'])
+    return render_template('talk_preview.html', event_permalink=event_permalink,
+                           talk=talk, meta_title='Preview talk::' + talk['name'])
 
 
 @app.route('/<event_permalink>/talk_edit?id=<id>')
@@ -334,7 +332,7 @@ def talk_edit(event_permalink, id):
 
     if talk['error']:
         flash(talk['error'], 'error')
-        return redirect(url_for('talks'))
+        return redirect(url_for('talks', event_permalink=event_permalink))
 
     if session.get('talk-preview') and session['talk-preview']['action'] == 'add':
         session.pop('talk-preview', None)
@@ -343,6 +341,7 @@ def talk_edit(event_permalink, id):
 
 
     return render_template('edit_talk.html',
+                           event_permalink=event_permalink,
                            meta_title='Edit talk::' + talk['data']['name'],
                            speakers_list=speakers,
                            talk=talk['data'],
@@ -370,13 +369,14 @@ def talk_del(event_permalink, id):
     else:
         flash('Need to be at least one talk..', 'error')
 
-    return redirect(url_for('talks', event_permalink=event_permalink))
+    return redirect(url_for('talks_by_event', event_permalink=event_permalink))
 
 
 @app.route('/<event_permalink>/<talk_permalink>')
 def single_talk(event_permalink, talk_permalink):
     talk = talkClass.get_talk_by_permalink(talk_permalink)
-    return render_template('single_talk.html', talk=talk['data'], meta_title=app.config['SITE_TITLE'] + '::' + talk['data']['name'])
+    return render_template('single_talk.html', event_permalink=event_permalink, talk=talk['data'],
+                           meta_title=app.config['SITE_TITLE'] + '::' + talk['data']['name'])
 
 
 @app.route('/tag/<tag>', defaults={'page': 1})
@@ -404,8 +404,8 @@ def talks_by_event(event_permalink):
         object_talk= talk_complete['data']
         list_talks.append(object_talk)
 
-
-    return render_template('talks.html', talks=list_talks, meta_title='Talks by event: ' + event_name)
+    return render_template('talks.html', event_permalink=event_permalink, talks=list_talks,
+                           meta_title='Talks by event: ' + event_name)
 
 @app.route('/<event_permalink>/add_participant_event')
 @login_required()
@@ -495,7 +495,6 @@ def view_user(id):
     return render_template('view_user.html', user=user['data'], meta_title='View user')
 
 
-
 @app.route('/delete_user?id=<id>')
 @login_required()
 @privileged_user()
@@ -542,6 +541,7 @@ def save_user():
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
     return redirect(url_for('users'))
+
 
 @app.route('/save_participant_event', methods=['POST'])
 @login_required()

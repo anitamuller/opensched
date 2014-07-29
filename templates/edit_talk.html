@@ -51,7 +51,7 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <form id="post-form" role="form" method="post" action="{{ url_for('new_talk') }}">
+                  <form id="post-form" role="form" method="post" action="{{ url_for('new_talk', event_permalink=event_permalink) }}">
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="talk-name">Talk name</label>
