@@ -11,11 +11,13 @@ class Event:
         self.response = {'error': None, 'data': None}
         self.debug_mode = default_config['DEBUG']
 
-    def get_events(self, limit, skip, tag=None, search=None):
+    def get_events(self, limit, skip, organizer=None, tag=None, search=None):
         self.response['error'] = None
         cond = {}
         if tag is not None:
             cond = {'tags': tag}
+        elif organizer is not None:
+            cond = {'organizer': organizer}
         elif search is not None:
             cond = {'$or': [
                     {'name': {'$regex': search, '$options': 'i'}},
@@ -85,7 +87,6 @@ class Event:
 
         return self.response
 
-
     def events_by_role(self, user_id):
         list_attendee = []
 
@@ -113,7 +114,6 @@ class Event:
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
 
-
         return events_attendee, events_organizer
 
     def events_by_user_attendee2(self, user_id):
@@ -123,11 +123,7 @@ class Event:
         for event in cursor:
             if user_id in event['attendees']:
                 list_attendee.append(event['permalink'])
-
-
         return list_attendee
-
-
 
     def get_total_count(self, tag=None, search=None):
         cond = {}

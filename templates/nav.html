@@ -4,11 +4,9 @@
 			<li><a href="{{ url_for('index') }}" class="navbar-brand">Home</a></li>
 		{% if session.user %}
             {% if session.user.role == 'admin' %}
-            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-            {% elif session.user.role == 'organizer' %}
-            <li><a href=''>Dashboard</a></li>
-            {% elif session.user.role == 'speaker' or session.user.role == 'attendant' %}
-            <li><a href=''>My events</a></li>
+            <li><a href="{{ url_for('dashboard_admin') }}">Dashboard</a></li>
+            {% elif session.user.role == 'user' %}
+            <li><a href="{{ url_for('dashboard_user') }}">Dashboard</a></li>
             {% endif %}
 			<li><a href="{{ url_for('logout') }}">Logout</a></li>
 		{% else %}

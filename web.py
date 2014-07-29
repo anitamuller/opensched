@@ -91,8 +91,9 @@ def event_preview():
 @login_required()
 def events(page):
     session.pop('event-preview', None)
+    organizer = session['user']['username'] if session['user']['role'] == 'organizer' else None
     skip = (page - 1) * int(app.config['PER_PAGE'])
-    events = eventClass.get_events(int(app.config['PER_PAGE']), skip)
+    events = eventClass.get_events(int(app.config['PER_PAGE']), skip, organizer)
     count = eventClass.get_total_count()
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
 
@@ -494,9 +495,16 @@ def logout():
 @app.route('/dashboard')
 @login_required()
 @privileged_user()
-def dashboard():
+def dashboard_admin():
     events_created = eventClass.get_total_count()
-    return render_template('dashboard.html', events_created=events_created)
+    return render_template('dashboard_admin.html', events_created=events_created, meta_title='Admin dashboard')
+
+
+@app.route('/dashboard')
+@login_required()
+def dashboard_user():
+    return render_template('dashboard_user.html', meta_title='Users dashboard')
+
 
 @app.route('/users')
 @login_required()
