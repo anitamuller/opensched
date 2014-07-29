@@ -48,7 +48,7 @@
                             </button>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a title="Edit user" href="{{ url_for('edit_user', id=user['id']) }}">Edit user</a></li>
-                                {%- if user['id'] != session['user']['username'] -%}
+                                {%- if user['id'] != session['user']['username'] and user.role != 'admin' -%}
                                 <li><a title="Delete user" href="{{ url_for('delete_user', id=user['id']) }}">Delete user</a></li>
                                 {%- endif -%}
                             </ul>

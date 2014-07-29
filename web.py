@@ -230,12 +230,11 @@ def event_del(id):
         response = eventClass.delete_event(id)
         if response['data'] is True:
             flash('Event removed!', 'success')
+            return redirect(url_for('events'))
         else:
             flash(response['error'], 'error')
     else:
         flash('Need to be at least one event..', 'error')
-
-    return redirect(url_for('events'))
 
 
 @app.route('/<event_permalink>/newtalk', methods=['GET', 'POST'])
@@ -287,9 +286,9 @@ def new_talk(event_permalink):
                         request.form['talk-id'], talk)
                     if not response['error']:
                         flash('Talk updated!', 'success')
+                        return redirect(url_for('talks_by_event', event_permalink=event_permalink))
                     else:
                         flash(response['error'], 'error')
-                    return redirect(url_for('events'))
                 else:
                     response = talkClass.create_new_talk(talk)
                     eventClass.add_new_talk(event_permalink, talk)
@@ -300,6 +299,7 @@ def new_talk(event_permalink):
                         flash(response['error'], 'error')
                     else:
                         flash('New talk created!', 'success')
+                        return redirect(url_for('talks_by_event', event_permalink=event_permalink))
     else:
         if session.get('talk-preview') and session['talk-preview']['action'] == 'edit':
             session.pop('talk-preview', None)
@@ -406,6 +406,7 @@ def talks_by_event(event_permalink):
 
     return render_template('talks.html', event_permalink=event_permalink, talks=list_talks,
                            meta_title='Talks by event: ' + event_name)
+
 
 @app.route('/<event_permalink>/add_participant_event')
 @login_required()
@@ -540,7 +541,7 @@ def save_user():
         else:
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
-    return redirect(url_for('users'))
+    return redirect(url_for('users_list'))
 
 
 @app.route('/save_participant_event', methods=['POST'])

@@ -70,6 +70,9 @@
                <div class="page-header">
                   <h1>Events not found...</h1>
                </div>
+               {% if session.user and session.user.role == 'admin' %}
+                    <div><a href="{{ url_for('new_event') }}" class="response btn btn-primary">Add new</a></div>
+               {% endif %}
                {%- endif -%}
             </div>
          </div>
