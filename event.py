@@ -202,12 +202,12 @@ class Event:
                                 'talks': event_talks
                                 })
 
-    def add_new_attendee(self, permalink, username_attendee):
+    def add_new_attendee(self, permalink, email_attendee):
         self.response['data'] = self.collection.find_one(
                      {'permalink': permalink})
 
         event_attendees = self.response['data']['attendees']
-        event_attendees.append(username_attendee)
+        event_attendees.append(email_attendee)
 
         new_event = self.response['data']
 

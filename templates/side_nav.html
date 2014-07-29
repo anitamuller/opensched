@@ -15,7 +15,7 @@
          <li>
             <a class="active" href="{{ url_for('site_settings') }}"><i class="fa fa-dashboard fa-fw"></i> Settings</a>
          </li>
-         {% if session.user.username == 'admin' %}
+         {% if session.user.email == 'admin' %}
          <li>
             <a href="#"><i class="fa fa-asterisk fa-fw"></i> Events<span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
@@ -33,7 +33,7 @@
             <!-- /.nav-second-level -->
          </li>
          {% endif %}
-         {% if session.user.username == 'otro' %}
+         {% if session.user.email == 'otro' %}
          <li>
             <a href="tables.html"><i class="fa fa-users fa-fw"></i> Tables</a>
          </li>

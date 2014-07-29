@@ -202,12 +202,12 @@ class Talk:
         return talk_data
 
 
-    def add_new_attendee(self, permalink, username_attendee):
+    def add_new_attendee(self, permalink, email_attendee):
         self.response['data'] = self.collection.find_one(
                      {'permalink': permalink})
 
         talk_attendees = self.response['data']['attendees']
-        talk_attendees.append(username_attendee)
+        talk_attendees.append(email_attendee)
 
         new_talk = self.response['data']
 

@@ -13,7 +13,6 @@ class User:
     def __init__(self, default_config):
         self.collection = default_config['USERS_COLLECTION']
         self.name = None
-        self.username = None
         self.email = None
         self.role = None
         self.active = None
@@ -23,15 +22,14 @@ class User:
         self.response = {'error': None, 'data': None}
         self.debug_mode = default_config['DEBUG']
 
-    def login(self, username, password):
+    def login(self, email, password):
         self.response['error'] = None
         try:
-            user = self.collection.find_one({'_id': username})
+            user = self.collection.find_one({'_id': email})
             if user:
                 if self.validate_login(user['password'], password):
-                    self.username = user['_id']
+                    self.email = user['_id']
                     self.name = user['name']
-                    self.email = user['email']
                     self.role = user['role']
                 else:
                     self.response['error'] = 'Password doesn\'t match..'
@@ -43,7 +41,6 @@ class User:
             self.response['error'] = 'System error..'
 
         self.response['data'] = {'name': self.name,
-                                 'username':self.username,
                                  'email': self.email,
                                  'role': self.role}
         return self.response
@@ -70,16 +67,15 @@ class User:
             for user in users:
                 self.response['data'].append({'id': user['_id'],
                                               'name': user['name'],
-                                              'email': user['email'],
                                               'role': user['role']})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Users not found..'
         return self.response
 
-    def get_user_by_username(self, username):
+    def get_user_by_email(self, email):
         try:
-            user = self.collection.find_one({'_id': username})
+            user = self.collection.find_one({'_id': email})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
 
@@ -99,7 +95,7 @@ class User:
         self.response['error'] = None
         try:
             user = self.collection.find_one({'_id': user_id})
-            gravatar_url = self.get_gravatar_link(user.get('email', ''))
+            gravatar_url = self.get_gravatar_link(user.get('id', ''))
             self.response['data'] = user
             self.response['data']['gravatar_url'] = gravatar_url
         except Exception, e:
@@ -140,8 +136,7 @@ class User:
                             if user_data['new_pass'] and user_data['new_pass'] == user_data['new_pass_again']:
                                 password_hash = generate_password_hash(
                                     user_data['new_pass'], method='pbkdf2:sha256')
-                                record = {'password': password_hash,
-                                          'email': user_data['email']}
+                                record = {'password': password_hash}
                                 try:
                                     self.collection.update(
                                         {'_id': user_data['_id']}, {'$set': record}, upsert=False, multi=False)
@@ -161,7 +156,6 @@ class User:
                     else:
                         try:
                             record = {'name': user_data['name'],
-                                      'email': user_data['email'],
                                       'role': user_data['role']}
                             self.collection.update(
                                 {'_id': user_data['_id']}, {'$set': record}, upsert=False, multi=False)
@@ -174,16 +168,15 @@ class User:
                     return self.response
             else:
                 if exist_user:
-                    self.response['error'] = 'Username already exists..'
+                    self.response['error'] = 'Email already exists..'
                     return self.response
                 else:
                     if user_data['new_pass'] and user_data['new_pass'] == user_data['new_pass_again']:
                         password_hash = generate_password_hash(
                             user_data['new_pass'], method='pbkdf2:sha256')
                         record = {'_id': user_data['_id'], 'password': password_hash,
-                                  'email': user_data['email'], 'name': user_data['name'],
-                                  'role': user_data['role'], 'active': user_data['active'],
-                                  'speaker_at': [], 'attendee_at': []}
+                                  'name': user_data['name'], 'role': user_data['role'],
+                                  'active': user_data['active'], 'speaker_at': [], 'attendee_at': []}
                         try:
                             self.collection.insert(record, safe=True)
                             self.response['data'] = True
@@ -201,7 +194,7 @@ class User:
     def save_attendee(self, event_permalink, user_data):
         self.response['error'] = None
         if user_data:
-            if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['email']):
+            if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['_id']):
                 self.response['error'] = 'Email is invalid..'
                 return self.response
 
@@ -212,13 +205,13 @@ class User:
             # el evento de acuerdo al rol especificado en el form
 
             if exist_user:
-                self.response['error'] = 'Username already exists..'
+                self.response['error'] = 'Email already exists..'
                 return self.response
             else:
 
             # Aca se crea un nuevo usuario asique solamente inicializamos
 
-                record = {'_id': user_data['_id'], 'email': user_data['email'],
+                record = {'_id': user_data['_id'],
                           'name': user_data['name'], 'active': user_data['active'],
                           'role': 'assistant', 'attendee_at': event_permalink}
 
