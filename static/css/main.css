@@ -174,7 +174,6 @@ input[type='checkbox'] {
     margin-right: 10%;
 }
 
-
 .talk-time {
     font-size: 14px;
     margin-bottom: 4%;
@@ -189,4 +188,8 @@ input[type='checkbox'] {
 .navbar-default {
     top: 0;
     left: 0;
+}
+
+.fullwidth {
+    margin-top: 2%;
 }

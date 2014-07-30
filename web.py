@@ -91,7 +91,7 @@ def event_preview():
 @login_required()
 def events(page):
     session.pop('event-preview', None)
-    organizer = session['user']['username'] if session['user']['role'] == 'organizer' else None
+    organizer = None if session['user']['role'] == 'admin' else session['user']['email']
     skip = (page - 1) * int(app.config['PER_PAGE'])
     events = eventClass.get_events(int(app.config['PER_PAGE']), skip, organizer)
     count = eventClass.get_total_count()
@@ -134,7 +134,6 @@ def events_by_role():
 
 @app.route('/newevent', methods=['GET', 'POST'])
 @login_required()
-@privileged_user()
 def new_event():
     error = False
     error_type = 'validate'
@@ -204,7 +203,6 @@ def new_event():
 
 @app.route('/event_edit?id=<id>')
 @login_required()
-@privileged_user()
 def event_edit(id):
     event = eventClass.get_event_by_id(id)
     session['event-permalink'] = event['data']['permalink']
@@ -225,7 +223,6 @@ def event_edit(id):
 
 @app.route('/event_delete?id=<id>')
 @login_required()
-@privileged_user()
 def event_del(id):
     if eventClass.get_total_count() >= 1:
         response = eventClass.delete_event(id)
@@ -240,7 +237,6 @@ def event_del(id):
 
 @app.route('/<event_permalink>/newtalk', methods=['GET', 'POST'])
 @login_required()
-@privileged_user()
 def new_talk(event_permalink):
     error = False
     error_type = 'validate'
@@ -317,7 +313,6 @@ def new_talk(event_permalink):
 
 @app.route('/<event_permalink>/talk_preview')
 @login_required()
-@privileged_user()
 def talk_preview(event_permalink):
     talk = session.get('talk-preview')
     return render_template('talk_preview.html', event_permalink=event_permalink,
@@ -326,7 +321,6 @@ def talk_preview(event_permalink):
 
 @app.route('/<event_permalink>/talk_edit?id=<id>')
 @login_required()
-@privileged_user()
 def talk_edit(event_permalink, id):
     talk = talkClass.get_talk_by_id(id)
     session['talk-permalink'] = talk['data']['permalink']
@@ -352,7 +346,6 @@ def talk_edit(event_permalink, id):
 
 @app.route('/<event_permalink>/talk_delete?id=<id>')
 @login_required()
-@privileged_user()
 def talk_del(event_permalink, id):
     if talkClass.get_total_count() >= 1:
         talk = talkClass.get_talk_by_id(id)
@@ -504,7 +497,7 @@ def logout():
         flash('You are logged out!', 'success')
     return redirect(url_for('login'))
 
-@app.route('/dashboard')
+@app.route('/dashboard_admin')
 @login_required()
 @privileged_user()
 def dashboard_admin():
@@ -512,7 +505,7 @@ def dashboard_admin():
     return render_template('dashboard_admin.html', events_created=events_created, meta_title='Admin dashboard')
 
 
-@app.route('/dashboard')
+@app.route('/dashboard_user')
 @login_required()
 def dashboard_user():
     return render_template('dashboard_user.html', meta_title='Users dashboard')
@@ -616,14 +609,11 @@ def register_user():
         user = userClass.save_user(post_data)
         if user['error']:
             flash(user['error'], 'error')
-            if post_data['update']:
-                return redirect(url_for('edit_user', id=post_data['_id']))
-            else:
-                return redirect(url_for('register'))
+            return redirect(url_for('register'))
         else:
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 
@@ -675,22 +665,6 @@ def save_attendee_talk(event_permalink, talk_permalink):
         flash(message, 'success')
 
     return redirect(url_for('events'))
-
-
-@app.route('/recent_feed')
-def recent_feed():
-    feed = AtomFeed(app.config['SITE_TITLE'] + '::Recent Events',
-                    feed_url=request.url, url=request.url_root)
-    events = eventClass.get_events(int(app.config['PER_PAGE']), 0)
-    for event in events['data']:
-        event_entry = event['summary'] if event['summary'] else event['description']
-        feed.add(event['name'], md(event_entry),
-                 content_type='html',
-                 organizer=event['organizer'],
-                 url=make_external(
-                     url_for('single_event', permalink=event['permalink'])))
-    return feed.get_response()
-
 
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required()

@@ -23,4 +23,13 @@ $(function(){
     $('a.icon').on('click', function(){
         return confirm('Are you sure?');
     });
+
+    $('#event-date').datepicker({
+        inputs: $('#event-start, #event-end, #talk-date'),
+        todayBtn: 'linked'
+    });
+
+    $('#talk-start').timepicker();
+
+    $('#talk-end').timepicker();
 });
