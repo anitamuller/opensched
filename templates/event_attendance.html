@@ -30,7 +30,6 @@
                <table class="table table-striped">
                   <tr>
                      <th>Name</th>
-                     <th>Username</th>
                      <th>Email</th>
                      <th>Role</th>
                      <th>Action</th>
@@ -38,8 +37,7 @@
                   {%- for user in users -%}
                   <tr>
                      <td>{{ user['name'] }}</td>
-                     <td><a title="Username" href="{{ url_for('edit_user', id=user['id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
-                     <td>{{ user['email'] }}</td>
+                     <td><a title="Email" href="{{ url_for('edit_user', id=user['id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
                      <td>{{ user['role'] }}</td>
                      <td><div class="btn-group">
                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -47,7 +45,7 @@
                             </button>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a title="Edit user" href="{{ url_for('edit_user', id=user['_id']) }}">Edit user</a></li>
-                                {%- if user['id'] != session['user']['username'] and user.role != 'admin' -%}
+                                {%- if user['id'] != session['user']['email'] and user.role != 'admin' -%}
                                 <li><a title="Delete user" href="{{ url_for('delete_user', id=user['_id']) }}">Delete user</a></li>
                                 {%- endif -%}
                             </ul>

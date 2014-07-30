@@ -103,7 +103,7 @@ def events(page):
 @app.route('/result')
 @login_required()
 def events_by_role():
-    user_id = session['user']['username']
+    user_id = session['user']['email']
     #user_id = 'guess4'
     result_attendee = []
     result_speaker = []
@@ -156,7 +156,7 @@ def new_event():
                           'end': request.form.get('event-end'),
                           'venue': request.form.get('event-venue'),
                           'tags': tags_array,
-                          'organizer': session['user']['username'],
+                          'organizer': session['user']['email'],
                           'talks': [],
                           'attendees': []}
 
@@ -435,7 +435,7 @@ def event_attendance(event_permalink):
     list_attendance = []
 
     for attendee in attendance:
-        user = userClass.get_user_by_username(str(attendee))
+        user = userClass.get_user_by_email(str(attendee))
         list_attendance.append(user)
 
     return render_template('event_attendance.html', event_permalink=event_permalink, users=list_attendance,
@@ -450,7 +450,7 @@ def talk_attendance(event_permalink, talk_permalink):
     list_attendance = []
 
     for attendee in attendance:
-        user = userClass.get_user_by_username(str(attendee))
+        user = userClass.get_user_by_email(str(attendee))
         list_attendance.append(user)
 
     return render_template('talk_attendance.html', talk_permalink=talk_permalink, users=list_attendance,
@@ -462,12 +462,12 @@ def login():
     error = False
     error_type = 'validate'
     if request.method == 'POST':
-        username = request.form.get('login-username')
+        email = request.form.get('login-email')
         password = request.form.get('login-password')
-        if not username or not password:
+        if not email or not password:
             error = True
         else:
-            user_data = userClass.login(username.lower().strip(), password)
+            user_data = userClass.login(email.lower().strip(), password)
             if user_data['error']:
                 error = True
                 error_type = 'login'
@@ -544,7 +544,7 @@ def view_user(id):
 @login_required()
 @privileged_user()
 def delete_user(id):
-    if id != session['user']['username']:
+    if id != session['user']['email']:
         user = userClass.delete_user(id)
         if user['error']:
             flash(user['error'], 'error')
@@ -560,7 +560,6 @@ def save_user():
     post_data = {
         '_id': request.form.get('user-id', None).lower().strip(),
         'name': request.form.get('user-name', None),
-        'email': request.form.get('user-email', None),
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
         'new_pass_again': request.form.get('user-new-password-again', None),
@@ -568,8 +567,8 @@ def save_user():
         'active': request.form.get('user-active', None),
         'update': request.form.get('user-update', False)
     }
-    if not post_data['email'] or not post_data['name'] or not post_data['_id']:
-        flash('Name, Username and Email are required..', 'error')
+    if not post_data['name'] or not post_data['_id']:
+        flash('Name and Email are required..', 'error')
         if post_data['update']:
                 return redirect(url_for('edit_user', id=post_data['_id']))
         else:
@@ -600,13 +599,13 @@ def save_attendee_event(event_permalink):
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None)
     }
-    if not post_data['email'] or not post_data['name'] or not post_data['_id']:
-        flash('Name, Username and Email are required..', 'error')
+    if not post_data['name'] or not post_data['_id']:
+        flash('Name and Email are required..', 'error')
         return redirect(url_for('add_attendee_event'))
     else:
         userClass.save_attendee(event_permalink, post_data)
-        attendee_username = request.form.get('user-id', None)
-        eventClass.add_new_attendee(event_permalink, attendee_username)
+        attendee_email = request.form.get('user-id', None)
+        eventClass.add_new_attendee(event_permalink, attendee_email)
         message = 'Attendee added!'
         flash(message, 'success')
 
@@ -624,14 +623,14 @@ def save_attendee_talk(event_permalink, talk_permalink):
         'email': request.form.get('user-email', None),
         'active': request.form.get('user-active', None)
     }
-    if not post_data['email'] or not post_data['name'] or not post_data['_id']:
-        flash('Name, Username and Email are required..', 'error')
+    if not post_data['name'] or not post_data['_id']:
+        flash('Name and Email are required..', 'error')
         return redirect(url_for('add_attendee_event'))
     else:
         # Ver como vamos a guardar esta informacion
         userClass.save_attendee(talk_permalink, post_data)
-        attendee_username = request.form.get('user-id', None)
-        talkClass.add_new_attendee(talk_permalink, attendee_username)
+        attendee_email = request.form.get('user-id', None)
+        talkClass.add_new_attendee(talk_permalink, attendee_email)
         message = 'Attendee added!'
         flash(message, 'success')
 
