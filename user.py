@@ -7,7 +7,6 @@ import event
 import talk
 
 
-
 class User:
 
     def __init__(self, default_config):
@@ -24,6 +23,7 @@ class User:
 
     def login(self, email, password):
         self.response['error'] = None
+
         try:
             user = self.collection.find_one({'_id': email})
             if user:
@@ -124,7 +124,7 @@ class User:
     def save_user(self, user_data):
         self.response['error'] = None
         if user_data:
-            if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['email']):
+            if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['_id']):
                 self.response['error'] = 'Email is invalid..'
                 return self.response
 
@@ -168,7 +168,7 @@ class User:
                     return self.response
             else:
                 if exist_user:
-                    self.response['error'] = 'Email already exists..'
+                    self.response['error'] = 'User already exists..'
                     return self.response
                 else:
                     if user_data['new_pass'] and user_data['new_pass'] == user_data['new_pass_again']:

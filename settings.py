@@ -60,16 +60,12 @@ class Settings:
 
             user_create = userClass.save_user(user_data)
 
-            if site_data['per_page'].isdigit():
-                site_settings_error = None
-                self.collection.insert(site_data)
-            else:
-                site_settings_error = '"Per page" field need to be integer..'
+            import pdb
+            pdb.set_trace()
 
-            if user_create['error'] or site_settings_error:
+            if user_create['error']:
                 self.response['error'] = []
                 self.response['error'].append(user_create['error'])
-                self.response['error'].append(site_settings_error)
                 self.config['USERS_COLLECTION'].drop()
                 self.collection.drop()
             return self.response

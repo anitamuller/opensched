@@ -457,6 +457,12 @@ def talk_attendance(event_permalink, talk_permalink):
                            talk_name=talk_name, meta_title='Talk attendance: ' + talk_name)
 
 
+@app.route('/register')
+def register():
+    gravatar_url = userClass.get_gravatar_link()
+    return render_template('register.html', gravatar_url=gravatar_url, meta_title='Register')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = False
@@ -514,15 +520,6 @@ def users_list():
     return render_template('users.html', users=users['data'], meta_title='Users')
 
 
-@app.route('/add_user')
-@login_required()
-@privileged_user()
-def add_user():
-    gravatar_url = userClass.get_gravatar_link()
-    role_list = ['Admin', 'Organizer', 'Attendee', 'Speaker']
-    return render_template('add_user.html', role_list=role_list, gravatar_url=gravatar_url, meta_title='Add user')
-
-
 @app.route('/edit_user?id=<id>')
 @login_required()
 @privileged_user()
@@ -557,6 +554,8 @@ def delete_user(id):
 @login_required()
 @privileged_user()
 def save_user():
+    import pdb
+    pdb.set_trace()
     post_data = {
         '_id': request.form.get('user-id', None).lower().strip(),
         'name': request.form.get('user-name', None),
@@ -696,9 +695,8 @@ def install():
         site_error = False
 
         user_data = {
-            '_id': request.form.get('user-id', None).lower().strip(),
+            '_id': request.form.get('user-email', None).lower().strip(),
             'name': request.form.get('user-name', None),
-            'email': request.form.get('user-email', None),
             'role': 'admin',
             'active': 1,
             'new_pass': request.form.get('user-new-password', None),
@@ -707,18 +705,15 @@ def install():
         }
         site_data = {
             'title': request.form.get('site-title', None),
-            'description': request.form.get('site-description', None),
-            'per_page': request.form.get('site-perpage', None),
-            'text_search': request.form.get('site-text-search', None)
+            'description': request.form.get('site-description', None)
         }
-        site_data['text_search'] = 1 if site_data['text_search'] else 0
 
         for key, value in user_data.items():
             if not value and key != 'update':
                 user_error = True
                 break
         for key, value in site_data.items():
-            if not value and key != 'text_search' and key != 'description':
+            if not value and key != 'description':
                 site_error = True
                 break
 

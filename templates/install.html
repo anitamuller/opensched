@@ -19,30 +19,18 @@
                             {%- endfor -%}
                         {%- endif -%}
                     {%- endwith -%}
-
 	                <form role="form" method="post" action="{{ url_for('install') }}">
                         <fieldset>
-	                        <legend>Sched section</legend>
+	                        <legend>Site section</legend>
                             <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 	                            {%- if error and error_type == 'validate' -%}
 	                                <label class="control-label" for="site-title">Required field</label>
 	                            {%- endif -%}
-	                            <input type="text" class="form-control" name="site-title" id="site-title" placeholder="Sched Title" required autocomplete="off">
+	                            <input type="text" class="form-control" name="site-title" id="site-title" placeholder="Site title" required autocomplete="off">
 	                        </div>
                             <div class="form-group">
-	                            <input type="text" class="form-control" name="site-description" id="site-description" placeholder="Sched Description" autocomplete="off">
+	                            <input type="text" class="form-control" name="site-description" id="site-description" placeholder="Site description" autocomplete="off">
 	                        </div>
-	                        <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
-	                            {%- if error and error_type == 'validate' -%}
-	                                <label class="control-label" for="site-perpage">Required field</label>
-	                            {%- endif -%}
-	                            <input type="number" min="1" class="form-control" name="site-perpage" id="site-perpage" placeholder="Events per page (default {{ default_settings['PER_PAGE'] }})" required autocomplete="off">
-	                        </div>
-                            <div class="checkbox">
-							    <label>
-							        <input type="checkbox" name="site-text-search" disabled> Use <abbr title="MongoDB version 2.4.6 with textSearchEnabled=true required. Otherwise $regex search will be used."> Text Search</abbr>
-							    </label>
-						    </div>
                         </fieldset>
 	                    <fieldset>
 	                        <legend>User section</legend>
@@ -52,12 +40,11 @@
 								{%- endif -%}
 							    <input type="text" class="form-control" name="user-name" id="user-name" placeholder="Name" value="" required autocomplete="off">
 							</div>
-
 							<div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 								{%- if error and error_type == 'validate' -%}
-									<label class="control-label" for="user-id">Required field</label>
+									<label class="control-label" for="user-email">Required field</label>
 								{%- endif -%}
-							    <input type="email" class="form-control" name="user-id" id="user-id" placeholder="Email" value="" required autocomplete="off">
+							    <input type="email" class="form-control" name="user-email" id="user-email" placeholder="Email" value="" required autocomplete="off">
 							</div>
 	                        <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
 								{%- if error and error_type == 'validate' -%}
