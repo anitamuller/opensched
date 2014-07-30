@@ -531,7 +531,7 @@ def users_list():
 @privileged_user()
 def edit_user(id):
     user = userClass.get_user(id)
-    role_list = ['Admin', 'Organizer', 'Attendee', 'Speaker']
+    role_list = ['Admin', 'User']
     return render_template('edit_user.html', user=user['data'], role_list=role_list, meta_title='Edit user')
 
 

@@ -68,7 +68,8 @@ class User:
             for user in users:
                 self.response['data'].append({'id': user['_id'],
                                               'name': user['name'],
-                                              'role': user['role']})
+                                              'role': user['role'],
+                                              'active': user['active']})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Users not found..'
