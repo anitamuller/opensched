@@ -16,7 +16,7 @@
             {%- endfor -%}
             {%- endif -%}
             {%- endwith -%}
-            <form class="form-user" role="form" method="post" action="{{ url_for('save_user') }}">
+            <form class="form-user" role="form" method="post" action="{{ url_for('register_user') }}">
                <div class="photo-user">
                   <img src="{{ gravatar_url }}" class="img-circle">
                </div>
@@ -32,7 +32,7 @@
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="user-id">Required field</label>
                         {%- endif -%}
-                        <input type="email" class="form-control" name="user-email" id="user-id" placeholder="Email" value="" required autocomplete="off">
+                        <input type="email" class="form-control" name="user-id" id="user-id" placeholder="Email" value="" required autocomplete="off">
                      </div>
                   </fieldset>
                   <fieldset>

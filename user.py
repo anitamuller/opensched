@@ -64,6 +64,7 @@ class User:
         try:
             users = self.collection.find()
             self.response['data'] = []
+
             for user in users:
                 self.response['data'].append({'id': user['_id'],
                                               'name': user['name'],

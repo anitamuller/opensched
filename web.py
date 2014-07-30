@@ -463,6 +463,12 @@ def register():
     return render_template('register.html', gravatar_url=gravatar_url, meta_title='Register')
 
 
+@app.route('/add_user')
+def add_user():
+    gravatar_url = userClass.get_gravatar_link()
+    role_list = ['Admin', 'User']
+    return render_template('add_user.html', gravatar_url=gravatar_url, role_list=role_list,  meta_title='Register new User')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = False
@@ -557,7 +563,7 @@ def save_user():
     import pdb
     pdb.set_trace()
     post_data = {
-        '_id': request.form.get('user-id', None).lower().strip(),
+        '_id': request.form.get('user-id', None),
         'name': request.form.get('user-name', None),
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
@@ -584,6 +590,41 @@ def save_user():
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
     return redirect(url_for('users_list'))
+
+
+@app.route('/register_user', methods=['POST'])
+def register_user():
+
+    post_data = {
+        '_id': request.form.get('user-id', None),
+        'name': request.form.get('user-name', None),
+        'old_pass': request.form.get('user-old-password', None),
+        'new_pass': request.form.get('user-new-password', None),
+        'new_pass_again': request.form.get('user-new-password-again', None),
+        'role': request.form.get('user-role', None),
+        'active': request.form.get('user-active', None),
+        'update': request.form.get('user-update', False)
+    }
+
+    if not post_data['_id'] or not post_data['name']:
+        flash('Name and Email are required..', 'error')
+        if post_data['update']:
+                return redirect(url_for('edit_user', id=post_data['_id']))
+        else:
+            return redirect(url_for('register'))
+    else:
+        user = userClass.save_user(post_data)
+        if user['error']:
+            flash(user['error'], 'error')
+            if post_data['update']:
+                return redirect(url_for('edit_user', id=post_data['_id']))
+            else:
+                return redirect(url_for('register'))
+        else:
+            message = 'User updated!' if post_data['update'] else 'User added!'
+            flash(message, 'success')
+    return redirect(url_for('index'))
+
 
 
 @app.route('/<event_permalink>/save_attendee', methods=['POST'])
