@@ -124,8 +124,6 @@ class User:
         return self.response
 
     def save_user(self, user_data):
-        import pdb
-        pdb.set_trace()
         self.response['error'] = None
         if user_data:
             if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['_id']):

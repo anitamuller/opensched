@@ -104,7 +104,6 @@ def events(page):
 @login_required()
 def events_by_role():
     user_id = session['user']['email']
-    #user_id = 'guess4'
     result_attendee = []
     result_speaker = []
 

@@ -60,9 +60,6 @@ class Settings:
 
             user_create = userClass.save_user(user_data)
 
-            import pdb
-            pdb.set_trace()
-
             if user_create['error']:
                 self.response['error'] = []
                 self.response['error'].append(user_create['error'])
