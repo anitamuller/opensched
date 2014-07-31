@@ -88,10 +88,7 @@ class Event:
         return self.response
 
     def events_by_role(self, user_id):
-        list_attendee = []
-
         events_attendee = []
-        events_organizer = []
 
         try:
             cursor = self.collection.find()
@@ -108,13 +105,10 @@ class Event:
                                                 'attendees': event['attendees']
                                                 })
 
-                    if user_id == event['organizer']:
-                        events_organizer.append(str(event['permalink']))
-
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
 
-        return events_attendee, events_organizer
+        return events_attendee
 
     def events_by_user_attendee2(self, user_id):
         list_attendee = []

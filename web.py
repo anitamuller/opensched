@@ -404,7 +404,6 @@ def talks_by_event(event_permalink):
 
 @app.route('/<event_permalink>/add_attendee_event')
 @login_required()
-@privileged_user()
 def add_attendee_event(event_permalink):
     role_list = ['Attendee', 'Speaker']
     return render_template('add_attendee_event.html', event_permalink=event_permalink,
@@ -413,7 +412,6 @@ def add_attendee_event(event_permalink):
 
 @app.route('/<event_permalink>/<talk_permalink>/add_attendee_talk')
 @login_required()
-@privileged_user()
 def add_attendee_talk(event_permalink, talk_permalink):
     role_list = ['Attendee', 'Speaker']
     return render_template('add_attendee_talk.html', event_permalink=event_permalink,
@@ -553,8 +551,6 @@ def delete_user(id):
 @login_required()
 @privileged_user()
 def save_user():
-    import pdb
-    pdb.set_trace()
     post_data = {
         '_id': request.form.get('user-id', None),
         'name': request.form.get('user-name', None),
@@ -619,7 +615,6 @@ def register_user():
 
 @app.route('/<event_permalink>/save_attendee', methods=['POST'])
 @login_required()
-@privileged_user()
 def save_attendee_event(event_permalink):
 
     post_data = {
@@ -645,20 +640,19 @@ def save_attendee_event(event_permalink):
 
 @app.route('/<event_permalink>/<talk_permalink>/save_attendee_talk', methods=['POST'])
 @login_required()
-@privileged_user()
 def save_attendee_talk(event_permalink, talk_permalink):
     post_data = {
-        '_id': request.form.get('user-id', None).lower().strip(),
+        '_id': request.form.get('user-id', None),
         'name': request.form.get('user-name', None),
-        'email': request.form.get('user-email', None),
         'active': request.form.get('user-active', None)
     }
-    if not post_data['name'] or not post_data['_id']:
+
+    if not post_data['_id'] or not post_data['name']:
         flash('Name and Email are required..', 'error')
-        return redirect(url_for('add_attendee_event'))
+        return redirect(url_for('add_attendee_talk'))
     else:
         # Ver como vamos a guardar esta informacion
-        userClass.save_attendee(talk_permalink, post_data)
+        userClass.save_attendee(event_permalink, talk_permalink, post_data)
         attendee_email = request.form.get('user-id', None)
         talkClass.add_new_attendee(talk_permalink, attendee_email)
         message = 'Attendee added!'
