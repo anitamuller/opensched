@@ -91,7 +91,7 @@ def event_preview():
 @login_required()
 def events(page):
     session.pop('event-preview', None)
-    organizer = None if session['user']['role'] == 'admin' else session['user']['email']
+    organizer = None if session['user']['role'] == 'Admin' else session['user']['email']
     skip = (page - 1) * int(app.config['PER_PAGE'])
     events = eventClass.get_events(int(app.config['PER_PAGE']), skip, organizer)
     count = eventClass.get_total_count()
@@ -505,14 +505,35 @@ def dashboard_admin():
     return render_template('dashboard_admin.html', events_created=events_created, meta_title='Admin dashboard')
 
 
-@app.route('/dashboard_user', defaults={'page': 1})
-@app.route('/dashboard_user/page-<int:page>')
+@app.route('/dashboard_user')
 @login_required()
-def dashboard_user(page):
-    organizer = None if session['user']['role'] == 'admin' else session['user']['email']
-    skip = (page - 1) * int(app.config['PER_PAGE'])
-    events = eventClass.get_events(int(app.config['PER_PAGE']), skip, organizer)
-    return render_template('dashboard_user.html', events_organized_by=events['data'], meta_title='Users dashboard')
+def dashboard_user():
+    user_email = session['user']['email']
+    user = userClass.get_user(user_email)
+
+    events_organizer = eventClass.events_organized_by(user_email)
+
+    attendee_at = user['data']['attendee_at']
+    list_name_events_attendee = attendee_at.keys()
+    list_events_attendee = []
+
+    for event_name in list_name_events_attendee:
+        event_attendee = eventClass.get_event_by_permalink(event_name)
+        list_events_attendee.append(event_attendee['data'])
+
+    speaker_at = user['data']['speaker_at']
+    list_name_events_speaker = speaker_at.keys()
+    list_events_speaker = []
+
+    for event_name in list_name_events_speaker:
+        event_speaker = eventClass.get_event_by_permalink(event_name)
+        list_events_speaker.append(event_speaker['data'])
+
+
+    return render_template('dashboard_user.html', events_organized_by=events_organizer,
+                           events_attendee=list_events_attendee,
+                           events_speaker=list_events_speaker,
+                           meta_title='Users dashboard')
 
 
 @app.route('/users')
@@ -585,7 +606,7 @@ def save_user():
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
 
-    if session['user']['role'] == 'user':
+    if session['user']['role'] == 'User':
         return redirect(url_for('dashboard_user'))
     else:
         return redirect(url_for('users_list'))

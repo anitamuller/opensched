@@ -7,7 +7,7 @@
     <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
 		{% if session.user %}
-            {% if session.user.role == 'admin' %}
+            {% if session.user.role == 'Admin' %}
             <li><a href="{{ url_for('dashboard_admin') }}">Dashboard</a></li>
             {% elif session.user.role == 'User' %}
             <li><a href="{{ url_for('dashboard_user') }}">Dashboard</a></li>

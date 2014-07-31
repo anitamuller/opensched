@@ -87,6 +87,18 @@ class Event:
 
         return self.response
 
+    def events_organized_by(self, user_email):
+        try:
+            self.response['data'] = self.collection.find(
+                {'organizer': user_email})
+        except Exception, e:
+            self.print_debug_info(e, self.debug_mode)
+            self.response['error'] = 'Event not found..'
+
+        return self.response['data']
+
+
+
     def events_by_role(self, user_id):
         events_attendee = []
 
