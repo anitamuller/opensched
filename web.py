@@ -412,6 +412,30 @@ def talks_by_event(event_permalink):
     return render_template('talks.html', event_permalink=event_permalink, talks=list_talks,
                            meta_title='Talks by event: ' + event_name)
 
+@app.route('/<event_permalink>/my_schedule')
+def my_schedule(event_permalink):
+    event = eventClass.get_event_by_permalink(event_permalink)
+    event_name = event['data']['name']
+
+    user_email = session['user']['email']
+    user = userClass.get_user(user_email)
+    talks = user['data']['attendee_at']
+
+    if talks.has_key(event_permalink):
+        talks_attendee = talks[event_permalink]
+    else:
+        talks_attendee = []
+
+    list_talks = []
+
+    for talk in talks_attendee:
+        talk_complete = talkClass.get_talk_by_permalink(str(talk))
+        list_talks.append(talk_complete['data'])
+
+    return render_template('my_schedule.html', event_permalink=event_permalink, talks=list_talks,
+                           meta_title='Talks attendee at of event: ' + event_name)
+
+
 
 @app.route('/<event_permalink>/add_attendee_event')
 @login_required()

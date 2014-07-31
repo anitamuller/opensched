@@ -247,9 +247,6 @@ class User:
                         else:
                             return self.response
 
-                    import pdb
-                    pdb.set_trace()
-
                     if not exist_user.has_key('password'):
                         exist_user['password'] = None
                     if not exist_user.has_key('name'):

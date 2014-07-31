@@ -57,6 +57,9 @@
                      </tr>
                     {%- endfor -%}
                     </table>
+
+                    <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="response btn btn-primary">My Schedule</a>
+
 				</div>
 			</div>
 		</div>
