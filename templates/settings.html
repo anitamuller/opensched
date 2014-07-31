@@ -10,6 +10,7 @@
 {%- block body -%}
 <div id="wrapper">
    {%- include 'side_nav.html' -%}
+   {%- if session.user.role == 'admin' -%}
    <div id="page-wrapper">
       <div class="clearfix">
          <div class="row">
@@ -27,7 +28,7 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <form role="form" method="post" action="{{ url_for('site_settings') }}">
+                  <form role="form" method="post" action="{{ url_for('configure_settings') }}">
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="site-title">Required field</label>
@@ -61,9 +62,13 @@
                </div>
             </div>
          </div>
-      </div>
-   </div>
+     </div>
+  </div>
 </div>
+        {%- include 'edit_user.html' -%}
+   {%- else -%}
+        {%- include 'edit_user.html' -%}
+   {%- endif -%}
 {%- endblock -%}
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
