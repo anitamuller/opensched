@@ -103,7 +103,7 @@
                         <input id="talk-submit" type="submit" class="btn btn-primary" value="Submit">
                         <input id="talk-preview" type="submit" class="btn" value="Preview">
                      </div>
-                     <a href="{{ url_for('add_attendee_talk') }}" class="response btn btn-primary">Add attendees</a>
+                      <a href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="response btn btn-primary">Invite People</a>
                   </form>
                </div>
             </div>

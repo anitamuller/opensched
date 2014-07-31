@@ -225,7 +225,7 @@ class Talk:
         self.collection.update({'permalink': permalink},
                                {'name': talk_name, 'summary': talk_summary,
                                 'description': talk_description, 'speaker': talk_speaker,
-                                'permalink': talk_permalink, 'venue': talk_room,
+                                'permalink': talk_permalink, 'room': talk_room,
                                 'date': talk_date,'start': talk_start, 'end': talk_end,
                                 'attendees': talk_attendees, 'tags': talk_tags
                                 })

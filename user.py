@@ -202,36 +202,90 @@ class User:
 
             exist_user = self.collection.find_one({'_id': user_data['_id']})
 
-            # Aca tendriamos que actualizar la colleccion attendee_at
-            # speaker_at y/o organizer_at del usuario al que se le agrega
-            # el evento de acuerdo al rol especificado en el form
-
             if exist_user:
-                event_name = str(event_permalink)
+                if not talk_permalink:
+                    event_name = str(event_permalink)
+                    new_attendee_at = exist_user['attendee_at']
+                    if not new_attendee_at.has_key(event_name):
+                        new_attendee_at[event_name] = []
 
-                new_attendee_at = exist_user['attendee_at']
+                        if not exist_user.has_key('password'):
+                            exist_user['password'] = None
+                        if not exist_user.has_key('name'):
+                            exist_user['name'] = None
 
-                new_attendee_at[event_name] = []
+                        record = {'_id': exist_user['_id'],
+                                  'password': exist_user['password'],
+                                  'name': exist_user['name'],
+                                  'active': exist_user['active'],
+                                  'role': exist_user['role'],
+                                  'speaker_at': exist_user['speaker_at'],
+                                  'attendee_at': new_attendee_at}
 
-                record = {'_id': exist_user['_id'],
-                          'name': exist_user['name'],
-                          'active': exist_user['active'],
-                          'role': exist_user['role'],
-                          'attendee_at': new_attendee_at}
+                        try:
+                            #self.collection.update({'_id': exist_user['_id']}, {'$set': record}, upsert=False, multi=False)
+                            self.collection.remove({'_id': exist_user['_id']})
+                            self.collection.insert(record, safe=True)
 
-                try:
-                    self.collection.update({'_id': exist_user['_id']}, {'$set': record}, upsert=False, multi=False)
-                    self.response['data'] = True
-                except Exception, e:
-                    self.print_debug_info(e, self.debug_mode)
-                    self.response['error'] = 'Create user user error..'
+                            self.response['data'] = True
+                        except Exception, e:
+                            self.print_debug_info(e, self.debug_mode)
+                            self.response['error'] = 'Create user user error..'
+
+                else:
+                    event_name = str(event_permalink)
+                    talk_name = str(talk_permalink)
+                    new_attendee_at = exist_user['attendee_at']
+                    if not new_attendee_at.has_key(event_name):
+                        new_attendee_at[event_name] = [talk_name]
+
+                    else:
+                        talks = new_attendee_at[event_name]
+                        if not talk_name in talks:
+                            talks.append(talk_name)
+                            new_attendee_at[event_name] = talks
+                        else:
+                            return self.response
+
+                    import pdb
+                    pdb.set_trace()
+
+                    if not exist_user.has_key('password'):
+                        exist_user['password'] = None
+                    if not exist_user.has_key('name'):
+                        exist_user['name'] = None
+
+                    record = {'_id': exist_user['_id'],
+                              'password': exist_user['password'],
+                              'name': exist_user['name'],
+                              'active': exist_user['active'],
+                              'role': exist_user['role'],
+                              'speaker_at': exist_user['speaker_at'],
+                              'attendee_at': new_attendee_at}
+
+                    try:
+                        #self.collection.update({'_id': exist_user['_id']}, {'$set': record}, upsert=False, multi=False)
+                        self.collection.remove({'_id': exist_user['_id']})
+                        self.collection.insert(record, safe=True)
+
+                        self.response['data'] = True
+                    except Exception, e:
+                        self.print_debug_info(e, self.debug_mode)
+                        self.response['error'] = 'Create user user error..'
             else:
 
-            # Aca se crea un nuevo usuario asique solamente inicializamos
+                # Aca se crea un nuevo usuario asique solamente inicializamos
+                event_name = str(event_permalink)
+                new_attendee_at = {}
+
+                if not talk_permalink:
+                    new_attendee_at[event_name] = []
+                else:
+                    new_attendee_at[event_name] = [talk_permalink]
 
                 record = {'_id': user_data['_id'],
-                          'name': user_data['name'], 'active': user_data['active'],
-                          'role': 'assistant', 'attendee_at': event_permalink}
+                          'active': user_data['active'], 'name': None, 'password': None,
+                          'role': user_data['role'], 'attendee_at': new_attendee_at, 'speaker_at': {}}
 
                 try:
                     self.collection.insert(record, safe=True)
@@ -243,6 +297,33 @@ class User:
             self.response['error'] = 'Error..'
             return self.response
 
+
+    def save_speaker(self, speaker_email, event_permalink, talk_permalink):
+        exist_user = self.collection.find_one({'_id': speaker_email})
+
+        event_name = str(event_permalink)
+        talk_name = str(talk_permalink)
+        new_speaker_at = exist_user['speaker_at']
+
+
+        if not new_speaker_at.has_key(event_name):
+            new_speaker_at[event_name] = [talk_name]
+        else:
+            talks = new_speaker_at[event_name]
+            talks.append(talk_name)
+            new_speaker_at[event_name] = talks
+
+        record = {'_id': exist_user['_id'],
+                  'password': exist_user['password'],
+                  'name': exist_user['name'],
+                  'active': exist_user['active'],
+                  'role': exist_user['role'],
+                  'attendee_at': exist_user['attendee_at'],
+                  'speaker_at': new_speaker_at}
+
+        #self.collection.update({'_id': exist_user['_id']}, {'$set': record}, upsert=False, multi=False)
+        self.collection.remove({'_id': exist_user['_id']})
+        self.collection.insert(record, safe=True)
 
     @staticmethod
     def print_debug_info(msg, show=False):

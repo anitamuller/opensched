@@ -289,6 +289,11 @@ def new_talk(event_permalink):
                     response = talkClass.create_new_talk(talk)
                     eventClass.add_new_talk(event_permalink, talk)
 
+                    speaker_mail = request.form.get('talk-speaker')
+                    talk_permalink = talk_with_permalink['permalink']
+
+                    userClass.save_speaker(speaker_mail, event_permalink, talk_permalink)
+
                     if response['error']:
                         error = True
                         error_type = 'event'
@@ -300,7 +305,7 @@ def new_talk(event_permalink):
         if session.get('talk-preview') and session['talk-preview']['action'] == 'edit':
             session.pop('talk-preview', None)
 
-    speakers = userClass.get_users_by_role("speaker")
+    speakers = eventClass.get_attendance_event(event_permalink)
 
     return render_template('new_talk.html',
                            event_permalink=event_permalink,
@@ -404,17 +409,15 @@ def talks_by_event(event_permalink):
 @app.route('/<event_permalink>/add_attendee_event')
 @login_required()
 def add_attendee_event(event_permalink):
-    role_list = ['Attendee', 'Speaker']
     return render_template('add_attendee_event.html', event_permalink=event_permalink,
-                           role_list=role_list, meta_title='Invite attendee to event')
+                           meta_title='Invite attendee to event')
 
 
 @app.route('/<event_permalink>/<talk_permalink>/add_attendee_talk')
 @login_required()
 def add_attendee_talk(event_permalink, talk_permalink):
-    role_list = ['Attendee', 'Speaker']
     return render_template('add_attendee_talk.html', event_permalink=event_permalink,
-                           role_list=role_list, talk_permalink=talk_permalink, meta_title='Invite attendee to talk')
+                           talk_permalink=talk_permalink, meta_title='Invite attendee to talk')
 
 
 @app.route('/<event_permalink>/attendance')
@@ -626,20 +629,16 @@ def save_attendee_event(event_permalink):
 
     post_data = {
         '_id': request.form.get('user-id', None).lower().strip(),
-        'name': request.form.get('user-name', None),
-        'email': request.form.get('user-email', None),
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None)
     }
-    if not post_data['name'] or not post_data['_id']:
-        flash('Name and Email are required..', 'error')
+    if not post_data['_id']:
+        flash('Email is required..', 'error')
         return redirect(url_for('add_attendee_event'))
     else:
         userClass.save_attendee(post_data, event_permalink)
         attendee_email = request.form.get('user-id', None)
         eventClass.add_new_attendee(event_permalink, attendee_email)
-        message = 'Attendee added!'
-        flash(message, 'success')
 
     #return redirect(url_for('edit_event', id=str(event['data']['_id'])))
     return redirect(url_for('events'))
@@ -650,21 +649,19 @@ def save_attendee_event(event_permalink):
 def save_attendee_talk(event_permalink, talk_permalink):
     post_data = {
         '_id': request.form.get('user-id', None),
-        'name': request.form.get('user-name', None),
+        'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None)
     }
 
-    if not post_data['_id'] or not post_data['name']:
-        flash('Name and Email are required..', 'error')
+    if not post_data['_id'] :
+        flash('Email is required..', 'error')
         return redirect(url_for('add_attendee_talk'))
     else:
-        # Ver como vamos a guardar esta informacion
         userClass.save_attendee(post_data, event_permalink, talk_permalink)
         attendee_email = request.form.get('user-id', None)
         eventClass.add_new_attendee(event_permalink, attendee_email)
         talkClass.add_new_attendee(talk_permalink, attendee_email)
-        message = 'Attendee added!'
-        flash(message, 'success')
+
 
     return redirect(url_for('events'))
 

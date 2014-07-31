@@ -110,14 +110,18 @@ class Event:
 
         return events_attendee
 
-    def events_by_user_attendee2(self, user_id):
-        list_attendee = []
+    def get_attendance_event(self, event_permalink):
+        self.response['error'] = None
+        try:
+            self.response['data'] = self.collection.find_one(
+                {'permalink': event_permalink})
 
-        cursor = self.collection.find()
-        for event in cursor:
-            if user_id in event['attendees']:
-                list_attendee.append(event['permalink'])
-        return list_attendee
+        except Exception, e:
+            self.print_debug_info(e, self.debug_mode)
+            self.response['error'] = 'Event not found..'
+
+        return self.response['data']['attendees']
+
 
     def get_total_count(self, tag=None, search=None):
         cond = {}
@@ -197,22 +201,23 @@ class Event:
                      {'permalink': permalink})
 
         event_attendees = self.response['data']['attendees']
-        event_attendees.append(email_attendee)
+        if not email_attendee in event_attendees:
+            event_attendees.append(email_attendee)
 
-        new_event = self.response['data']
+            new_event = self.response['data']
 
-        event_name = new_event['name']
-        event_summary = new_event['summary']
-        event_description = new_event['description']
-        event_organizer = new_event['organizer']
-        event_permalink = new_event['permalink']
-        event_venue = new_event['venue']
-        event_start = new_event['start']
-        event_end = new_event['end']
-        event_talks = new_event['talks']
-        event_tags = new_event['tags']
+            event_name = new_event['name']
+            event_summary = new_event['summary']
+            event_description = new_event['description']
+            event_organizer = new_event['organizer']
+            event_permalink = new_event['permalink']
+            event_venue = new_event['venue']
+            event_start = new_event['start']
+            event_end = new_event['end']
+            event_talks = new_event['talks']
+            event_tags = new_event['tags']
 
-        self.collection.update({'permalink': permalink},
+            self.collection.update({'permalink': permalink},
                                {'name': event_name, 'summary': event_summary,
                                 'description': event_description, 'organizer': event_organizer,
                                 'permalink': event_permalink, 'venue': event_venue,
