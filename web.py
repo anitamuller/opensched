@@ -43,13 +43,30 @@ def events_by_tag(tag, page):
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
     return render_template('index.html', events=events['data'], pagination=pag, meta_title='Events by tag: ' + tag)
 
+@app.route('/talks/tag/<tag>', defaults={'page': 1})
+@app.route('/talks/tag/<tag>/page-<int:page>')
+def talks_by_tag(tag, page):
+    skip = (page - 1) * int(app.config['PER_PAGE'])
+    talks = talkClass.get_talks(int(app.config['PER_PAGE']), skip, tag=tag)
+    count = talkClass.get_total_count(tag=tag)
+    if not talks['data']:
+        abort(404)
+    pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
+    return render_template('index.html', talks=talks['data'], pagination=pag, meta_title='Talks by tag: ' + tag)
+
 
 @app.route('/<permalink>')
 def single_event(permalink):
     event = eventClass.get_event_by_permalink(permalink)
     if not event['data']:
         abort(404)
-    return render_template('single_event.html', event=event['data'], meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
+    list_talks = event['data']['talks']
+    talks_event = []
+    for talk in list_talks:
+        talk_event = talkClass.get_talk_by_permalink(talk)
+        talks_event.append(talk_event['data'])
+
+    return render_template('single_event.html', event=event['data'], talks= talks_event, meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
 
 @app.route('/q/<query>', defaults={'page': 1})
@@ -377,16 +394,6 @@ def single_talk(event_permalink, talk_permalink):
                            meta_title=app.config['SITE_TITLE'] + '::' + talk['data']['name'])
 
 
-@app.route('/tag/<tag>', defaults={'page': 1})
-@app.route('/tag/<tag>/page-<int:page>')
-def talks_by_tag(tag, page):
-    skip = (page - 1) * int(app.config['PER_PAGE'])
-    talks = talkClass.get_talks(int(app.config['PER_PAGE']), skip, tag=tag)
-    count = talkClass.get_total_count(tag=tag)
-    if not talks['data']:
-        abort(404)
-    pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    return render_template('index.html', talks=talks['data'], pagination=pag, meta_title='Talks by tag: ' + tag)
 
 
 @app.route('/<event_permalink>/talks')
@@ -528,7 +535,6 @@ def dashboard_user():
     for event_name in list_name_events_speaker:
         event_speaker = eventClass.get_event_by_permalink(event_name)
         list_events_speaker.append(event_speaker['data'])
-
 
     return render_template('dashboard_user.html', events_organized_by=events_organizer,
                            events_attendee=list_events_attendee,

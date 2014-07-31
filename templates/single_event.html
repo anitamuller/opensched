@@ -48,11 +48,20 @@
 							{%- endif -%}
 						</div>
 					</div>
+
+                    <h1>Talks {{ event['name'] }}</h1>
+                    <table class="table table-striped">
+                    {%- for talk in talks -%}
+                     <tr>
+                        <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
+                     </tr>
+                    {%- endfor -%}
+                    </table>
 				</div>
 			</div>
 		</div>
 	{%- endif -%}
-	{%- include 'sidebar.html' -%}
+	{%- include 'sidebar_event.html' -%}
 {%- endblock -%}
 
 {%- block additional_js -%}

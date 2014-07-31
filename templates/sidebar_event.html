@@ -1,14 +1,6 @@
-{%- if recent_events -%}
 <div class="col-lg-3 visible-lg sidebar">
-    <h2>Recent events</h2>
-    <hr>
-    <ul>
-    {% for event in recent_events %}
-        <li><a href="{{ url_for('single_event', permalink=event['permalink']) }}">{{ event['name'] }}</a></li>
-    {% endfor %}
-    </ul>
     {%- if tags -%}
-    <h2>Top tags Events</h2>
+    <h2>Top tags Talks</h2>
     <hr>
     <ul>
     {% for tag in tags %}
@@ -17,4 +9,4 @@
     </ul>
     {%- endif -%}
 </div>
-{%- endif -%}
+
