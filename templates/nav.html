@@ -9,7 +9,7 @@
 		{% if session.user %}
             {% if session.user.role == 'admin' %}
             <li><a href="{{ url_for('dashboard_admin') }}">Dashboard</a></li>
-            {% elif session.user.role == 'user' %}
+            {% elif session.user.role == 'User' %}
             <li><a href="{{ url_for('dashboard_user') }}">Dashboard</a></li>
             {% endif %}
 			<li><a href="{{ url_for('logout') }}">Logout</a></span></li>

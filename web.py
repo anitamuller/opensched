@@ -503,10 +503,14 @@ def dashboard_admin():
     return render_template('dashboard_admin.html', events_created=events_created, meta_title='Admin dashboard')
 
 
-@app.route('/dashboard_user')
+@app.route('/dashboard_user', defaults={'page': 1})
+@app.route('/dashboard_user/page-<int:page>')
 @login_required()
-def dashboard_user():
-    return render_template('dashboard_user.html', meta_title='Users dashboard')
+def dashboard_user(page):
+    organizer = None if session['user']['role'] == 'admin' else session['user']['email']
+    skip = (page - 1) * int(app.config['PER_PAGE'])
+    events = eventClass.get_events(int(app.config['PER_PAGE']), skip, organizer)
+    return render_template('dashboard_user.html', events_organized_by=events['data'], meta_title='Users dashboard')
 
 
 @app.route('/users')
@@ -628,7 +632,7 @@ def save_attendee_event(event_permalink):
         flash('Name and Email are required..', 'error')
         return redirect(url_for('add_attendee_event'))
     else:
-        userClass.save_attendee(event_permalink, post_data)
+        userClass.save_attendee(post_data, event_permalink)
         attendee_email = request.form.get('user-id', None)
         eventClass.add_new_attendee(event_permalink, attendee_email)
         message = 'Attendee added!'
@@ -652,8 +656,9 @@ def save_attendee_talk(event_permalink, talk_permalink):
         return redirect(url_for('add_attendee_talk'))
     else:
         # Ver como vamos a guardar esta informacion
-        userClass.save_attendee(event_permalink, talk_permalink, post_data)
+        userClass.save_attendee(post_data, event_permalink, talk_permalink)
         attendee_email = request.form.get('user-id', None)
+        eventClass.add_new_attendee(event_permalink, attendee_email)
         talkClass.add_new_attendee(talk_permalink, attendee_email)
         message = 'Attendee added!'
         flash(message, 'success')

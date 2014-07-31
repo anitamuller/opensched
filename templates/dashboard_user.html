@@ -21,13 +21,13 @@
       <div class="row">
          <div class="col-lg-12">
             <h2>Events you organize</h2>
-               {%- if events -%}
+               {%- if events_organized_by -%}
                <div class="content">
                   <table class="table table-striped">
                      <tr>
                         <th>Name</th>
                      </tr>
-                     {%- for event in events_organized_by_user -%}
+                     {%- for event in events_organized_by -%}
                      <tr>
                         <td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                      </tr>

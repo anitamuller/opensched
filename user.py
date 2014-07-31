@@ -178,7 +178,7 @@ class User:
                             user_data['new_pass'], method='pbkdf2:sha256')
                         record = {'_id': user_data['_id'], 'password': password_hash,
                                   'name': user_data['name'], 'role': user_data['role'],
-                                  'active': user_data['active'], 'speaker_at': [], 'attendee_at': []}
+                                  'active': user_data['active'], 'speaker_at': {}, 'attendee_at': {}}
                         try:
                             self.collection.insert(record, safe=True)
                             self.response['data'] = True
@@ -193,7 +193,7 @@ class User:
             self.response['error'] = 'Error..'
         return self.response
 
-    def save_attendee(self, event_permalink, user_data):
+    def save_attendee(self, user_data, event_permalink, talk_permalink=None):
         self.response['error'] = None
         if user_data:
             if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['_id']):
@@ -207,8 +207,24 @@ class User:
             # el evento de acuerdo al rol especificado en el form
 
             if exist_user:
-                self.response['error'] = 'Email already exists..'
-                return self.response
+                event_name = str(event_permalink)
+
+                new_attendee_at = exist_user['attendee_at']
+
+                new_attendee_at[event_name] = []
+
+                record = {'_id': exist_user['_id'],
+                          'name': exist_user['name'],
+                          'active': exist_user['active'],
+                          'role': exist_user['role'],
+                          'attendee_at': new_attendee_at}
+
+                try:
+                    self.collection.update({'_id': exist_user['_id']}, {'$set': record}, upsert=False, multi=False)
+                    self.response['data'] = True
+                except Exception, e:
+                    self.print_debug_info(e, self.debug_mode)
+                    self.response['error'] = 'Create user user error..'
             else:
 
             # Aca se crea un nuevo usuario asique solamente inicializamos
