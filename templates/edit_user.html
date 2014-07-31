@@ -71,6 +71,7 @@
                               <input type="password" class="form-control" name="user-new-password-again" id="user-new-password-again" placeholder="New Password Repeat" autocomplete="off">
                            </div>
                         </fieldset>
+                        {%- if session.user.role == 'admin' -%}
                         <fieldset>
                            <legend>Role</legend>
                            <div class="form-group">
@@ -91,6 +92,15 @@
                            <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                            <input id="post-submit" type="submit" class="btn btn-primary" value="Submit">
                         </div>
+                        {%- else -%}
+                           <div class="form-group">
+                           <input name="user-id" type="hidden" value="{{ user['_id'] }}">
+                           <input name="user-role" type="hidden" value="user">
+                           <input name="user-update" type="hidden" value="1">
+                           <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+                           <input id="post-submit" type="submit" class="btn btn-primary" value="Submit">
+                        </div>
+                        {%- endif -%}
                      </div>
                   </form>
                   {%- endif -%}

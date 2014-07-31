@@ -551,10 +551,7 @@ def delete_user(id):
 
 @app.route('/save_user', methods=['POST'])
 @login_required()
-@privileged_user()
 def save_user():
-    import pdb
-    pdb.set_trace()
     post_data = {
         '_id': request.form.get('user-id', None),
         'name': request.form.get('user-name', None),
@@ -565,6 +562,7 @@ def save_user():
         'active': request.form.get('user-active', None),
         'update': request.form.get('user-update', False)
     }
+
     if not post_data['name'] or not post_data['_id']:
         flash('Name and Email are required..', 'error')
         if post_data['update']:
@@ -582,7 +580,11 @@ def save_user():
         else:
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
-    return redirect(url_for('users_list'))
+
+    if session['user']['role'] == 'user':
+        return redirect(url_for('dashboard_user'))
+    else:
+        return redirect(url_for('users_list'))
 
 
 @app.route('/register_user', methods=['POST'])
@@ -668,7 +670,10 @@ def save_attendee_talk(event_permalink, talk_permalink):
 
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required()
-def site_settings():
+def configure_settings():
+    user_email = session['user']['email']
+    user = userClass.get_user(user_email)
+    role_list = ['Admin', 'User']
     error = None
     error_type = 'validate'
     if request.method == 'POST':
@@ -689,13 +694,14 @@ def site_settings():
                 flash(update_result['error'], 'error')
             else:
                 flash('Settings updated!', 'success')
-                return redirect(url_for('site_settings'))
+                return redirect(url_for('configure_settings'))
 
     return render_template('settings.html',
                            default_settings=app.config,
                            meta_title='Settings',
                            error=error,
-                           error_type=error_type)
+                           error_type=error_type,
+                           user=user['data'], role_list=role_list)
 
 
 @app.route('/install', methods=['GET', 'POST'])

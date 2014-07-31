@@ -124,6 +124,8 @@ class User:
         return self.response
 
     def save_user(self, user_data):
+        import pdb
+        pdb.set_trace()
         self.response['error'] = None
         if user_data:
             if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", user_data['_id']):
@@ -138,7 +140,7 @@ class User:
                             if user_data['new_pass'] and user_data['new_pass'] == user_data['new_pass_again']:
                                 password_hash = generate_password_hash(
                                     user_data['new_pass'], method='pbkdf2:sha256')
-                                record = {'password': password_hash}
+                                record = {'password': password_hash, 'name': user_data['name']}
                                 try:
                                     self.collection.update(
                                         {'_id': user_data['_id']}, {'$set': record}, upsert=False, multi=False)
