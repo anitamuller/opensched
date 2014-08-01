@@ -4,9 +4,9 @@
       <div class="talk">
          <div class="row">
             <div class="col-lg-12">
-               {%- if talks -%}
+               {%- if session.user and talks -%}
                <div class="page-header">
-                  <h1>My Schedule</h1>
+                  <h2>My Schedule</h2>
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -18,17 +18,15 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <table class="table table-striped">
+                  <ul class="user-events">
                      {%- for talk in talks -%}
-                     <tr>
-                        <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
-                     </tr>
+                        <li><a title="Preview" href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></li>
                      {%- endfor -%}
-                  </table>
+                  </ul>
                </div>
                {%- else -%}
                <div class="page-header">
-                    <h1>Talks not found...</h1>
+                    <h3>Talks not found...</h3>
                </div>
                </div>
                {%- endif -%}
