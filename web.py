@@ -744,7 +744,6 @@ def save_attendee_talk(event_permalink, talk_permalink):
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None)
     }
-
     if not post_data['_id'] :
         flash('Email is required..', 'error')
         return redirect(url_for('add_attendee_talk'))
@@ -756,6 +755,20 @@ def save_attendee_talk(event_permalink, talk_permalink):
 
 
     return redirect(url_for('events'))
+
+@app.route('/<event_permalink>/<talk_permalink>/new_schedule_talk')
+@login_required()
+def new_schedule_talk(event_permalink, talk_permalink):
+    attendee_email = session['user']['email']
+    attendee_data = userClass.get_user(attendee_email)
+    attendee = attendee_data['data']
+
+    userClass.save_attendee(attendee, event_permalink, talk_permalink)
+    eventClass.add_new_attendee(event_permalink, attendee_email)
+    talkClass.add_new_attendee(talk_permalink, attendee_email)
+
+    return redirect(url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk_permalink))
+
 
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required()

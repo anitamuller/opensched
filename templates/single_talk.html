@@ -16,7 +16,7 @@
 					</div>
                     <div>
                         {%- if session.user -%}
-                            <a href="" class="single-sched">Add to my schedule!</a>
+                            <a href="{{ url_for('new_schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="single-sched">Add to my schedule!</a>
                         {%- else -%}
                             <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Sign up</a>
                         {%- endif -%}
