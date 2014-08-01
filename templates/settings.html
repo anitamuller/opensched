@@ -17,11 +17,11 @@
                <div class="page-header">
                   <h1>Settings</h1>
                </div>
-               <div class="add-space more">
-                    <h2>Site configuration</h2>
-               </div>
                <div class="content">
                   {%- if session.user and session.user.role == 'Admin' -%}
+                  <div class="add-space more">
+                    <h2>Site configuration</h2>
+                  </div>
                   <form role="form" method="post" action="{{ url_for('configure_settings') }}">
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
