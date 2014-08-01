@@ -33,10 +33,10 @@ class Settings:
             self.response['error'] = 'System error..'
 
     def is_installed(self):
-        events_cnt= self.config['EVENTS_COLLECTION'].find().count()
         users_cnt = self.config['USERS_COLLECTION'].find().count()
         configs_cnt = self.config['SETTINGS_COLLECTION'].find().count()
-        if events_cnt and users_cnt and configs_cnt:
+
+        if users_cnt and configs_cnt:
             session['installed'] = True
             return True
         else:
@@ -50,20 +50,34 @@ class Settings:
 
         self.response['error'] = None
         try:
+            self.config['USERS_COLLECTION'].ensure_index([('date', 1)])
+
             self.config['EVENTS_COLLECTION'].ensure_index([('date', -1)])
             self.config['EVENTS_COLLECTION'].ensure_index(
                 [('tags', 1), ('date', -1)])
             self.config['EVENTS_COLLECTION'].ensure_index([('permalink', 1)])
             self.config['EVENTS_COLLECTION'].ensure_index(
                 [('query', 1), ('orderby', 1)])
-            self.config['USERS_COLLECTION'].ensure_index([('date', 1)])
 
+            self.config['TALKS_COLLECTION'].ensure_index([('date', -1)])
+            self.config['TALKS_COLLECTION'].ensure_index(
+                [('tags', 1), ('date', -1)])
+            self.config['TALKS_COLLECTION'].ensure_index([('permalink', 1)])
+            self.config['TALKS_COLLECTION'].ensure_index(
+                [('query', 1), ('orderby', 1)])
+
+            # Create admin user
             user_create = userClass.save_user(user_data)
+
+            # Init site properties
+            self.collection.insert(site_data)
 
             if user_create['error']:
                 self.response['error'] = []
                 self.response['error'].append(user_create['error'])
                 self.config['USERS_COLLECTION'].drop()
+                self.config['EVENTS_COLLECTION'].drop()
+                self.config['TALKS_COLLECTION'].drop()
                 self.collection.drop()
             return self.response
         except Exception, e:

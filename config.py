@@ -2,13 +2,9 @@ import pymongo
 
 import os
 
-
-
 CONNECTION_STRING = "mongodb://localhost"  # replace it with your settings
 
 CONNECTION = pymongo.MongoClient(CONNECTION_STRING)
-
-
 
 '''Leave this as is if you dont have other configuration'''
 
@@ -21,8 +17,6 @@ SETTINGS_COLLECTION = DATABASE.settings
 EVENTS_COLLECTION = DATABASE.events
 
 TALKS_COLLECTION = DATABASE.talks
-
-
 
 SECRET_KEY = ""
 
@@ -64,10 +58,6 @@ else:
 
     f.close()
 
-
-
 LOG_FILE = "app.log"
-
-
 
 DEBUG = True  # set it to False on production
