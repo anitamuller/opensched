@@ -1,5 +1,6 @@
 import cgi
 import os
+from itertools import groupby
 from flask import Flask, render_template, abort, url_for, request, flash, session, redirect
 from flaskext.markdown import Markdown
 from mdx_github_gists import GitHubGistExtension
@@ -43,16 +44,19 @@ def events_by_tag(tag, page):
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
     return render_template('index.html', events=events['data'], pagination=pag, meta_title='Events by tag: ' + tag)
 
-@app.route('/talks/tag/<tag>', defaults={'page': 1})
-@app.route('/talks/tag/<tag>/page-<int:page>')
-def talks_by_tag(tag, page):
+@app.route('/<event_permalink>/talks/tag/<tag>', defaults={'page': 1})
+@app.route('/<event_permalink>/talks/tag/<tag>/page-<int:page>')
+def talks_by_tag(event_permalink, tag, page):
     skip = (page - 1) * int(app.config['PER_PAGE'])
-    talks = talkClass.get_talks(int(app.config['PER_PAGE']), skip, tag=tag)
+    talks = talkClass.get_talks(int(app.config['PER_PAGE']), skip, event_permalink=event_permalink, tag=tag)
     count = talkClass.get_total_count(tag=tag)
     if not talks['data']:
         abort(404)
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    return render_template('index.html', talks=talks['data'], pagination=pag, meta_title='Talks by tag: ' + tag)
+    # Tenemos que hacer un indice para las charlas
+    # ahora al hacer click funciona pero no se ve toda
+    # la informacion porque usa events en vez de talks para acceder
+    return render_template('index.html', events=talks['data'], pagination=pag, meta_title='Talks by tag: ' + tag)
 
 
 @app.route('/<permalink>')
@@ -60,13 +64,18 @@ def single_event(permalink):
     event = eventClass.get_event_by_permalink(permalink)
     if not event['data']:
         abort(404)
-    list_talks = event['data']['talks']
-    talks_event = []
-    for talk in list_talks:
-        talk_event = talkClass.get_talk_by_permalink(talk)
-        talks_event.append(talk_event['data'])
+    talks_list = event['data']['talks']
+    talks = []
+    tags = []
 
-    return render_template('single_event.html', event=event['data'], talks= talks_event, meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
+    for talk in talks_list:
+        talk_event = talkClass.get_talk_by_permalink(talk)
+        talks.append(talk_event['data'])
+        tags.extend(talk_event['data']['tags'])
+
+    tags = list(set(tags))
+
+    return render_template('single_event.html', event=event['data'], talks=talks, tags=tags, meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
 
 @app.route('/q/<query>', defaults={'page': 1})
@@ -268,6 +277,7 @@ def new_talk(event_permalink):
             tags_array = extract_tags(tags)
 
             talk_data = {'name': talk_name,
+                         'event': event_permalink,
                          'summary': talk_summary,
                          'description': talk_description,
                          'date': request.form.get('talk-date'),
@@ -355,7 +365,6 @@ def talk_edit(event_permalink, id):
 
     speakers = userClass.get_users_by_role("speaker")
 
-
     return render_template('edit_talk.html',
                            event_permalink=event_permalink,
                            meta_title='Edit talk::' + talk['data']['name'],
@@ -392,9 +401,6 @@ def single_talk(event_permalink, talk_permalink):
     talk = talkClass.get_talk_by_permalink(talk_permalink)
     return render_template('single_talk.html', event_permalink=event_permalink, talk=talk['data'],
                            meta_title=app.config['SITE_TITLE'] + '::' + talk['data']['name'])
-
-
-
 
 @app.route('/<event_permalink>/talks')
 def talks_by_event(event_permalink):

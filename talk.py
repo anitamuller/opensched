@@ -12,7 +12,7 @@ class Talk:
         self.response = {'error': None, 'data': None}
         self.debug_mode = default_config['DEBUG']
 
-    def get_talks(self, limit, skip, tag=None, search=None):
+    def get_talks(self, limit, skip, event_permalink=None, tag=None, search=None):
         self.response['error'] = None
         cond = {}
         if tag is not None:
@@ -35,19 +35,21 @@ class Talk:
                 if 'attendees' not in talk:
                     talk['attendees'] = []
 
-                self.response['data'].append({'id': talk['_id'],
-                                              'name': talk['name'],
-                                              'summary': talk['summary'],
-                                              'description': talk['description'],
-                                              'date': talk['date'],
-                                              'start': talk['start'],
-                                              'end': talk['end'],
-                                              'room': talk['room'],
-                                              'speaker': talk['speaker'],
-                                              'permalink': talk['permalink'],
-                                              'tags': talk['tags'],
-                                              'attendees': talk['attendees'],
-                                              'attendance': len(talk['attendees'])})
+                if event is None or (event_permalink is not None and event_permalink == talk['event']):
+                    self.response['data'].append({'id': talk['_id'],
+                                                  'name': talk['name'],
+                                                  'event': talk['event'],
+                                                  'summary': talk['summary'],
+                                                  'description': talk['description'],
+                                                  'date': talk['date'],
+                                                  'start': talk['start'],
+                                                  'end': talk['end'],
+                                                  'room': talk['room'],
+                                                  'speaker': talk['speaker'],
+                                                  'permalink': talk['permalink'],
+                                                  'tags': talk['tags'],
+                                                  'attendees': talk['attendees'],
+                                                  'attendance': len(talk['attendees'])})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Talks not found..'
@@ -131,9 +133,9 @@ class Talk:
         talk_attendees = self.get_talk_by_id(talk_id)
         talk_attendees_ = talk_attendees['data']['attendees']
 
-
         try:
             record = {'name': talk_data['name'],
+                      'event': talk_data['event'],
                       'summary': talk_data['summary'],
                       'description': talk_data['description'],
                       'date': talk_data['date'],
@@ -169,12 +171,11 @@ class Talk:
 
         return self.response
 
-
-
     @staticmethod
     def validate_talk_data(talk_data):
 
         talk_data['name'] = cgi.escape(talk_data['name'])
+        talk_data['event'] = cgi.escape(talk_data['event'])
         talk_data['summary'] = cgi.escape(talk_data['summary'], quote=True)
         talk_data['description'] = cgi.escape(talk_data['description'], quote=True)
         talk_data['date'] = cgi.escape(talk_data['date'], quote=True)
@@ -182,11 +183,10 @@ class Talk:
         talk_data['end'] = cgi.escape(talk_data['end'], quote=True)
         talk_data['room'] = cgi.escape(talk_data['room'], quote=True)
 
-
         return talk_data
 
     def generate_permalink(self, talk_data):
-        cond = {'name': talk_data['name']}
+        cond = {'name': talk_data['name'], 'event': talk_data['event']}
         talks_samename = self.collection.find(cond).count()
 
         name_without_spaces=talk_data['name'].replace(" ", "_")
@@ -201,7 +201,6 @@ class Talk:
         talk_data['permalink'] = permalink
         return talk_data
 
-
     def add_new_attendee(self, permalink, email_attendee):
         self.response['data'] = self.collection.find_one(
                      {'permalink': permalink})
@@ -212,6 +211,7 @@ class Talk:
         new_talk = self.response['data']
 
         talk_name = new_talk['name']
+        talk_event = new_talk['event']
         talk_summary = new_talk['summary']
         talk_description = new_talk['description']
         talk_speaker = new_talk['speaker']
@@ -223,7 +223,7 @@ class Talk:
         talk_tags = new_talk['tags']
 
         self.collection.update({'permalink': permalink},
-                               {'name': talk_name, 'summary': talk_summary,
+                               {'name': talk_name, 'event': talk_event, 'summary': talk_summary,
                                 'description': talk_description, 'speaker': talk_speaker,
                                 'permalink': talk_permalink, 'room': talk_room,
                                 'date': talk_date,'start': talk_start, 'end': talk_end,
