@@ -2,7 +2,11 @@
    <div class="sidebar-nav navbar-collapse">
       <ul class="nav" id="side-menu">
          <li>
-            <a class="active" href="{{ url_for('configure_settings') }}"><i class="fa fa-dashboard fa-fw"></i> Settings</a>
+            {% if session.user and session.user.role == 'Admin' %}
+            <a class="active" href="{{ url_for('dashboard_admin') }}"><i class="fa fa-dashboard fa-fw"></i> My dashboard</a>
+            {% else %}
+            <a class="active" href="{{ url_for('dashboard_user') }}"><i class="fa fa-dashboard fa-fw"></i> My dashboard</a>
+            {% endif %}
          </li>
          <li>
             <a href="#"><i class="fa fa-asterisk fa-fw"></i> Events<span class="fa arrow"></span></a>
@@ -21,6 +25,9 @@
             <!-- /.nav-second-level -->
          </li>
          {% endif %}
+         <li>
+            <a class="active" href="{{ url_for('configure_settings') }}"><i class="fa fa-gears fa-fw"></i> Settings</a>
+         </li>
       </ul>
    </div>
    <!-- /.sidebar-collapse -->

@@ -97,7 +97,16 @@ class Event:
 
         return self.response['data']
 
-
+    def get_organizers(self):
+        events_organizers = []
+        try:
+            cursor = self.collection.find()
+            for event in cursor:
+                if event['organizer'] not in events_organizers:
+                    events_organizers.append(event['organizer'])
+            return events_organizers
+        except Exception, e:
+            self.print_debug_info(e, self.debug_mode)
 
     def events_by_role(self, user_id):
         events_attendee = []
@@ -133,7 +142,6 @@ class Event:
             self.response['error'] = 'Event not found..'
 
         return self.response['data']['attendees']
-
 
     def get_total_count(self, tag=None, search=None):
         cond = {}

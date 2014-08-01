@@ -3,8 +3,6 @@ import hashlib
 import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import session
-import event
-import talk
 
 
 class User:
@@ -82,7 +80,6 @@ class User:
             self.print_debug_info(e, self.debug_mode)
 
         return user
-
 
     def get_users_by_role(self, role):
         users = self.collection.find({'role': role})
@@ -293,7 +290,6 @@ class User:
         else:
             self.response['error'] = 'Error..'
             return self.response
-
 
     def save_speaker(self, speaker_email, event_permalink, talk_permalink):
         exist_user = self.collection.find_one({'_id': speaker_email})

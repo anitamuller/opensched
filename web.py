@@ -511,10 +511,18 @@ def login():
             else:
                 userClass.start_session(user_data['data'])
                 flash('You are logged in!', 'success')
-                return redirect(url_for('events'))
+                role = user_data['data'].get('role')
+                if role == 'user':
+                    return redirect(url_for('dashboard_user'))
+                else:
+                    return redirect(url_for('dashboard_admin'))
     else:
         if session.get('user'):
-            return redirect(url_for('events'))
+            role = session.get('user').get('role')
+            if role == 'user':
+                return redirect(url_for('dashboard_user'))
+            else:
+                return redirect(url_for('dashboard_admin'))
 
     return render_template('login.html',
                            meta_title='Login',
@@ -533,7 +541,40 @@ def logout():
 @privileged_user()
 def dashboard_admin():
     events_created = eventClass.get_total_count()
-    return render_template('dashboard_admin.html', events_created=events_created, meta_title='Admin dashboard')
+    talks_created = talkClass.get_total_count()
+    attendees_number = len(userClass.get_users_by_role('User'))
+    organizers_number = len(eventClass.get_organizers())
+
+    user_email = session['user']['email']
+    user = userClass.get_user(user_email)
+
+    events_organizer = eventClass.events_organized_by(user_email)
+
+    attendee_at = user['data']['attendee_at']
+    list_name_events_attendee = attendee_at.keys()
+    list_events_attendee = []
+
+    for event_name in list_name_events_attendee:
+        event_attendee = eventClass.get_event_by_permalink(event_name)
+        list_events_attendee.append(event_attendee['data'])
+
+    speaker_at = user['data']['speaker_at']
+    list_name_events_speaker = speaker_at.keys()
+    list_events_speaker = []
+
+    for event_name in list_name_events_speaker:
+        event_speaker = eventClass.get_event_by_permalink(event_name)
+        list_events_speaker.append(event_speaker['data'])
+
+    return render_template('dashboard_admin.html',
+                           events_organized_by=events_organizer,
+                           events_attendee=list_events_attendee,
+                           events_speaker=list_events_speaker,
+                           events_created=events_created,
+                           talks_created=talks_created,
+                           attendees_number=attendees_number,
+                           organizers_number=organizers_number,
+                           meta_title='Admin dashboard')
 
 
 @app.route('/dashboard_user')
@@ -560,7 +601,8 @@ def dashboard_user():
         event_speaker = eventClass.get_event_by_permalink(event_name)
         list_events_speaker.append(event_speaker['data'])
 
-    return render_template('dashboard_user.html', events_organized_by=events_organizer,
+    return render_template('dashboard_user.html',
+                           events_organized_by=events_organizer,
                            events_attendee=list_events_attendee,
                            events_speaker=list_events_speaker,
                            meta_title='Users dashboard')
@@ -585,7 +627,6 @@ def edit_user(id):
 
 @app.route('/view_user?id=<id>')
 @login_required()
-@privileged_user()
 def view_user(id):
     user = userClass.get_user(id)
     return render_template('view_user.html', user=user['data'], meta_title='View user')
@@ -759,6 +800,7 @@ def install():
 
     error = False
     error_type = 'validate'
+
     if request.method == 'POST':
         user_error = False
         site_error = False
@@ -766,12 +808,13 @@ def install():
         user_data = {
             '_id': request.form.get('user-email', None).lower().strip(),
             'name': request.form.get('user-name', None),
-            'role': 'admin',
+            'role': 'Admin',
             'active': 1,
             'new_pass': request.form.get('user-new-password', None),
             'new_pass_again': request.form.get('user-new-password-again', None),
             'update': False
         }
+
         site_data = {
             'title': request.form.get('site-title', None),
             'description': request.form.get('site-description', None)

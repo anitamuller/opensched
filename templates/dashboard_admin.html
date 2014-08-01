@@ -18,7 +18,7 @@
          </div>
          <!-- /.col-lg-12 -->
       </div>
-      <div class="row">
+      <div class="add-space row">
          <div class="col-lg-12">
             <h2>System metrics</h2>
          </div>
@@ -56,12 +56,12 @@
                         <i class="fa fa-comments fa-5x"></i>
                      </div>
                      <div class="col-xs-9 text-right">
-                        <div class="huge">N</div>
+                        <div class="huge">{{ talks_created }}</div>
                         <div>Talks</div>
                      </div>
                   </div>
                </div>
-               <a href="#">
+               <a href="/events_list">
                   <div class="panel-footer">
                      <span class="pull-left">View Details</span>
                      <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -78,12 +78,12 @@
                         <i class="fa fa-users fa-5x"></i>
                      </div>
                      <div class="col-xs-9 text-right">
-                        <div class="huge">N</div>
+                        <div class="huge">{{ attendees_number }}</div>
                         <div>Attendees</div>
                      </div>
                   </div>
                </div>
-               <a href="#">
+               <a href="/users">
                   <div class="panel-footer">
                      <span class="pull-left">View Details</span>
                      <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -100,12 +100,12 @@
                         <i class="fa fa-tasks fa-5x"></i>
                      </div>
                      <div class="col-xs-9 text-right">
-                        <div class="huge">N</div>
-                        <div>Organizators</div>
+                        <div class="huge">{{ organizers_number }}</div>
+                        <div>Organizers</div>
                      </div>
                   </div>
                </div>
-               <a href="#">
+               <a href="/users">
                   <div class="panel-footer">
                      <span class="pull-left">View Details</span>
                      <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -116,12 +116,64 @@
          </div>
       </div>
       <!-- /.row -->
-       <div class="row">
+      <div class="row">
          <div class="col-lg-12">
-            <h2>Quick create</h2>
-             <p>Botones de crear... eventos, usuarios... etc</p>
+            <h2>My events</h2>
          </div>
          <!-- /.col-lg-12 -->
+      </div>
+      <div class="row">
+         <div class="col-lg-12">
+            <h3>Events you organize</h3>
+            {%- if events_organized_by -%}
+            <div class="content">
+               <table class="table">
+                  {%- for event_organizer in events_organized_by -%}
+                  <td><a title="Preview" href="{{ url_for('single_event', permalink=event_organizer['permalink']) }}" data-target="_blank">{{ event_organizer['name'] }}</a></td>
+                  {%- endfor -%}
+               </table>
+            </div>
+            {%- else -%}
+            <h4>Events not found...</h4>
+            {%- endif -%}
+         </div>
+         <!-- /.col-lg-12 -->
+      </div>
+      <!-- /.row -->
+      <div class="row">
+         <div class="col-lg-12">
+            <h3>Attendee at</h3>
+            {%- if events_attendee -%}
+            <div class="content">
+               <table class="table">
+                  {%- for event_attendee in events_attendee -%}
+                  <td><a title="Preview" href="{{ url_for('single_event', permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a></td>
+                  {%- endfor -%}
+               </table>
+            </div>
+            {%- else -%}
+            <h4>Events not found...</h4>
+            {%- endif -%}
+         </div>
+         <!-- /.col-lg-12 -->
+      </div>
+      <!-- /.row -->
+      <div class="row">
+         <div class="col-lg-12">
+            <h3>Speaker at</h3>
+            {%- if events_attendee -%}
+            <div class="content">
+               <table class="table">
+                  {%- for event_attendee in events_attendee -%}
+                  <td><a title="Preview" href="{{ url_for('single_event', permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a></td>
+                  {%- endfor -%}
+               </table>
+            </div>
+            {%- else -%}
+            <h4>Events not found...</h4>
+            {%- endif -%}
+            <!-- /.col-lg-12 -->
+         </div>
       </div>
     </div>
     <!-- /#page-wrapper -->
