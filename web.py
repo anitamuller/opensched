@@ -732,7 +732,6 @@ def save_attendee_event(event_permalink):
         attendee_email = request.form.get('user-id', None)
         eventClass.add_new_attendee(event_permalink, attendee_email)
 
-    #return redirect(url_for('edit_event', id=str(event['data']['_id'])))
     return redirect(url_for('events'))
 
 
@@ -753,8 +752,7 @@ def save_attendee_talk(event_permalink, talk_permalink):
         eventClass.add_new_attendee(event_permalink, attendee_email)
         talkClass.add_new_attendee(talk_permalink, attendee_email)
 
-
-    return redirect(url_for('events'))
+    return redirect(url_for('talks_by_event', event_permalink=event_permalink))
 
 @app.route('/<event_permalink>/<talk_permalink>/new_schedule_talk')
 @login_required()
