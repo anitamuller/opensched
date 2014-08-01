@@ -206,3 +206,12 @@ input[type='checkbox'] {
     list-style-type: none;
     padding: 0;
 }
+
+.user-talks {
+    list-style-type: none;
+    padding: 0;
+}
+
+.single-sched {
+    margin-right: 2%;
+}

@@ -1,72 +1,41 @@
 {%- extends 'index.html' -%}
 {%- block head -%}
 {%- include 'head.html' -%}
-{%- block additional_css -%}<link href="{{ url_for('static', filename='css/lightbox.css') }}" rel="stylesheet" media="screen">{%- endblock -%}
+{%- block additional_css -%}
+<link href="{{ url_for('static', filename='css/lightbox.css') }}" rel="stylesheet" media="screen">
+{%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
-	{%- if event -%}
-		<div class="event clearfix">
-			<div class="row">
-				<div class="col-lg-8">
-					<div class="page-header">
-						<h1>{{ event['name'] }}</h1>
-                        <p><span class="icon-time">&nbsp;</span>
-                        <td>Organized by <a title="Organizer" href="{{ url_for('view_user', id=event['organizer']) }}" data-target="_blank"> {{ event['organizer'] }}</a></td></p>
-						<div class="social row-fluid">
-					        <!-- AddThis Button BEGIN -->
-							<div class="addthis_toolbox addthis_default_style addthis_16x16_style">
-								<a class="addthis_button_twitter"></a>
-								<a class="addthis_button_facebook"></a>
-								<a class="addthis_button_google_plusone_share"></a>
-								<a class="addthis_button_evernote"></a>
-								<a class="addthis_button_pocket"></a>
-							</div>
-							<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-526fe54e082798d3"></script>
-							<!-- AddThis Button END -->
-				        </div>
-					</div>
-					<div class="content article">
-						<div><h3>Summary</h3></div>
-						{{ event['summary']|markdown }}
-                        <div><h3>Description</h3></div>
-						{{ event['description']|markdown }}
-                        <div><h3>Start date</h3></div>
-                        {{ event['start'] }}
-                        <div><h3>End date</h3></div>
-                       	{{ event['end'] }}
-                        <div><h3>Venue</h3></div>
-                       	{{ event['venue'] }}
-
-					</div>
-					<div class="infopanel">
-						<div class="tags">
-							<i>tags:</i>
-							{%- if event['tags'] -%}
-								{%- for tag in event['tags'] -%}
-									&nbsp;<a href="{{ url_for('events_by_tag', tag=tag) }}">{{ tag }}</a>
-								{%- endfor -%}
-							{%- endif -%}
-						</div>
-					</div>
-
-                    <h1>Talks {{ event['name'] }}</h1>
-                    <table class="table table-striped">
-                    {%- for talk in talks -%}
-                     <tr>
-                        <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
-                     </tr>
-                    {%- endfor -%}
-                    </table>
-
-                    <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="response btn btn-primary">My Schedule</a>
-
-				</div>
-			</div>
-		</div>
-	{%- endif -%}
-	{%- include 'sidebar_event.html' -%}
+{%- if event -%}
+<div class="event clearfix">
+   <div class="row">
+      <div class="col-lg-8">
+         <div class="page-header">
+            <h1>{{ event['name'] }}</h1>
+         </div>
+         <div>
+            {%- if session.user -%}
+            <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="single-sched">My Schedule</a>
+            <a href="" class="single-sched">Speakers</a>
+            <a href="" class="single-sched">Attendees</a>
+            {%- else -%}
+            <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Sign up</a>
+            {%- endif -%}
+         </div>
+         &nbsp; <br/>
+         <div>
+            <ul class="user-talks">
+               {%- for talk in talks -%}
+               <li><h3><a title="Preview" href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></h3></li>
+               {%- endfor -%}
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>
+{%- endif -%}
+{%- include 'sidebar_event.html' -%}
 {%- endblock -%}
-
 {%- block additional_js -%}
 <script src="{{ url_for('static', filename='js/lightbox-2.6.min.js') }}"></script>
 {%- endblock -%}
