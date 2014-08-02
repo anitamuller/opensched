@@ -26,7 +26,14 @@
          <div>
             <ul class="user-talks">
                {%- for talk in talks -%}
-               <li><h3><a title="Preview" href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></h3></li>
+
+               <form name="talks_by_event" ng-controller="Talks_by_Event">
+                    <h3><input type="checkbox" ng-model="checkbox-{{ talk['permalink'] }}" ng-true-value="'YES'" ng-false-value="'NO'" ng-change="new_schedule_talk(event_permalink,talk['permalink'])">
+                    <a title="Preview" href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></h3>
+               </form>
+
+
+
                {%- endfor -%}
             </ul>
          </div>

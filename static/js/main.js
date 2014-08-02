@@ -32,4 +32,15 @@ $(function(){
     $('#talk-start').timepicker();
 
     $('#talk-end').timepicker();
+
+
+    it('should change state', function() {
+        var value1 = element(by.binding('value1'));
+        expect(value1.getText()).toContain('YES');
+        element(by.model('value1')).click();
+        expect(value1.getText()).toContain('NO');
+
+    });
+
+
 });

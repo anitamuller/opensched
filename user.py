@@ -25,7 +25,10 @@ class User:
         try:
             user = self.collection.find_one({'_id': email})
             if user:
-                if self.validate_login(user['password'], password):
+                user_password = user['password'].encode('utf-8')
+                user_repeat_password = password.encode('utf-8')
+                #if self.validate_login(user['password'], password):
+                if self.validate_login(user_password, user_repeat_password):
                     self.email = user['_id']
                     self.name = user['name']
                     self.role = user['role']

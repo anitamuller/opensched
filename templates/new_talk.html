@@ -89,7 +89,10 @@
                               <option name="{{ option }}" selected>{{ option }}</option>
                               {% endfor %}
                            </select>
+                           {%- if not speakers_list -%}
+                           <h5> No attendees at the event to be Speakers. Invite People to the Event!</h5>
                         </div>
+                        {%- endif -%}
                      </fieldset>
                      <div class="form-group">
                         <input type="hidden" name="talk-preview" id="preview">

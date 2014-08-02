@@ -29,8 +29,10 @@
                   {%- endif -%}
                   {%- endwith -%}
                   <a href="{{ url_for('new_talk', event_permalink=event_permalink) }}" class="response btn btn-primary">Add new</a>
+                   </br>
                   <table class="table table-striped">
                      <tr>
+                        <th></th>
                         <th>Name</th>
                         <th>Summary</th>
                         <th>Date</th>
@@ -42,6 +44,9 @@
                      </tr>
                      {%- for talk in talks -%}
                      <tr>
+                        <form name="talks_by_event" ng-controller="Talks_by_Event">
+                            <td><input type="checkbox" ng-model="checkbox-{{ talk['permalink'] }}" ng-true-value="'YES'" ng-false-value="'NO'" ng-change="new_schedule_talk(event_permalink,talk['permalink'])"></td>
+                        </form>
                         <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
                         <td>{{ talk['summary'] }}</td>
                         <td>{{ talk['date']  }}</td>
@@ -80,6 +85,7 @@
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -90,4 +96,5 @@
 <script src="{{ url_for('static', filename='js/plugins/metisMenu/metisMenu.min.js') }}"></script>
 <!-- Custom Theme JavaScript -->
 <script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
+
 {%- endblock -%}

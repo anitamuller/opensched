@@ -66,6 +66,9 @@ class Settings:
             self.config['TALKS_COLLECTION'].ensure_index(
                 [('query', 1), ('orderby', 1)])
 
+
+            import pdb
+            pdb.set_trace()
             # Create admin user
             user_create = userClass.save_user(user_data)
 

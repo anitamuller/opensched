@@ -1,6 +1,5 @@
 import cgi
 import os
-from itertools import groupby
 from flask import Flask, render_template, abort, url_for, request, flash, session, redirect
 from flaskext.markdown import Markdown
 from mdx_github_gists import GitHubGistExtension
@@ -400,7 +399,7 @@ def talk_del(event_permalink, id):
 def single_talk(event_permalink, talk_permalink):
     talk = talkClass.get_talk_by_permalink(talk_permalink)
     return render_template('single_talk.html', event_permalink=event_permalink, talk=talk['data'],
-                           meta_title=app.config['SITE_TITLE'] + '::' + talk['data']['name'])
+                           meta_title='Talk: ' + '::' + talk['data']['name'])
 
 @app.route('/<event_permalink>/talks')
 def talks_by_event(event_permalink):
@@ -483,7 +482,8 @@ def talk_attendance(event_permalink, talk_permalink):
         user = userClass.get_user_by_email(str(attendee))
         list_attendance.append(user)
 
-    return render_template('talk_attendance.html', talk_permalink=talk_permalink, users=list_attendance,
+    return render_template('talk_attendance.html', talk_permalink=talk_permalink, event_permalink= event_permalink,
+                           users=list_attendance,
                            talk_name=talk_name, meta_title='Talk attendance: ' + talk_name)
 
 
@@ -823,7 +823,7 @@ def install():
         site_error = False
 
         user_data = {
-            '_id': request.form.get('user-email', None).lower().strip(),
+            '_id': request.form.get('user-email', None),
             'name': request.form.get('user-name', None),
             'role': 'Admin',
             'active': 1,

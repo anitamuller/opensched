@@ -60,7 +60,7 @@
                 <h2>No people invited to {{ talk_name }} :(</h2>
             </div>
             <div class="content">
-                <a title="Invite attendees to talk" href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk_permalink) }}" class="response btn btn-primary">Invite people</a>
+                <a href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk_permalink) }}" class="response btn btn-primary">Invite People</a>
             </div>
             {%- endif -%}
          </div>
