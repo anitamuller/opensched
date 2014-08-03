@@ -131,6 +131,14 @@ class User:
                 return self.response
 
             exist_user = self.collection.find_one({'_id': user_data['_id']})
+
+            # Fix usuarios no activos
+            if exist_user and exist_user['active'] == '0':
+                user_data['update'] = True
+                user_data['old_pass'] = 'pass'
+                exist_user['password'] = generate_password_hash(
+                    user_data['old_pass'], method='pbkdf2:sha256')
+
             if user_data['update'] is not False:
                 if exist_user:
                     if user_data['old_pass']:
@@ -138,10 +146,11 @@ class User:
                             if user_data['new_pass'] and user_data['new_pass'] == user_data['new_pass_again']:
                                 password_hash = generate_password_hash(
                                     user_data['new_pass'], method='pbkdf2:sha256')
-                                record = {'password': password_hash, 'name': user_data['name']}
+                                record = {'password': password_hash, 'name': user_data['name'], 'active': u'1'}
                                 try:
+
                                     self.collection.update(
-                                        {'_id': user_data['_id']}, {'$set': record}, upsert=False, multi=False)
+                                        {'_id': user_data['_id']}, {'$set': record}, upsert=True, multi=False)
                                     self.response['data'] = True
                                 except Exception, e:
                                     self.print_debug_info(e, self.debug_mode)

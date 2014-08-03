@@ -94,10 +94,11 @@ class Talk:
 
         return self.collection.find(cond).count()
 
-    def get_tags(self):
+    def get_tags(self, event_permalink):
         self.response['error'] = None
         try:
             self.response['data'] = self.collection.aggregate([
+                {'$match': {'event': event_permalink }},
                 {'$unwind': '$tags'},
                 {'$group': {'_id': '$tags', 'count': {'$sum': 1}}},
                 {'$sort': {'count': -1}},

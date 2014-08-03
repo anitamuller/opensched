@@ -33,7 +33,7 @@
 							<i>tags:</i>
 							{%- if talk['tags'] -%}
 								{%- for tag in talk['tags'] -%}
-									&nbsp;<a href="{{ url_for('talks_by_tag', tag=tag) }}">{{ tag }}</a>
+									&nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>
 								{%- endfor -%}
 							{%- endif -%}
 						</div>

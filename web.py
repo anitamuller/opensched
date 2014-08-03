@@ -65,16 +65,13 @@ def single_event(permalink):
         abort(404)
     talks_list = event['data']['talks']
     talks = []
-    tags = []
 
     for talk in talks_list:
         talk_event = talkClass.get_talk_by_permalink(talk)
         talks.append(talk_event['data'])
-        tags.extend(talk_event['data']['tags'])
+        tags = talkClass.get_tags(permalink)
 
-    tags = list(set(tags))
-
-    return render_template('single_event.html', event=event['data'], talks=talks, tags=tags, meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
+    return render_template('single_event.html', event=event['data'], talks=talks, tags=tags['data'], meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
 
 @app.route('/q/<query>', defaults={'page': 1})
