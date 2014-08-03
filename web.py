@@ -359,7 +359,10 @@ def talk_edit(event_permalink, id):
     if session.get('talk-preview') and session['talk-preview']['action'] == 'add':
         session.pop('talk-preview', None)
 
-    speakers = userClass.get_users_by_role("speaker")
+    speakers = eventClass.get_attendance_event(event_permalink)
+    old_speaker = talk['data']['speaker']
+    speakers.remove(old_speaker)
+    speakers.append(old_speaker) #quedando el speaker de la charla seleccionado como corresponde
 
     return render_template('edit_talk.html',
                            event_permalink=event_permalink,
