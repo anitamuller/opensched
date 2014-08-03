@@ -64,14 +64,29 @@ def single_event(permalink):
     if not event['data']:
         abort(404)
     talks_list = event['data']['talks']
-    talks = []
+    talks, attendees, speakers_event, speakers = [], [], [], []
 
     for talk in talks_list:
         talk_event = talkClass.get_talk_by_permalink(talk)
+        speakers_event.append(str(talk_event['data']['speaker']))
         talks.append(talk_event['data'])
         tags = talkClass.get_tags(permalink)
 
-    return render_template('single_event.html', event=event['data'], talks=talks, tags=tags['data'], meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
+
+    attendees_event = eventClass.get_attendance_event(permalink)
+    for attendee_event in attendees_event:
+        user_with_gravatar_img = userClass.get_user(attendee_event)
+        attendees.append(user_with_gravatar_img['data'])
+
+    for speaker_event in speakers_event:
+        user_with_gravatar_img = userClass.get_user(speaker_event)
+        speakers.append(user_with_gravatar_img['data'])
+
+
+
+    return render_template('single_event.html', event=event['data'], talks=talks, tags=tags['data'],
+                           attendees=attendees, speakers=speakers,
+                           meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
 
 @app.route('/q/<query>', defaults={'page': 1})
@@ -619,7 +634,14 @@ def dashboard_user():
 @privileged_user()
 def users_list():
     users = userClass.get_users()
-    return render_template('users.html', users=users['data'], meta_title='Users')
+    list_users = []
+    for user in users['data']:
+        user_id = user['id']
+        user_with_gravatar = userClass.get_user(user_id)
+        list_users.append(user_with_gravatar['data'])
+
+
+    return render_template('users.html', users=list_users, meta_title='Users')
 
 
 @app.route('/edit_user?id=<id>')

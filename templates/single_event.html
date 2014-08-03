@@ -15,9 +15,39 @@
          </div>
          <div>
             {%- if session.user -%}
-            <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="single-sched">My Schedule</a>
-            <a href="" class="single-sched">Speakers</a>
-            <a href="" class="single-sched">Attendees</a>
+            <div ng-app="" ng-controller="eventController">
+                <ul class="list_none">
+                <li><a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="single-sched">My Schedule</a></li>
+                </br>
+                <li><button ng-click="clickSpeakers()" class="btn btn-info">Speakers</button></li>
+                <div ng-show="showSpeakers">
+                    <ul class="list_none">
+                    {%- for speaker in speakers -%}
+                        <li>
+                            <div class="photo-user">
+                                <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
+                                <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
+                            </div>
+                        </li>
+                    {%- endfor -%}
+                    </ul>
+                </div>
+                </br>
+                <li><button ng-click="clickAttendees()" class="btn btn-info">Attendees</button></li>
+                <div ng-show="showAttendees">
+                    <ul class="list_none">
+                    {%- for attendee in attendees -%}
+                        <li>
+                            <div class="photo-user">
+                                <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
+                                <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
+                            </div>
+                        </li>
+                    {%- endfor -%}
+                    </ul>
+                </div>
+             </ul>
+            </div>
             {%- else -%}
             <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Sign up</a>
             {%- endif -%}
@@ -39,6 +69,26 @@
          </div>
       </div>
    </div>
+
+
+
+    <script>
+    function eventController($scope) {
+
+    $scope.showSpeakers = false;
+    $scope.showAttendees = false;
+    $scope.clickSpeakers = function() {
+        $scope.showSpeakers = !$scope.showSpeakers;
+    };
+    $scope.clickAttendees = function() {
+        $scope.showAttendees = !$scope.showAttendees;
+    };
+    }
+    </script>
+
+    <script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
+
+
 </div>
 {%- endif -%}
 {%- include 'sidebar_event.html' -%}

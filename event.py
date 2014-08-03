@@ -143,6 +143,8 @@ class Event:
 
         return self.response['data']['attendees']
 
+
+
     def get_total_count(self, tag=None, search=None):
         cond = {}
         if tag is not None:

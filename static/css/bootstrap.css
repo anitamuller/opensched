@@ -3193,6 +3193,10 @@ tbody.collapse.in {
   background-image: none;
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
+
+.list_none {
+   list-style: none;
+}
 .open > .dropdown-menu {
   display: block;
 }
