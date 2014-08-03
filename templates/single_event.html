@@ -16,10 +16,11 @@
          <div>
             {%- if session.user -%}
             <div ng-app="" ng-controller="eventController">
-                <ul class="list_none">
-                <li><a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="single-sched">My Schedule</a></li>
-                </br>
-                <li><button ng-click="clickSpeakers()" class="btn btn-info btn-sm">Speakers</button></li>
+
+                <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="single-sched">My Schedule</a>
+                <button ng-click="clickSpeakers()" class="btn btn-info btn-sm">Speakers</button>
+                <button ng-click="clickAttendees()" class="btn btn-info btn-sm">Attendees</button>
+
                 <div ng-show="showSpeakers">
                     <ul class="list_none">
                     {%- for speaker in speakers -%}
@@ -33,7 +34,7 @@
                     </ul>
                 </div>
                 </br>
-                <li><button ng-click="clickAttendees()" class="btn btn-info btn-sm">Attendees</button></li>
+
                 <div ng-show="showAttendees">
                     <ul class="list_none">
                     {%- for attendee in attendees -%}
@@ -46,7 +47,7 @@
                     {%- endfor -%}
                     </ul>
                 </div>
-             </ul>
+
             </div>
             {%- else -%}
             <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Sign up</a>
@@ -74,15 +75,17 @@
 
     <script>
     function eventController($scope) {
+        $scope.showSpeakers = false;
+        $scope.showAttendees = false;
+        $scope.clickSpeakers = function() {
+            $scope.showAttendees = false;
+            $scope.showSpeakers = !$scope.showSpeakers;
+        };
+        $scope.clickAttendees = function() {
+            $scope.showSpeakers = false;
+            $scope.showAttendees = !$scope.showAttendees;
 
-    $scope.showSpeakers = false;
-    $scope.showAttendees = false;
-    $scope.clickSpeakers = function() {
-        $scope.showSpeakers = !$scope.showSpeakers;
-    };
-    $scope.clickAttendees = function() {
-        $scope.showAttendees = !$scope.showAttendees;
-    };
+        };
     }
     </script>
 
