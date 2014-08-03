@@ -27,6 +27,7 @@
                         <li>
                             <div class="photo-user">
                                 <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
+                                {{ speaker['name'] }}
                                 <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
                             </div>
                         </li>
@@ -41,6 +42,7 @@
                         <li>
                             <div class="photo-user">
                                 <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
+                                {{ attendee['name'] }}
                                 <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
                             </div>
                         </li>
