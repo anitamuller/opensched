@@ -19,7 +19,7 @@
                 <ul class="list_none">
                 <li><a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="single-sched">My Schedule</a></li>
                 </br>
-                <li><button ng-click="clickSpeakers()" class="btn btn-info">Speakers</button></li>
+                <li><button ng-click="clickSpeakers()" class="btn btn-info btn-sm">Speakers</button></li>
                 <div ng-show="showSpeakers">
                     <ul class="list_none">
                     {%- for speaker in speakers -%}
@@ -33,7 +33,7 @@
                     </ul>
                 </div>
                 </br>
-                <li><button ng-click="clickAttendees()" class="btn btn-info">Attendees</button></li>
+                <li><button ng-click="clickAttendees()" class="btn btn-info btn-sm">Attendees</button></li>
                 <div ng-show="showAttendees">
                     <ul class="list_none">
                     {%- for attendee in attendees -%}
