@@ -426,10 +426,21 @@ def talk_del(event_permalink, id):
 @app.route('/<event_permalink>/<talk_permalink>')
 def single_talk(event_permalink, talk_permalink):
     talk = talkClass.get_talk_by_permalink(talk_permalink)
+
+    speaker_talk = talk['data']['speaker']
+    speaker_with_gravatar = userClass.get_user(speaker_talk)
+
+    attendees_talk = talk['data']['attendees']
+    list_attendees = []
+    for attendee_talk in attendees_talk:
+        attendee = userClass.get_user(attendee_talk)
+        list_attendees.append(attendee['data'])
+
     talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
     talk['data']['start'] = time_to_string(talk['data']['start'])
     talk['data']['end'] = time_to_string(talk['data']['end'])
     return render_template('single_talk.html', event_permalink=event_permalink, talk=talk['data'],
+                           speaker=speaker_with_gravatar['data'], attendees=list_attendees,
                            meta_title='Talk: ' + '::' + talk['data']['name'])
 
 @app.route('/<event_permalink>/talks')
