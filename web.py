@@ -12,6 +12,7 @@ import user
 import pagination
 import settings
 from helper_functions import *
+from flask import jsonify
 
 
 app = Flask(__name__)
@@ -413,6 +414,16 @@ def talk_del(event_permalink, id):
         flash('Need to be at least one talk..', 'error')
 
     return redirect(url_for('talks_by_event', event_permalink=event_permalink))
+
+@app.route('/delete_talks_ajax', methods = ['POST'])
+@login_required()
+def delete_talks_ajax():
+    import pdb
+    pdb.set_trace()
+    list_talks = request.json
+    flash('Talk removed!', 'success')
+
+    return redirect(url_for('events'))
 
 
 @app.route('/<event_permalink>/<talk_permalink>')
