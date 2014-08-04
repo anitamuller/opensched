@@ -114,11 +114,13 @@
 
             $.ajax({
                     url:'/delete_talks_ajax',
-                    type: "POST",
-                    contentType:"application/json",
-                    dataType:"json",
+                    type: 'POST',
+                    contentType:'application/json; charset=utf-8',
+                    dataType:'json',
                     data: JSON.stringify(list_talks)
-          });
+            }).done(function( msg ) {
+                alert( "Data Saved: " + msg );
+            });
 
         };
 

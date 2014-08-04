@@ -421,6 +421,11 @@ def delete_talks_ajax():
     import pdb
     pdb.set_trace()
     list_talks = request.json
+
+    for talk in talks:
+        talk_event = talkClass.get_talk_by_permalink(talk)
+        talk_del(talk_event, talk)
+
     flash('Talk removed!', 'success')
 
     return redirect(url_for('events'))
