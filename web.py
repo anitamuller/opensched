@@ -87,6 +87,9 @@ def single_event(permalink):
         talks.append(talk_event['data'])
         tags = talkClass.get_tags(permalink)
 
+    if tags:
+        tags = tags['data']
+
     attendees_event = eventClass.get_attendance_event(permalink)
 
     for attendee_event in attendees_event:
@@ -97,7 +100,9 @@ def single_event(permalink):
         user_with_gravatar_img = userClass.get_user(speaker_event)
         speakers.append(user_with_gravatar_img['data'])
 
-    return render_template('single_event.html', event=event['data'], talks=talks, tags=tags['data'],
+
+
+    return render_template('single_event.html', event=event['data'], talks=talks, tags=tags,
                            attendees=attendees, speakers=speakers,
                            meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
