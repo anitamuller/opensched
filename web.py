@@ -422,7 +422,7 @@ def delete_talks_ajax():
     pdb.set_trace()
     list_talks = request.json
 
-    for talk in talks:
+    for talk in list_talks:
         talk_event = talkClass.get_talk_by_permalink(talk)
         talk_del(talk_event, talk)
 
