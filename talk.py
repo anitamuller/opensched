@@ -174,14 +174,10 @@ class Talk:
 
     @staticmethod
     def validate_talk_data(talk_data):
-
         talk_data['name'] = cgi.escape(talk_data['name'])
         talk_data['event'] = cgi.escape(talk_data['event'])
         talk_data['summary'] = cgi.escape(talk_data['summary'], quote=True)
         talk_data['description'] = cgi.escape(talk_data['description'], quote=True)
-        talk_data['date'] = cgi.escape(talk_data['date'], quote=True)
-        talk_data['start'] = cgi.escape(talk_data['start'], quote=True)
-        talk_data['end'] = cgi.escape(talk_data['end'], quote=True)
         talk_data['room'] = cgi.escape(talk_data['room'], quote=True)
 
         return talk_data

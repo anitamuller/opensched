@@ -3,7 +3,6 @@
 {%- include 'head.html' -%}
 {%- block additional_css -%}
 <link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
-<link href="{{ url_for('static', filename='css/plugins/timeline.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
 {%- endblock -%}
@@ -125,29 +124,11 @@
       <div class="row">
          <div class="col-lg-12">
             <h3>Events you organize</h3>
-            {%- if events_organized_by -%}
+            {%- if organizer_at -%}
             <div class="content">
                <ul class="user-events">
-                  {%- for event_organizer in events_organized_by -%}
-                  <li><a title="Preview" href="{{ url_for('single_event', permalink=event_organizer['permalink']) }}" data-target="_blank">{{ event_organizer['name'] }}</a> on {{ event_organizer['start'] }}</li>
-                  {%- endfor -%}
-               </ul>
-            </div>
-            {%- else -%}
-            <h4>Events not found...</h4>
-            {%- endif -%}
-         </div>
-         <!-- /.col-lg-12 -->
-      </div>
-      <!-- /.row -->
-      <div class="row">
-         <div class="col-lg-12">
-            <h3>Attendee at</h3>
-            {%- if events_attendee -%}
-            <div class="content">
-               <ul class="user-events">
-                  {%- for event_attendee in events_attendee -%}
-                  <li><a title="Preview" href="{{ url_for('single_event', permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a> on {{ event_attendee['start'] }}</li>
+                  {%- for event in organizer_at -%}
+                  <li><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a> on {{ event['start'] }}</li>
                   {%- endfor -%}
                </ul>
             </div>
@@ -161,10 +142,10 @@
       <div class="row">
          <div class="col-lg-12">
             <h3>Speaker at</h3>
-            {%- if events_speaker -%}
+            {%- if speaker_at -%}
             <div class="content">
                <ul class="user-events">
-                  {%- for event_speaker in events_speaker -%}
+                  {%- for event_speaker in speaker_at -%}
                   <li><a title="Preview" href="{{ url_for('single_event', permalink=event_speaker['permalink']) }}" data-target="_blank">{{ event_speaker['name'] }}</a> on {{ event_speaker['start'] }}</li>
                   {%- endfor -%}
                </ul>
@@ -175,8 +156,26 @@
             <!-- /.col-lg-12 -->
          </div>
       </div>
-    </div>
-    <!-- /#page-wrapper -->
+      <div class="row">
+         <div class="col-lg-12">
+            <h3>Attendee at</h3>
+            {%- if attendee_at -%}
+            <div class="content">
+               <ul class="user-events">
+                  {%- for event_attendee in attendee_at -%}
+                  <li><a title="Preview" href="{{ url_for('single_event', permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a> on {{ event_attendee['start'] }}</li>
+                  {%- endfor -%}
+               </ul>
+            </div>
+            {%- else -%}
+            <h4>Events not found...</h4>
+            {%- endif -%}
+         </div>
+         <!-- /.col-lg-12 -->
+      </div>
+      <!-- /.row -->
+   </div>
+   <!-- /#page-wrapper -->
 </div>
 <!-- /#wrapper -->
 {%- endblock -%}

@@ -1,3 +1,4 @@
+import datetime
 import re
 import string
 import random
@@ -50,6 +51,7 @@ def login_required():
         return wrapped
     return wrapper
 
+
 def privileged_user():
     def wrapper(f):
         @wraps(f)
@@ -63,3 +65,31 @@ def privileged_user():
             return f(*args, **kwargs)
         return wrapped
     return wrapper
+
+
+def string_to_date(date):
+    """Transforms a string date in a python date"""
+    parsed = datetime.datetime.strptime(date, "%d/%m/%Y")
+    return parsed
+
+
+def date_to_string(date, date_format):
+    """Transforms a python date in a string date"""
+    if date_format == 'short':
+        parsed = date.strftime('%d') + "/" + date.strftime('%m') + "/" + date.strftime('%y')
+    else:
+        parsed = date.strftime('%A') + date.strftime('%d') + ", " + \
+                      date.strftime('%B') + ", " + date.strftime('%Y')
+    return parsed
+
+
+def string_to_time(time):
+    """Transforms a string time in a python time"""
+    # Intentar guardar el dia tambien
+    parsed = datetime.datetime.strptime(time, "%I:%M %p")
+    return parsed
+
+
+def time_to_string(time):
+    """Transforms a python time in a string time"""
+    return time.strftime('%I') + ":" + time.strftime('%M') + " " + time.strftime('%p')
