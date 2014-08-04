@@ -581,7 +581,6 @@ def login():
                 flash(user_data['error'], 'error')
             else:
                 userClass.start_session(user_data['data'])
-                flash('You are logged in!', 'success')
                 role = user_data['data'].get('role')
                 if role == 'user':
                     if not session.has_key('redirect_event') and not session.has_key('redirect_talk'):
@@ -593,8 +592,6 @@ def login():
                         elif session.has_key('redirect_event'):
                             return redirect(url_for('single_event', permalink=session['redirect_event']))
                 else:
-                    import pdb
-                    pdb.set_trace()
                     if not session.has_key('redirect_event') and not session.has_key('redirect_talk'):
                         return redirect(url_for('dashboard_admin'))
                     else:
@@ -768,7 +765,44 @@ def save_user():
     if session['user']['role'] == 'User':
         return redirect(url_for('dashboard_user'))
     else:
+
         return redirect(url_for('users_list'))
+
+
+@app.route('/save_profile_user', methods=['POST'])
+@login_required()
+def save_profile_user():
+    post_data = {
+        '_id': request.form.get('user-id', None),
+        'name': request.form.get('user-name', None),
+        'old_pass': request.form.get('user-old-password', None),
+        'new_pass': request.form.get('user-new-password', None),
+        'new_pass_again': request.form.get('user-new-password-again', None),
+        'role': request.form.get('user-role', None),
+        'active': request.form.get('user-active', None),
+        'update': request.form.get('user-update', False)
+    }
+
+    if not post_data['name'] or not post_data['_id']:
+        flash('Name and Email are required..', 'error')
+        if post_data['update']:
+                return redirect(url_for('edit_user', id=post_data['_id']))
+        else:
+            return redirect(url_for('add_user'))
+    else:
+        user = userClass.save_user(post_data)
+        if user['error']:
+            flash(user['error'], 'error')
+            if post_data['update']:
+                return redirect(url_for('edit_user', id=post_data['_id']))
+            else:
+                return redirect(url_for('add_user'))
+        else:
+            message = 'User updated!' if post_data['update'] else 'User added!'
+            flash(message, 'success')
+
+    return redirect(url_for('configure_settings'))
+
 
 
 @app.route('/register_user', methods=['POST'])
@@ -884,6 +918,8 @@ def configure_settings():
                 flash('Settings updated!', 'success')
                 return redirect(url_for('configure_settings'))
 
+    import pdb
+    pdb.set_trace()
     return render_template('settings.html',
                            default_settings=app.config,
                            meta_title='Settings',

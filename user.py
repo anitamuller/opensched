@@ -142,7 +142,10 @@ class User:
             if user_data['update'] is not False:
                 if exist_user:
                     if user_data['old_pass']:
-                        if self.validate_login(exist_user['password'], user_data['old_pass']):
+                        exist_password = exist_user['password'].encode('utf-8')
+                        user_old_password = user_data['old_pass'].encode('utf-8')
+                        #if self.validate_login(exist_user['password'], user_data['old_pass']):
+                        if self.validate_login(exist_password, user_old_password):
                             if user_data['new_pass'] and user_data['new_pass'] == user_data['new_pass_again']:
                                 password_hash = generate_password_hash(
                                     user_data['new_pass'], method='pbkdf2:sha256')

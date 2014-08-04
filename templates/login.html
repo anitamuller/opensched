@@ -3,10 +3,10 @@
     <div class="post clearfix">
         <div class="row">
             <div class="col-lg-8">
-                <div class="page-header">
+                <div class="page-header" style="align:center;">
                     <h1>Login</h1>
                 </div>
-                <div class="content">
+                <div class="content" >
                     {%- with messages = get_flashed_messages(with_categories=True) -%}
                         {%- if messages -%}
                             {%- for category, message in messages -%}
@@ -16,7 +16,7 @@
                             {%- endfor -%}
                         {%- endif -%}
                     {%- endwith -%}
-                    <form role="form" method="post" action="{{ url_for('login') }}">
+                    <form role="form" style="align:center; width:60%;"  method="post" action="{{ url_for('login') }}">
                         <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                             {%- if error and error_type == 'validate' -%}
                                 <label class="control-label" for="login-email">Required field</label>
@@ -31,7 +31,7 @@
                         </div>
                         <div class="form-group">
                             <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                            <input type="submit" class="btn btn-primary" value="Submit">
+                            <input type="submit" class="btn btn-primary" value="Login">
                         </div>
                     </form>
                 </div>

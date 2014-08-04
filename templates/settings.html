@@ -29,11 +29,11 @@
                         {%- else -%}
                         <label class="control-label" for="site-title">OpenSched Title</label>
                         {%- endif -%}
-                        <input type="text" class="form-control" name="site-title" id="site-title" placeholder="OpenSched Title" value="{{ default_settings['site_TITLE'] }}" required autocomplete="off">
+                        <input type="text" class="form-control" name="site-title" id="site-title" placeholder="OpenSched Title" value="{{ default_settings['SITE_TITLE'] }}" required autocomplete="off">
                      </div>
                      <div class="form-group">
                         <label class="control-label" for="site-description">OpenSched Description</label>
-                        <input type="text" class="form-control" name="site-description" id="site-description" placeholder="OpenSched Description" value="{{ default_settings['site_DESCRIPTION'] }}" autocomplete="off">
+                        <input type="text" class="form-control" name="site-description" id="site-description" placeholder="OpenSched Description" value="{{ default_settings['SITE_DESCRIPTION'] }}" autocomplete="off">
                      </div>
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
@@ -45,16 +45,18 @@
                      </div>
                      <div class="form-group">
                         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                        <input type="submit" class="btn btn-primary" value="Submit">
+                        <input type="submit" class="btn btn-primary" value="Save">
                      </div>
                   </form>
                   <div class="clearfix more"></div>
                   {%- endif -%}
+
+
                   {%- if user -%}
                   <div class="add-space more">
                         <h2>Profile configuration</h2>
                   </div>
-                  <form class="form-user" role="form" method="post" action="{{ url_for('save_user') }}">
+                  <form class="form-user" role="form" method="post" action="{{ url_for('save_profile_user') }}">
                      <div class="photo-user">
                         <img src="{{ user['gravatar_url'] }}" class="img-circle">
                      </div>
@@ -103,7 +105,7 @@
                            <input name="user-role" type="hidden" value="user">
                         {%- endif -%}
                            <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                           <input id="post-submit" type="submit" class="btn btn-primary" value="Submit">
+                           <input id="post-submit" type="submit" class="btn btn-primary" value="Edit Profile">
                         </div>
                      </div>
                   </form>

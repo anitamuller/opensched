@@ -23,6 +23,9 @@
 
                 <div ng-show="showSpeakers">
                     <ul class="list_none">
+                    {%- if not speakers -%}
+                        <h4>No talks, so no speakers until now!</h4>
+                    {%- endif -%}
                     {%- for speaker in speakers -%}
                         <li>
                             <div class="photo-user">
@@ -38,6 +41,9 @@
 
                 <div ng-show="showAttendees">
                     <ul class="list_none">
+                    {%- if not attendees -%}
+                        <h4>No attendees until now!</h4>
+                    {%- endif -%}
                     {%- for attendee in attendees -%}
                         <li>
                             <div class="photo-user">

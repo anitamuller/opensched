@@ -17,9 +17,6 @@
             {%- endif -%}
             {%- endwith -%}
             <form class="form-user" role="form" method="post" action="{{ url_for('register_user') }}">
-               <div class="photo-user">
-                  <img src="{{ gravatar_url }}" class="img-circle">
-               </div>
                <div>
                   <fieldset>
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">

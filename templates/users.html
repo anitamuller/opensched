@@ -28,16 +28,8 @@
                {%- endif -%}
                {%- endwith -%}
                <a href="{{ url_for('add_user') }}" class="response btn btn-primary">Add User</a>
-               <table class="table table-striped">
-                  <tr>
-                     <td></td>
+               <table style="align:center; width:60%;">
 
-                     <th>Name</th>
-                     <th>Email</th>
-                     <th>Role</th>
-                     <th>Active</th>
-                     <th>Action</th>
-                  </tr>
                   {%- for user in users -%}
                   <tr>
                      <td>
@@ -45,10 +37,9 @@
                         <img src="{{ user['gravatar_url'] }}" class="img-circle">
                      </div>
                      </td>
-                     <td>{{ user['name'] }}</td>
+                     <td><strong>{{ user['name'] }}</strong></td>
                      <td><a title="Email" href="{{ url_for('edit_user', id=user['_id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
-                     <td>{{ user['role'] }}</td>
-                     <td>{{ user['active'] }}</td>
+
                      <td><div class="btn-group">
                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-gear"></i>  <span class="caret"></span>
@@ -61,7 +52,9 @@
                             </ul>
                          </div>
                      </td>
+                     </br>
                   </tr>
+
                   {%- endfor -%}
                   </table>
             </div>
