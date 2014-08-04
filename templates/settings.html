@@ -18,8 +18,17 @@
                   <h1>Settings</h1>
                </div>
                <div class="content">
-                  {%- if session.user and session.user.role == 'Admin' -%}
-                  <div class="add-space more">
+               {%- with messages = get_flashed_messages(with_categories=True) -%}
+               {%- if messages -%}
+               {%- for category, message in messages -%}
+               <div class="response">
+                    <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+               </div>
+               {%- endfor -%}
+               {%- endif -%}
+               {%- endwith -%}
+               {%- if session.user and session.user.role == 'Admin' -%}
+                    <div class="add-space more">
                     <h2>Site configuration</h2>
                   </div>
                   <form role="form" method="post" action="{{ url_for('configure_settings') }}">

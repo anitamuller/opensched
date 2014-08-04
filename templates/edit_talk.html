@@ -51,24 +51,29 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
+                  <a href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="response btn btn-primary">Invite People</a> </br></br>
                   <form id="post-form" role="form" method="post" action="{{ url_for('new_talk', event_permalink=event_permalink) }}">
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="talk-name">Talk name</label>
                         {%- endif -%}
+                        <label for="talk-name">Name</label>
                         <input type="text" class="form-control" name="talk-name" id="talk-name" placeholder="Talk Name" required value="{{ talk_name }}">
                      </div>
                      <div class="form-group">
+                        <label for="talk-summary">Summary</label>
                         <textarea id="talk-summary" name="talk-summary" class="form-control" rows="3" placeholder="Talk Summary">{{ talk_summary }}</textarea>
                      </div>
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="talk-description">Required field</label>
                         {%- endif -%}
+                         <label for="talk-description">Description</label>
                         <textarea id="talk-description" name="talk-description" class="form-control" rows="6" placeholder="Talk Description" required>{{ talk_description }}</textarea>
                      </div>
                      <div class="form-group">
-                        <input type="text" class="form-control" name="talk-room" id="event-room" placeholder="Talk Room" value="{{ talk_room }}" required>
+                        <label for="talk-room">Room</label>
+                        <input type="text" class="form-control" name="talk-room" id="talk-room" placeholder="Talk Room" value="{{ talk_room }}" required>
                      </div>
                      <div id="event-date" class="event-date">
                         <label for="talk-date">Date</label>
@@ -103,7 +108,7 @@
                         <input id="talk-submit" type="submit" class="btn btn-primary" value="Submit">
                         <input id="talk-preview" type="submit" class="btn" value="Preview">
                      </div>
-                      <a href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="response btn btn-primary">Invite People</a>
+
                   </form>
                </div>
             </div>

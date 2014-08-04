@@ -52,7 +52,7 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <a href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}" class="response btn btn-primary">Add attendees</a>
+                  <a href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}" class="response btn btn-primary">Invite People</a>
                   <a href="{{ url_for('new_talk', event_permalink=event['permalink']) }}" class="response btn btn-primary">Add talks</a>
                   <a href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}" class="response btn btn-primary">List talks</a>
                   <form id="post-form" role="form" method="post" action="{{ url_for('new_event') }}">
@@ -60,18 +60,23 @@
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="event-name">Event name</label>
                         {%- endif -%}
+                        </br>
+                        <label for="event-name">Name</label>
                         <input type="text" class="form-control" name="event-name" id="event-name" placeholder="Event Name" required value="{{ event_name }}">
                      </div>
                      <div class="form-group">
+                        <label for="event-summary">Summary</label>
                         <textarea id="event-summary" name="event-summary" class="form-control" rows="3" placeholder="Event Summary">{{ event_summary }}</textarea>
                      </div>
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="event-description">Required field</label>
                         {%- endif -%}
+                        <label for="event-description">Description</label>
                         <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event Description" required>{{ event_description }}</textarea>
                      </div>
                      <div class="form-group">
+                         <label for="event-venue">Venue</label>
                         <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event Venue" value="{{ event_venue }}" required>
                      </div>
                      <div id="event-date" class="event-date">
@@ -82,17 +87,14 @@
                      </div>
                      <div class="form-group">
                         <label for="event-tags">Tags</label>
-                        <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Comma separated" value="{{ event_tags }}">
+                        <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Tags, Comma separated" value="{{ event_tags }}">
                      </div>
-                     <div class="form-group">
-                        <label for="event-attendees">Attendees</label>
-                        <input type="text" name="event-attendees" class="form-control" id="event-attendees" placeholder="Comma separated" value="{{ event_attendees }}">
-                     </div>
+
                      <div class="form-group">
                         <input type="hidden" name="event-preview" id="preview">
                         <input type="hidden" name="event-id" value="{{ event['_id'] }}">
                         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                        <input id="event-submit" type="submit" class="btn btn-primary" value="Submit">
+                        <input id="event-submit" type="submit" class="btn btn-primary" value="Edit">
                         <input id="event-preview" type="submit" class="btn" value="Preview">
                      </div>
                   </form>

@@ -155,35 +155,6 @@ def events(page):
     return render_template('events.html', events=events['data'], pagination=pag, meta_title='Events')
 
 
-@app.route('/result')
-@login_required()
-def events_by_role():
-    user_id = session['user']['email']
-    result_attendee = []
-    result_speaker = []
-
-    events_attendee, events_organizer = eventClass.events_by_role(user_id)
-
-    list_events_attendee = []
-
-    for event in events_attendee:
-        list_talks_attendee = []
-        list_talks_speaker = []
-        list_events_attendee.append(str(event['permalink']))
-        list_talks = event['talks']
-
-        for talk in list_talks:
-            aux_talk = talkClass.get_talk_by_permalink(talk)
-            if user_id in aux_talk['data']['attendees']:
-                list_talks_attendee.append(str(aux_talk['data']['permalink']))
-            if user_id in aux_talk['data']['speaker']:
-                list_talks_speaker.append(str(aux_talk['data']['permalink']))
-
-        result_attendee.append({str(event['permalink']): list_talks_attendee})
-        result_speaker.append({str(event['permalink']): list_talks_speaker})
-
-    return render_template('result.html', result_attendee=result_attendee, result_speaker=result_speaker, result_organizer= events_organizer, meta_title='Events and talks as attendee')
-
 @app.route('/newevent', methods=['GET', 'POST'])
 @login_required()
 def new_event():
@@ -918,8 +889,6 @@ def configure_settings():
                 flash('Settings updated!', 'success')
                 return redirect(url_for('configure_settings'))
 
-    import pdb
-    pdb.set_trace()
     return render_template('settings.html',
                            default_settings=app.config,
                            meta_title='Settings',

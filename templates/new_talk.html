@@ -78,8 +78,7 @@
                         <input type="text" class="talk-end" name="talk-end" id="talk-end" value="{{ talk_end }}"/>
                      </div>
                      <div class="form-group">
-                        <label for="talk-tags">Tags</label>
-                        <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ ','.join(talk_tags) }}">
+                        <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Tags, Comma separated" value="{{ ','.join(talk_tags) }}">
                      </div>
                      <fieldset>
                         <legend>Speaker</legend>
@@ -98,7 +97,7 @@
                         <input type="hidden" name="talk-preview" id="preview">
                         <input type="hidden" name="talk-event" value="">
                         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                        <input id="talk-submit" type="submit" class="btn btn-primary" value="Submit">
+                        <input id="talk-submit" type="submit" class="btn btn-primary" value="Publish">
                         <input id="talk-preview" type="submit" class="btn" value="Preview">
                      </div>
                   </form>
