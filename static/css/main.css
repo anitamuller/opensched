@@ -20,6 +20,7 @@ body {
     border: 1px solid #E5E5E5;
     padding: 0 10px;
 	margin-top: 10px;
+	list-style-type: none;
  }
 .infopanel .tags {margin:5px 0 5px 0;}
 

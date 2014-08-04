@@ -41,8 +41,8 @@ class Event:
                                               'name': event['name'],
                                               'summary': event['summary'],
                                               'description': event['description'],
-                                              'start': event['start'],
-                                              'end': event['end'],
+                                              'start': date_to_string(event['start'], 'short'),
+                                              'end': date_to_string(event['end'], 'short'),
                                               'venue': event['venue'],
                                               'permalink': event['permalink'],
                                               'organizer': event['organizer'],
@@ -89,8 +89,25 @@ class Event:
 
     def events_organized_by(self, user_email):
         try:
-            self.response['data'] = self.collection.find(
+            cursor = self.collection.find(
                 {'organizer': user_email})
+
+            self.response['data'] = []
+            for event in cursor:
+                self.response['data'].append({'id': event['_id'],
+                                              'name': event['name'],
+                                              'summary': event['summary'],
+                                              'description': event['description'],
+                                              'start': date_to_string(event['start'], 'short'),
+                                              'end': date_to_string(event['end'], 'short'),
+                                              'venue': event['venue'],
+                                              'permalink': event['permalink'],
+                                              'organizer': event['organizer'],
+                                              'tags': event['tags'],
+                                              'talks': event['talks'],
+                                              'attendees': event['attendees'],
+                                              'attendance': len(event['attendees'])
+                })
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Event not found..'
@@ -142,8 +159,6 @@ class Event:
             self.response['error'] = 'Event not found..'
 
         return self.response['data']['attendees']
-
-
 
     def get_total_count(self, tag=None, search=None):
         cond = {}
@@ -279,7 +294,6 @@ class Event:
         del event_data['permalink']
         event_data = self.generate_permalink(event_data)
 
-
         try:
             self.collection.update(
                 {'_id': ObjectId(event_id)}, {"$set": event_data}, upsert=False)
@@ -309,8 +323,6 @@ class Event:
         event_data['name'] = cgi.escape(event_data['name'])
         event_data['summary'] = cgi.escape(event_data['summary'], quote=True)
         event_data['description'] = cgi.escape(event_data['description'], quote=True)
-        event_data['start'] = cgi.escape(event_data['start'], quote=True)
-        event_data['end'] = cgi.escape(event_data['end'], quote=True)
         event_data['venue'] = cgi.escape(event_data['venue'], quote=True)
 
         return event_data

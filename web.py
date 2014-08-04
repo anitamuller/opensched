@@ -61,9 +61,17 @@ def talks_by_tag(event_permalink, tag, page):
 @app.route('/<permalink>')
 def single_event(permalink):
     event = eventClass.get_event_by_permalink(permalink)
+
     if not event['data']:
         abort(404)
+
+    event['data']['start'] = date_to_string(event['data']['start'], 'short')
+    event['data']['end'] = date_to_string(event['data']['end'], 'short')
+
     talks_list = event['data']['talks']
+
+    tags = []
+
     talks, attendees, speakers_event, speakers = [], [], [], []
 
     for talk in talks_list:
@@ -72,8 +80,8 @@ def single_event(permalink):
         talks.append(talk_event['data'])
         tags = talkClass.get_tags(permalink)
 
-
     attendees_event = eventClass.get_attendance_event(permalink)
+
     for attendee_event in attendees_event:
         user_with_gravatar_img = userClass.get_user(attendee_event)
         attendees.append(user_with_gravatar_img['data'])
@@ -81,8 +89,6 @@ def single_event(permalink):
     for speaker_event in speakers_event:
         user_with_gravatar_img = userClass.get_user(speaker_event)
         speakers.append(user_with_gravatar_img['data'])
-
-
 
     return render_template('single_event.html', event=event['data'], talks=talks, tags=tags['data'],
                            attendees=attendees, speakers=speakers,
@@ -164,8 +170,6 @@ def events_by_role():
         result_attendee.append({str(event['permalink']): list_talks_attendee})
         result_speaker.append({str(event['permalink']): list_talks_speaker})
 
-
-
     return render_template('result.html', result_attendee=result_attendee, result_speaker=result_speaker, result_organizer= events_organizer, meta_title='Events and talks as attendee')
 
 @app.route('/newevent', methods=['GET', 'POST'])
@@ -187,8 +191,8 @@ def new_event():
             event_data = {'name': event_name,
                           'summary': event_summary,
                           'description': event_description,
-                          'start': request.form.get('event-start'),
-                          'end': request.form.get('event-end'),
+                          'start': string_to_date(request.form.get('event-start')),
+                          'end': string_to_date(request.form.get('event-end')),
                           'venue': request.form.get('event-venue'),
                           'tags': tags_array,
                           'organizer': session['user']['email'],
@@ -241,8 +245,14 @@ def new_event():
 @login_required()
 def event_edit(id):
     event = eventClass.get_event_by_id(id)
-    session['event-permalink'] = event['data']['permalink']
 
+    event['data']['start'] = date_to_string(event['data']['start'], 'short')
+    event['data']['end'] = date_to_string(event['data']['end'], 'short')
+
+    if event['data']['attendees'] == []:
+        event['data']['attendees'] = ""
+
+    session['event-permalink'] = event['data']['permalink']
 
     if event['error']:
         flash(event['error'], 'error')
@@ -250,6 +260,7 @@ def event_edit(id):
 
     if session.get('event-preview') and session['event-preview']['action'] == 'add':
         session.pop('event-preview', None)
+
     return render_template('edit_event.html',
                            meta_title='Edit event::' + event['data']['name'],
                            event=event['data'],
@@ -291,9 +302,9 @@ def new_talk(event_permalink):
                          'event': event_permalink,
                          'summary': talk_summary,
                          'description': talk_description,
-                         'date': request.form.get('talk-date'),
-                         'start': request.form.get('talk-start'),
-                         'end': request.form.get('talk-end'),
+                         'date': string_to_date(request.form.get('talk-date')),
+                         'start': string_to_time(request.form.get('talk-start')),
+                         'end': string_to_time(request.form.get('talk-end')),
                          'room': request.form.get('talk-room'),
                          'tags': tags_array,
                          'attendees': [],
@@ -374,10 +385,12 @@ def talk_edit(event_permalink, id):
     if session.get('talk-preview') and session['talk-preview']['action'] == 'add':
         session.pop('talk-preview', None)
 
+    talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
+
     speakers = eventClass.get_attendance_event(event_permalink)
     old_speaker = talk['data']['speaker']
     speakers.remove(old_speaker)
-    speakers.append(old_speaker) #quedando el speaker de la charla seleccionado como corresponde
+    speakers.append(old_speaker)  # quedando el speaker de la charla seleccionado como corresponde
 
     return render_template('edit_talk.html',
                            event_permalink=event_permalink,
@@ -413,6 +426,9 @@ def talk_del(event_permalink, id):
 @app.route('/<event_permalink>/<talk_permalink>')
 def single_talk(event_permalink, talk_permalink):
     talk = talkClass.get_talk_by_permalink(talk_permalink)
+    talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
+    talk['data']['start'] = time_to_string(talk['data']['start'])
+    talk['data']['end'] = time_to_string(talk['data']['end'])
     return render_template('single_talk.html', event_permalink=event_permalink, talk=talk['data'],
                            meta_title='Talk: ' + '::' + talk['data']['name'])
 
@@ -420,16 +436,19 @@ def single_talk(event_permalink, talk_permalink):
 def talks_by_event(event_permalink):
     event = eventClass.get_event_by_permalink(event_permalink)
     event_name = event['data']['name']
-    talks_permalinks = eventClass.get_talks_by_event(event_permalink)
 
-    list_talks = []
+    talks_list = eventClass.get_talks_by_event(event_permalink)
+    talks = []
 
-    for talk in talks_permalinks:
-        talk_complete = talkClass.get_talk_by_permalink(str(talk))
-        talk_complete['data']['attendance'] = len(talk_complete['data']['attendees'])
-        list_talks.append(talk_complete['data'])
+    for talk_permalink in talks_list:
+        talk = talkClass.get_talk_by_permalink(str(talk_permalink))
+        talk['data']['attendance'] = len(talk['data']['attendees'])
+        talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
+        talk['data']['start'] = time_to_string(talk['data']['start'])
+        talk['data']['end'] = time_to_string(talk['data']['end'])
+        talks.append(talk['data'])
 
-    return render_template('talks.html', event_permalink=event_permalink, talks=list_talks,
+    return render_template('talks.html', event_permalink=event_permalink, talks=talks,
                            meta_title='Talks by event: ' + event_name)
 
 @app.route('/<event_permalink>/my_schedule')
@@ -567,30 +586,13 @@ def dashboard_admin():
     organizers_number = len(eventClass.get_organizers())
 
     user_email = session['user']['email']
-    user = userClass.get_user(user_email)
 
-    events_organizer = eventClass.events_organized_by(user_email)
-
-    attendee_at = user['data']['attendee_at']
-    list_name_events_attendee = attendee_at.keys()
-    list_events_attendee = []
-
-    for event_name in list_name_events_attendee:
-        event_attendee = eventClass.get_event_by_permalink(event_name)
-        list_events_attendee.append(event_attendee['data'])
-
-    speaker_at = user['data']['speaker_at']
-    list_name_events_speaker = speaker_at.keys()
-    list_events_speaker = []
-
-    for event_name in list_name_events_speaker:
-        event_speaker = eventClass.get_event_by_permalink(event_name)
-        list_events_speaker.append(event_speaker['data'])
+    organizer_at, speaker_at, attendee_at = _events_by_user(user_email)
 
     return render_template('dashboard_admin.html',
-                           events_organized_by=events_organizer,
-                           events_attendee=list_events_attendee,
-                           events_speaker=list_events_speaker,
+                           organizer_at=organizer_at,
+                           speaker_at=speaker_at,
+                           attendee_at=attendee_at,
                            events_created=events_created,
                            talks_created=talks_created,
                            attendees_number=attendees_number,
@@ -602,31 +604,42 @@ def dashboard_admin():
 @login_required()
 def dashboard_user():
     user_email = session['user']['email']
-    user = userClass.get_user(user_email)
 
-    events_organizer = eventClass.events_organized_by(user_email)
-
-    attendee_at = user['data']['attendee_at']
-    list_name_events_attendee = attendee_at.keys()
-    list_events_attendee = []
-
-    for event_name in list_name_events_attendee:
-        event_attendee = eventClass.get_event_by_permalink(event_name)
-        list_events_attendee.append(event_attendee['data'])
-
-    speaker_at = user['data']['speaker_at']
-    list_name_events_speaker = speaker_at.keys()
-    list_events_speaker = []
-
-    for event_name in list_name_events_speaker:
-        event_speaker = eventClass.get_event_by_permalink(event_name)
-        list_events_speaker.append(event_speaker['data'])
+    organizer_at, speaker_at, attendee_at = _events_by_user(user_email)
 
     return render_template('dashboard_user.html',
-                           events_organized_by=events_organizer,
-                           events_attendee=list_events_attendee,
-                           events_speaker=list_events_speaker,
+                           organizer_at=organizer_at,
+                           speaker_at=speaker_at,
+                           attendee_at=attendee_at,
                            meta_title='Users dashboard')
+
+
+def _events_by_user(user_email):
+    user = userClass.get_user(user_email)
+
+    organizer_at = eventClass.events_organized_by(user_email)
+
+    list_speaker_at = user['data']['speaker_at']
+    list_speaker_at_ = list_speaker_at.keys()
+    speaker_at = []
+
+    for event_name in list_speaker_at_:
+        event = eventClass.get_event_by_permalink(event_name)
+        event['data']['start'] = date_to_string(event['data']['start'], 'short')
+        event['data']['end'] = date_to_string(event['data']['end'], 'short')
+        speaker_at.append(event['data'])
+
+    list_attendee_at = user['data']['attendee_at']
+    list_attendee_at_ = list_attendee_at.keys()
+    attendee_at = []
+
+    for event_name in list_attendee_at_:
+        event = eventClass.get_event_by_permalink(event_name)
+        event['data']['start'] = date_to_string(event['data']['start'], 'short')
+        event['data']['end'] = date_to_string(event['data']['end'], 'short')
+        attendee_at.append(event['data'])
+
+    return organizer_at, speaker_at, attendee_at
 
 
 @app.route('/users')
