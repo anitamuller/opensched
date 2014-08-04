@@ -60,6 +60,12 @@ def talks_by_tag(event_permalink, tag, page):
 
 @app.route('/<permalink>')
 def single_event(permalink):
+    if session.has_key('user'):
+        if session.has_key('redirect_event'):
+            session.pop('redirect_event')
+    else:
+        session['redirect_event'] = permalink
+
     event = eventClass.get_event_by_permalink(permalink)
 
     if not event['data']:
@@ -76,7 +82,8 @@ def single_event(permalink):
 
     for talk in talks_list:
         talk_event = talkClass.get_talk_by_permalink(talk)
-        speakers_event.append(str(talk_event['data']['speaker']))
+        if not talk_event['data']['speaker'] in speakers_event:
+            speakers_event.append(str(talk_event['data']['speaker']))
         talks.append(talk_event['data'])
         tags = talkClass.get_tags(permalink)
 
@@ -425,6 +432,14 @@ def talk_del(event_permalink, id):
 
 @app.route('/<event_permalink>/<talk_permalink>')
 def single_talk(event_permalink, talk_permalink):
+    if session.has_key('user'):
+        if session.has_key('redirect_talk') and session.has_key('redirect_event'):
+            session.pop('redirect_event')
+            session.pop('redirect_talk')
+    else:
+        session['redirect_event'] = event_permalink
+        session['redirect_talk'] = talk_permalink
+
     talk = talkClass.get_talk_by_permalink(talk_permalink)
 
     speaker_talk = talk['data']['speaker']
@@ -564,9 +579,25 @@ def login():
                 flash('You are logged in!', 'success')
                 role = user_data['data'].get('role')
                 if role == 'user':
-                    return redirect(url_for('dashboard_user'))
+                    if not session.has_key('redirect_event') and not session.has_key('redirect_talk'):
+                        return redirect(url_for('dashboard_user'))
+                    else:
+                        if session.has_key('redirect_talk'):
+                            return redirect(url_for('single_talk', event_permalink=session['redirect_event'],
+                                                    talk_permalink=session['redirect_talk']))
+                        elif session.has_key('redirect_event'):
+                            return redirect(url_for('single_event', permalink=session['redirect_event']))
                 else:
-                    return redirect(url_for('dashboard_admin'))
+                    import pdb
+                    pdb.set_trace()
+                    if not session.has_key('redirect_event') and not session.has_key('redirect_talk'):
+                        return redirect(url_for('dashboard_admin'))
+                    else:
+                        if session.has_key('redirect_talk'):
+                            return redirect(url_for('single_talk', event_permalink=session['redirect_event'],
+                                                    talk_permalink=session['redirect_talk']))
+                        elif session.has_key('redirect_event'):
+                            return redirect(url_for('single_event', permalink=session['redirect_event']))
     else:
         if session.get('user'):
             role = session.get('user').get('role')
