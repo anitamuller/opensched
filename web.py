@@ -138,6 +138,10 @@ def search():
 @login_required()
 def event_preview():
     event = session.get('event-preview')
+
+    event['start'] = date_to_string(event['start'], 'short')
+    event['end'] = date_to_string(event['end'], 'short')
+
     return render_template('event_preview.html', event=event, meta_title='Preview event::' + event['name'])
 
 
@@ -351,6 +355,11 @@ def new_talk(event_permalink):
 @login_required()
 def talk_preview(event_permalink):
     talk = session.get('talk-preview')
+
+    talk['date'] = date_to_string(talk['date'], 'short')
+    talk['start'] = time_to_string(talk['start'])
+    talk['end'] = time_to_string(talk['end'])
+
     return render_template('talk_preview.html', event_permalink=event_permalink,
                            talk=talk, meta_title='Preview talk::' + talk['name'])
 
