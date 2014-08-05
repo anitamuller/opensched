@@ -1,5 +1,4 @@
 $(function() {
-
      $('#select-all').on('click', function(){  //on click
          if(this.checked) { // check select status
             $('.delete-talk').each(function() { //loop through each checkbox
@@ -11,10 +10,6 @@ $(function() {
                 });
                 }
     });
-
-
-
-
 });
 
 
