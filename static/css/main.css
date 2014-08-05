@@ -223,3 +223,7 @@ input[type='checkbox'] {
     margin-left: 10px;
     margin-right: 10px;
 }
+
+.table-actions {
+    margin-bottom: 2%;
+}

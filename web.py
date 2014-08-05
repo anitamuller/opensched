@@ -437,11 +437,26 @@ def talk_del(event_permalink, id):
 
     return redirect(url_for('talks_by_event', event_permalink=event_permalink))
 
+
 @app.route('/bulk_delete_talks', methods=['POST'])
 def bulk_delete_talks():
-    import pdb
-    pdb.set_trace()
-    z = 1
+    talks_to_remove = request.json['talks_to_remove']
+
+    for talk_permalink in talks_to_remove:
+        talk = talkClass.get_talk_by_permalink(talk_permalink)
+        talk_id = talk['data']['_id']
+
+        response = talkClass.delete_talk(talk_id)
+
+        event_permalink = talk['data']['event']
+        event = eventClass.get_event_by_permalink(event_permalink)
+
+        event_talks = event['data']['talks']
+        event_talks.remove(talk_permalink)
+        eventClass.modify_talks_event(event_permalink, event_talks)
+
+    # Retorna el resultado de la ultima eliminacion
+    return jsonify({'value': response['data']})
 
 
 @app.route('/<event_permalink>/<talk_permalink>')
@@ -1029,7 +1044,6 @@ def install():
                            meta_title='Install')
 
 
-@app.before_request
 def csrf_protect():
     if request.method == "POST":
         token = session.pop('_csrf_token', None)

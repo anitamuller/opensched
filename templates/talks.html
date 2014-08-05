@@ -29,11 +29,10 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <div>
-                  <a href="{{ url_for('new_talk', event_permalink=event_permalink) }}" class="btn btn-primary">Add new</a>
-                  <button id="delete-talks" type="button" class="btn btn-primary" ng-click="talksToDelete()"><i class="fa fa-trash-o"></i> Delete</button>
+                  <div class="table-actions">
+                    <a href="{{ url_for('new_talk', event_permalink=event_permalink) }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add new</a>
+                    <button id="delete-talks" type="button" class="btn btn-primary" ng-click="talksToDelete()"><i class="fa fa-trash-o"></i> Delete</button>
                   </div>
-                  </br></br>
                   <table class="table table-hover">
                      <tr class="active">
                         <td><input type="checkbox" id="select-all" ng-click="clickDelete()" /></td>
@@ -109,28 +108,28 @@
 
         $scope.clickDelete = function() {
             trash = false
-            $('.delete-talk').each(function() { //loop through each checkbox
+            $('.delete-talk').each(function() {  // loop through each checkbox
                 if (this.checked) trash = true;
             });
             $scope.showButtonTrash = trash
         };
 
         $scope.talksToDelete = function() {
-            list_talks = []
-            $('.delete-talk').each(function() { //loop through each checkbox
+            talk_list = []
+            $('.delete-talk').each(function() {  // loop through each checkbox
                 if (this.checked)
-                    list_talks.push(this.value)
+                    talk_list.push(this.value)
             });
 
-            $http({
-                method  : 'POST',
-                url     : 'http://localhost:8080/bulk_delete_talks',
-                data    : JSON.stringify({'talks': list_talks}),
-                headers : {'Content-Type': 'application/json'}
-            }).success(function(data, status, headers, config) {
-                $scope.status = status + ' ' + headers;
-            }).error(function (data, status, headers, config) {
-                $scope.status = status + ' ' + headers;
+            $.ajax({
+                url: 'http://localhost:8080/bulk_delete_talks',
+                type: 'POST',
+                data: JSON.stringify({ talks_to_remove: talk_list }),
+                contentType: "application/json; charset=utf-8",
+            }).done(function(data) {
+                alert('wii');
+            }).fail(function(data) {
+                alert('boo');
             });
         };
     }
