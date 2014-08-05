@@ -1,9 +1,9 @@
 <div class="col-lg-3 visible-lg sidebar">
    {%- if event -%}
    <h2>Event details</h2>
-   <p>Organized by {{ event['organizer'] }}</p>
+   <p>Organized by <a title="Organizer" href="{{ url_for('view_user', id=event['organizer']) }}" data-target="_blank"> {{ event['organizer'] }}</a></p>
    <p>{{ event['description'] }}</p>
-   <p>From {{ event['start'] }} to {{ event['end'] }} at {{ event['venue'] }}</p>
+   <p>From <strong>{{event_start}}</strong> to <strong>{{ event_end }}</strong> at {{ event['venue'] }}</p>
    {%- endif -%}
    &nbsp; <br/>
 

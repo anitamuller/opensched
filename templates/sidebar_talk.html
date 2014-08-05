@@ -1,4 +1,12 @@
 <div class="col-lg-3 visible-lg sidebar">
+   {%- if talk -%}
+   <h1>{{ talk['name'] }}</h1>
+   <small>{{ talk['date'] }} • {{ talk['start'] }} - {{ talk['end'] }}</small><br/>
+   <small>Room {{ talk['room'] }}</small><br/>
+   <small>Speaker <a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></small>
+   {%- endif -%}
+   &nbsp; <br/>
+
    <h3>Let your friends know!</h3>
    <div class="social row-fluid">
       <!-- AddThis Button BEGIN -->

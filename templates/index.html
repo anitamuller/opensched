@@ -14,23 +14,28 @@
 								<div class="row">
 									<div class="col-lg-8">
 										<div class="page-header">
-											<h2><a href="{{ url_for('single_event', permalink=event['permalink']) }}">{{ event['name'] }}</a></h2>
-											<p><span class="icon-time">&nbsp;</span>
-                                            <td>Organized by <a title="Organizer" href="{{ url_for('view_user', id=event['organizer']) }}" data-target="_blank"> {{ event['organizer'] }}</a></td></p>
-										</div>
-										<div class="content no-lightbox">
-											{{ event['summary']|markdown }}
-										</div>
-										<div class="infopanel">
-											<div class="tags">
-												<li class="icon-tags" title="tags"></li>
-												{%- if event['tags'] -%}
-													{%- for tag in event['tags'] -%}
-														&nbsp;<a href="{{ url_for('events_by_tag', tag=tag) }}">{{ tag }}</a>
-													{%- endfor -%}
-												{%- endif -%}
-											</div>
-										</div>
+											<h2><a href="{{ url_for('single_event', permalink=event['permalink']) }}" style="color:#250E9C;">{{ event['name'] }}</a></h2>
+											<p><span class="icon-time"></span>
+                                            <td>Organized by <a title="Organizer" href="{{ url_for('view_user', id=event['organizer']) }} " data-target="_blank" style="color:#250E9C;"> {{ event['organizer'] }}</a></td></p>
+
+                                            <blockquote class=".col-md-4" style="margin-top=30px;">
+                                                <dl class="dl-horizontal">
+                                                <dt>Summary</dt>
+                                                <dd>{{ event['summary']|markdown }}</dd>
+                                                <dt>Description</dt>
+                                                <dd>{{ event['description']|markdown }}</dd>
+                                                <dt>Tags</dt>
+                                                <dd class="tags">
+						                        {%- if event['tags'] -%}
+							                    {%- for tag in event['tags'] -%}
+							                    <a href="{{ url_for('events_by_tag', event_permalink=event_permalink, tag=tag) }}" style="color:#250E9C;">{{tag }}</a>&nbsp;
+                                                {%- endfor -%}
+						                        {%- endif -%}
+					                            </dd>
+                                                </dl>
+                                            </blockquote>
+                                        </div>
+
 									</div>
 								</div>
 							</div>

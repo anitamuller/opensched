@@ -72,8 +72,10 @@ def single_event(permalink):
     if not event['data']:
         abort(404)
 
-    event['data']['start'] = date_to_string(event['data']['start'], 'short')
-    event['data']['end'] = date_to_string(event['data']['end'], 'short')
+    date_start = date_to_string(event['data']['start'], 'short')
+    event['data']['start'] = date_start
+    date_end = date_to_string(event['data']['end'], 'short')
+    event['data']['end'] = date_end
 
     talks_list = event['data']['talks']
 
@@ -101,9 +103,8 @@ def single_event(permalink):
         user_with_gravatar_img = userClass.get_user(speaker_event)
         speakers.append(user_with_gravatar_img['data'])
 
-
-
-    return render_template('single_event.html', event=event['data'], talks=talks, tags=tags,
+    return render_template('single_event.html', event=event['data'], event_start= date_start, event_end = date_end,
+                           talks=talks, tags=tags,
                            attendees=attendees, speakers=speakers,
                            meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
@@ -374,12 +375,16 @@ def talks(page):
 def talk_preview(event_permalink):
     talk = session.get('talk-preview')
 
-    talk['date'] = date_to_string(talk['date'], 'short')
-    talk['start'] = time_to_string(talk['start'])
-    talk['end'] = time_to_string(talk['end'])
+    talk_date = date_to_string(talk['date'], 'short')
+    talk['date'] = talk_date
+    talk_start = time_to_string(talk['start'])
+    talk['start'] = talk_start
+    talk_end = time_to_string(talk['end'])
+    talk['end'] = talk_end
 
     return render_template('talk_preview.html', event_permalink=event_permalink,
-                           talk=talk, meta_title='Preview talk::' + talk['name'])
+                           talk=talk, talk_start=talk_start, talk_end=talk_end, talk_date=talk_date,
+                           meta_title='Preview talk::' + talk['name'])
 
 
 @app.route('/<event_permalink>/talk_edit?id=<id>')
@@ -395,7 +400,7 @@ def talk_edit(event_permalink, id):
     if session.get('talk-preview') and session['talk-preview']['action'] == 'add':
         session.pop('talk-preview', None)
 
-    talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
+    #talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
 
     speakers = eventClass.get_attendance_event(event_permalink)
     old_speaker = talk['data']['speaker']

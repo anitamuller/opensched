@@ -4,7 +4,7 @@
 		<div class="row">
 			<div class="col-lg-8">
 				<div class="page-header">
-					<h1>View user</h1>
+					<h1>Perfil user</h1>
 				</div>
 				<div class="content">
 					{%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -22,16 +22,14 @@
 								<img src="{{ user['gravatar_url'] }}" class="img-circle">
 							</div>
 							<div>
-                                <div class="content article">
-						        <div><h3>Name</h3></div>
-						        {{ user['name'] }}
-                                <div><h3>Email</h3></div>
-                                {{ user['_id'] }}
-                                <div><h3>Role</h3></div>
-                                {{ user['role'] }}
-                                <div><h3>Active</h3></div>
-                                {{ user['active'] }}
-                                </div>
+                                </br>
+                                <dl>
+                                <dt>Name</dt>
+                                <dd>{{ user['name'] }}</dd>
+                                <dt>Email</dt>
+                                <dd>{{ user['_id'] }}</dd>
+                                </dl>
+
                             </div>
                         </form>
 					{%- endif -%}
