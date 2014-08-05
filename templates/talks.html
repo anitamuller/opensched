@@ -19,7 +19,7 @@
                <div class="page-header">
                   <h1>Talks</h1>
                </div>
-               <div class="content">
+               <div class="content" ng-app="formApp" ng-controller="talksController">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
                   {%- if messages -%}
                   {%- for category, message in messages -%}
@@ -29,19 +29,14 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
+                  <div>
                   <a href="{{ url_for('new_talk', event_permalink=event_permalink) }}" class="response btn btn-primary">Add new</a>
+                  <button id="delete-talks" type="button" class="btn btn-primary" ng-click="talksToDelete()"><i class="fa fa-trash-o"></i> Delete</button>
+                  </div>
                   </br></br>
-                  <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
-                  <script src="{{ url_for('static', filename='js/bulk-actions.js') }}"></script>
-                  <table class="table table-hover" ng-app="" ng-controller="talksController">
+                  <table class="table table-hover">
                      <tr class="active">
-                        <td>
-                            <input type="checkbox" id="select-all" ng-click="clickDelete()" />
-                            <button id="delete-talks" ng-show="showButtonTrash" type="button" class="btn btn-primary" ng-click="talksToDelete()"><i class="fa fa-trash-o"></i></i></button>
-
-                        </td>
-
-                        </button>
+                        <td><input type="checkbox" id="select-all" ng-click="clickDelete()" /></td>
                         <th>Name</th>
                         <th>Date</th>
                         <th>Start time</th>
@@ -51,9 +46,10 @@
                         <th></th>
 
                      </tr>
+                     {%- set count = 1 -%}
                      {%- for talk in talks -%}
                      <tr>
-                        <td><input type="checkbox" class="delete-talk" name="delete-talk" value="{{ talk['permalink'] }}" id="talk['permalink']" ng-click="clickDelete()"></td>
+                        <td><input type="checkbox" class="delete-talk" name="delete-talk" value="{{ talk['permalink'] }}" id="talk['permalink']" ng-model="formData.talk{{ count }}"></td>
                         <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
                         <td>{{ talk['date']  }}</td>
                         <td>{{ talk['start'] }}</td>
@@ -73,6 +69,7 @@
                             </div>
                         </td>
                      </tr>
+                     {% set count = count + 1 %}
                      {%- endfor -%}
                   </table>
                </div>
@@ -87,9 +84,27 @@
       </div>
    </div>
 </div>
-
+{%- endblock -%}
+{%- block scripts -%}
+<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{{ url_for('static', filename='js/plugins/metisMenu/metisMenu.min.js') }}"></script>
+<!-- Custom Theme JavaScript -->
+<script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
+<!-- Bulk actions -->
+<script src="{{ url_for('static', filename='js/bulk-actions.js') }}"></script>
 <script>
-    function talksController($scope) {
+    var formApp = angular.module('formApp', []);
+
+    function talksController($scope, $http) {
         $scope.showButtonTrash = false;
 
         $scope.clickDelete = function() {
@@ -107,35 +122,17 @@
                     list_talks.push(this.value)
             });
 
-
-            $.ajax({
-                    url:'/delete_talks_ajax',
-                    type: 'POST',
-                    contentType:'application/json; charset=utf-8',
-                    dataType:'json',
-                    data: JSON.stringify(list_talks)
-            }).done(function( msg ) {
-                alert( "Data Saved: " + msg );
+            $http({
+                method  : 'POST',
+                url     : 'http://localhost:8080/bulk_delete_talks',
+                data    : JSON.stringify({'talks': list_talks}),
+                headers : {'Content-Type': 'application/json'}
+            }).success(function(data, status, headers, config) {
+                $scope.status = status + ' ' + headers;
+            }).error(function (data, status, headers, config) {
+                $scope.status = status + ' ' + headers;
             });
-
         };
-
     }
 </script>
-<script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
-
-{%- endblock -%}
-{%- block scripts -%}
-<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-<script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-<!-- Metis Menu Plugin JavaScript -->
-<script src="{{ url_for('static', filename='js/plugins/metisMenu/metisMenu.min.js') }}"></script>
-<!-- Custom Theme JavaScript -->
-<script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
-
 {%- endblock -%}

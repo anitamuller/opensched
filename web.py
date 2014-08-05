@@ -432,20 +432,11 @@ def talk_del(event_permalink, id):
 
     return redirect(url_for('talks_by_event', event_permalink=event_permalink))
 
-@app.route('/delete_talks_ajax', methods = ['POST'])
-@login_required()
-def delete_talks_ajax():
+@app.route('/bulk_delete_talks', methods=['POST'])
+def bulk_delete_talks():
     import pdb
     pdb.set_trace()
-    list_talks = request.json
-
-    for talk in list_talks:
-        talk_event = talkClass.get_talk_by_permalink(talk)
-        talk_del(talk_event, talk)
-
-    flash('Talk removed!', 'success')
-
-    return redirect(url_for('events'))
+    z = 1
 
 
 @app.route('/<event_permalink>/<talk_permalink>')
