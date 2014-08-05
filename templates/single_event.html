@@ -16,12 +16,24 @@
             <h1><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></h1>
          </div>
          <div>
+             <div class="add-space row"></div>
+                <blockquote class=".col-md-4" style="margin-top=30px;">
+                    <dl class="dl-horizontal">
+                    <dt>Summary</dt>
+                    <dd>{{ event['summary'] }}</dd>
+                    <dt>Description</dt>
+                    <dd>{{ event['description'] }}</dd>
+                    </dl>
+                </blockquote>
             {%- if session.user -%}
             <div ng-app="" ng-controller="eventController">
 
-                <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="single-sched">My Schedule</a>
-                <button ng-click="clickSpeakers()" class="btn btn-info btn-sm">Speakers</button>
-                <button ng-click="clickAttendees()" class="btn btn-info btn-sm">Attendees</button>
+                <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="btn btn-primary">My Schedule</a>
+                <button ng-click="clickSpeakers()" class="btn btn-primary">Speakers</button>
+                <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
+
+
+
 
                 <div ng-show="showSpeakers">
                     <ul class="list_none">

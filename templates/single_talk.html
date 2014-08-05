@@ -14,17 +14,31 @@
 				<div class="col-lg-8">
 					<div class="page-header">
 						<h1>{{ talk['name'] }}</h1>
-                        <small>{{ talk['date'] }} • {{ talk['start'] }} - {{ talk['end'] }}</small><br/>
-                        <small>Room {{ talk['room'] }}</small><br/>
-                        <small>Organized by <a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></small>
-					</div>
-
-                    <div class="add-space row">
-                        <!-- /.col-lg-12 -->
                     </div>
 
-                    <div ng-app="" ng-controller="talkController">
-                        <button ng-click="clickAttendees()" class="btn btn-info btn-sm">Attendees</button>
+                    <div class="add-space row"></div>
+                    <blockquote class=".col-md-4" style="margin-top=30px;">
+                    <dl class="dl-horizontal">
+                    <dt>Summary</dt>
+                    <dd>{{ talk['summary'] }}</dd>
+                    <dt>Description</dt>
+                    <dd>{{ talk['description'] }}</dd>
+                    </dl>
+                    </blockquote>
+
+
+                    <div class="add-space row">
+                    </div>
+                       <div ng-app="" ng-controller="talkController">
+                        <div>
+                        {%- if session.user -%}
+                            <a href="{{ url_for('new_schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Add to my schedule!</a>
+                            <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
+                        {%- else -%}
+                            <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
+                            <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Sign up</a>
+                        {%- endif -%}
+                        </div>
 
                         <div ng-show="showAttendees">
                             <ul class="list_none">
@@ -43,14 +57,9 @@
                             </ul>
                         </div>
                     </div>
+
                     </br></br>
-                    <div>
-                        {%- if session.user -%}
-                            <a href="{{ url_for('new_schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="single-sched">Add to my schedule!</a>
-                        {%- else -%}
-                            <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Sign up</a>
-                        {%- endif -%}
-                    </div>
+
                     &nbsp; <br/>
 					<div class="content article">
 						<div><h3>Summary</h3></div>
@@ -93,7 +102,6 @@
 	{%- endif -%}
 	{%- include 'sidebar_talk.html' -%}
 {%- endblock -%}
-
 {%- block additional_js -%}
 <script src="{{ url_for('static', filename='js/lightbox-2.6.min.js') }}"></script>
 {%- endblock -%}
