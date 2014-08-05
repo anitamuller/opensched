@@ -45,8 +45,6 @@ $(function(){
     $('#talk-start').timepicker();
 
     $('#talk-end').timepicker();
-
-
 });
 
 
