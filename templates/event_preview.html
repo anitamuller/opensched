@@ -29,29 +29,31 @@
 							<!-- AddThis Button END -->
 				        </div>
 					</div>
-					<div class="content article">
-                        <div><h3>Summary</h3></div>
-						{{ event['summary']|markdown }}
-                        <div><h3>Description</h3></div>
-						{{ event['description']|markdown }}
-                        <div><h3>Start date</h3></div>
-                        {{ event['start'] }}
-                        <div><h3>End date</h3></div>
-                       	{{ event['end'] }}
-                        <div><h3>Venue</h3></div>
-                       	{{ event['venue'] }}
-					</div>
 
-                    <div class="infopanel">
-                        <div class="tags">
-							<i>tags:</i>
-							{%- if event['tags'] -%}
-								{%- for tag in event['tags'] -%}
-									&nbsp;<a href="/tag/{{ tag }}">{{ tag }}</a>
-								{%- endfor -%}
-							{%- endif -%}
-						</div>
-					</div>
+                    <blockquote class=".col-md-4" style="margin-top=30px;">
+                    <dl class="dl-horizontal">
+                    <dt>Summary</dt>
+                    <dd>{{ event['summary']|markdown }}</dd>
+                    <dt>Description</dt>
+                    <dd>{{ event['description']|markdown }}</dd>
+                    <dt>Start Date</dt>
+                    <dd>{{ event['start'] }}</dd>
+                    <dt>End Date</dt>
+                    <dd>{{ event['end'] }}</dd>
+                    <dt>Venue</dt>
+                    <dd>{{ event['venue'] }}</dd>
+                    <dt>Tags</dt>
+                    <dd class="tags">
+						{%- if event['tags'] -%}
+							{%- for tag in event['tags'] -%}
+							<a href="{{ url_for('events_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>&nbsp;
+							{%- endfor -%}
+						{%- endif -%}
+					</dd>
+                    </dl>
+                    </blockquote>
+
+
 					<div class="preview-back">
 						<a href="{{ session.get('event-preview')['redirect'] }}" class="btn btn-primary btn-lg">< Back</a>
 					</div>

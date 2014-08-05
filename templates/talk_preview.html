@@ -29,31 +29,32 @@
 							<!-- AddThis Button END -->
 				        </div>
 					</div>
-					<div class="content article">
-                        <div><h3>Summary</h3></div>
-						{{ talk['summary']|markdown }}
-                        <div><h3>Description</h3></div>
-						{{ talk['description']|markdown }}
-                        <div><h3>Date</h3></div>
-                        {{ talk['date'] }}
-                        <div><h3>Start time</h3></div>
-                        {{ talk['start'] }}
-                        <div><h3>End time</h3></div>
-                       	{{ talk['end'] }}
-                        <div><h3>Room</h3></div>
-                       	{{ talk['room'] }}
-					</div>
 
-                    <div class="infopanel">
-                        <div class="tags">
-							<i>tags:</i>
-							{%- if talk['tags'] -%}
-								{%- for tag in talk['tags'] -%}
-									&nbsp;<a href="/tag/{{ tag }}">{{ tag }}</a>
-								{%- endfor -%}
-							{%- endif -%}
-						</div>
-					</div>
+                    <blockquote class=".col-md-4" style="margin-top=30px;">
+                    <dl class="dl-horizontal">
+                    <dt>Summary</dt>
+                    <dd>{{ talk['summary']|markdown }}</dd>
+                    <dt>Description</dt>
+                    <dd>{{ talk['description']|markdown }}</dd>
+                    <dt>Date</dt>
+                    <dd>{{ talk['date'] }}</dd>
+                    <dt>Start Time</dt>
+                    <dd>{{ talk['start'] }}</dd>
+                    <dt>End Time</dt>
+                    <dd>{{ talk['end'] }}</dd>
+                    <dt>Room</dt>
+                    <dd>{{ talk['room'] }}</dd>
+                    <dt>Tags</dt>
+                    <dd class="tags">
+						{%- if talk['tags'] -%}
+							{%- for tag in talk['tags'] -%}
+							<a href="{{ url_for('talks_by_tag', event_permalink=talk['event'], tag=tag) }}">{{ tag }}</a>&nbsp;
+							{%- endfor -%}
+						{%- endif -%}
+					</dd>
+                    </dl>
+                    </blockquote>
+
 					<div class="preview-back">
 						<a href="{{ session.get('talk-preview')['redirect'] }}" class="btn btn-primary btn-lg">< Back</a>
 					</div>
