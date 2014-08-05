@@ -1,7 +1,11 @@
 {%- extends 'index.html' -%}
 {%- block head -%}
 {%- include 'head.html' -%}
-{%- block additional_css -%}<link href="{{ url_for('static', filename='css/lightbox.css') }}" rel="stylesheet" media="screen">{%- endblock -%}
+{%- block additional_css -%}
+<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
+{%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
 	{%- if talk -%}
@@ -14,6 +18,11 @@
                         <small>Room {{ talk['room'] }}</small><br/>
                         <small>Organized by <a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></small>
 					</div>
+
+                    <div class="add-space row">
+                        <!-- /.col-lg-12 -->
+                    </div>
+
                     <div ng-app="" ng-controller="talkController">
                         <button ng-click="clickAttendees()" class="btn btn-info btn-sm">Attendees</button>
 
@@ -24,7 +33,7 @@
                             {%- endif -%}
                             {%- for attendee in attendees -%}
                             <li>
-                                <div class="photo-user">
+                                <div>
                                     <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
                                     <td><strong>{{ attendee['name'] }}</strong></td>
                                     <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
@@ -49,11 +58,11 @@
                         <div><h3>Description</h3></div>
 						{{ talk['description']|markdown }}
 					</div>
-                    <div class="photo-user">
-                                <h2>Speaker</h2>
-                                <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
-                                {{ speaker['name'] }}
-                                <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
+                    <div>
+                        <h2>Speaker</h2>
+                        <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
+                        {{ speaker['name'] }}
+                        <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
                     </div>
 					<div class="infopanel">
 						<div class="tags">

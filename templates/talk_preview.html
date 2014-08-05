@@ -1,7 +1,12 @@
 {%- extends 'index.html' -%}
 {%- block head -%}
 {%- include 'head.html' -%}
-{%- block additional_css -%}<link href="{{ url_for('static', filename='css/lightbox.css') }}" rel="stylesheet" media="screen">{%- endblock -%}
+{%- block additional_css -%}
+<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
+{%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
 	{%- if talk -%}

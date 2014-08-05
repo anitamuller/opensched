@@ -2,6 +2,7 @@
 {%- block head -%}
 {%- include 'head.html' -%}
 {%- block additional_css -%}
+<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
@@ -28,17 +29,18 @@
                {%- endif -%}
                {%- endwith -%}
                <a href="{{ url_for('add_user') }}" class="response btn btn-primary">Add User</a>
-               <table style="align:center; width:60%;">
+               <table>
 
                   {%- for user in users -%}
                   <tr>
-                     <td>
-                     <div class="photo-user">
+
+                     <div>
+                        <td>
                         <img src="{{ user['gravatar_url'] }}" class="img-circle">
+                        <strong>{{ user['name'] }}</strong>
+                        <a title="Email" href="{{ url_for('edit_user', id=user['_id']) }}" data-target="_blank">{{ user['_id'] }}</a>
+                        </td>
                      </div>
-                     </td>
-                     <td><strong>{{ user['name'] }}</strong></td>
-                     <td><a title="Email" href="{{ url_for('edit_user', id=user['_id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
 
                      <td><div class="btn-group">
                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -52,7 +54,7 @@
                             </ul>
                          </div>
                      </td>
-                     </br>
+
                   </tr>
 
                   {%- endfor -%}

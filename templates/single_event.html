@@ -2,7 +2,9 @@
 {%- block head -%}
 {%- include 'head.html' -%}
 {%- block additional_css -%}
-<link href="{{ url_for('static', filename='css/lightbox.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
 {%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
@@ -28,7 +30,7 @@
                     {%- endif -%}
                     {%- for speaker in speakers -%}
                         <li>
-                            <div class="photo-user">
+                            <div>
                                 <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
                                 <td><strong>{{ speaker['name'] }}</strong></td>
                                 <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
@@ -46,7 +48,7 @@
                     {%- endif -%}
                     {%- for attendee in attendees -%}
                         <li>
-                            <div class="photo-user">
+                            <div>
                                 <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
                                 <td><strong>{{ attendee['name'] }}</strong></td>
                                 <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
