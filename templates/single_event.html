@@ -27,7 +27,7 @@
                     <dd class="tags">
 						{%- if event['tags'] -%}
 							{%- for tag in event['tags'] -%}
-							&nbsp;<a href="{{ url_for('events_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>
+							<a href="{{ url_for('events_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>&nbsp;
 							{%- endfor -%}
 						{%- endif -%}
 					</dd>

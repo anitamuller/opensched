@@ -27,7 +27,7 @@
                     <dd class="tags">
 						{%- if talk['tags'] -%}
 							{%- for tag in talk['tags'] -%}
-							&nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>
+							<a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>&nbsp;
 							{%- endfor -%}
 						{%- endif -%}
 					</dd>
