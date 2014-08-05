@@ -45,7 +45,7 @@
                      {%- set count = 1 -%}
                      {%- for event in events -%}
                      <tr>
-                        <td><input type="checkbox" class="delete-event" name="delete-event" value="{{ event['permalink'] }}" id="event['permalink']" ng-model="formData.event{{ count }}"></td>
+                        <td><input type="checkbox" class="delete-item" name="delete-item" value="{{ event['permalink'] }}" id="event['permalink']" ng-model="formData.event{{ count }}"></td>
                         <td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                         <td>{{ event['start'] }}</td>
                         <td>{{ event['end'] }}</td>
@@ -90,6 +90,7 @@
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
 <!-- Metis Menu Plugin JavaScript -->
 <script src="{{ url_for('static', filename='js/plugins/metisMenu/metisMenu.min.js') }}"></script>
 <!-- Custom Theme JavaScript -->

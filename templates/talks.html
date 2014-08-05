@@ -47,7 +47,7 @@
                      {%- set count = 1 -%}
                      {%- for talk in talks -%}
                      <tr>
-                        <td><input type="checkbox" class="delete-talk" name="delete-talk" value="{{ talk['permalink'] }}" id="talk['permalink']" ng-model="formData.talk{{ count }}"></td>
+                        <td><input type="checkbox" class="delete-item" name="delete-item" value="{{ talk['permalink'] }}" id="talk['permalink']" ng-model="formData.talk{{ count }}"></td>
                         <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
                         <td>{{ talk['date']  }}</td>
                         <td>{{ talk['start'] }}</td>
@@ -99,5 +99,5 @@
 <script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
 <!-- Bulk actions -->
 <script src="{{ url_for('static', filename='js/checkbox.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bulk-delete-talks') }}"></script>
+<script src="{{ url_for('static', filename='js/bulk-delete-talks.js') }}"></script>
 {%- endblock -%}
