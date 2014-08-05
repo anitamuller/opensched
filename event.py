@@ -57,6 +57,20 @@ class Event:
 
         return self.response
 
+    def get_attendees(self):
+        attendees = []
+        try:
+            cursor = self.collection.find()
+            for event in cursor:
+                list_attendees = event['attendees']
+                for attendee in list_attendees:
+                    if not attendee in attendees:
+                        attendees.append(attendee)
+
+        except Exception, e:
+            self.print_debug_info(e, self.debug_mode)
+        return attendees
+
     def get_event_by_permalink(self, permalink):
         self.response['error'] = None
         try:

@@ -32,7 +32,6 @@
                   <table class="table table-hover">
                      <tr class="active">
                         <th>Name</th>
-                        <th>Summary</th>
                         <th>Start date</th>
                         <th>End date</th>
                         <th>Venue</th>
@@ -42,7 +41,6 @@
                      {%- for event in events -%}
                      <tr>
                         <td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
-                        <td>{{ event['summary'] }}</td>
                         <td>{{ event['start'] }}</td>
                         <td>{{ event['end'] }}</td>
                         <td>{{ event['venue'] }}</td>

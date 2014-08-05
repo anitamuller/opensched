@@ -352,6 +352,23 @@ def new_talk(event_permalink):
                            error_type=error_type)
 
 
+@app.route('/talks_list', defaults={'page': 1})
+@app.route('/talks_list/page-<int:page>')
+@login_required()
+def talks(page):
+    session.pop('talk-preview', None)
+    skip = (page - 1) * int(app.config['PER_PAGE'])
+    talks = talkClass.get_talks(int(app.config['PER_PAGE']), skip)
+    count = talkClass.get_total_count()
+    pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
+
+    for talk in talks['data']:
+        event_permalink = talk['event']
+        event = eventClass.get_event_by_permalink(event_permalink)
+        talk['event_name'] = event['data']['name']
+
+    return render_template('talks_list.html', talks=talks['data'], pagination=pag, meta_title='Talks')
+
 @app.route('/<event_permalink>/talk_preview')
 @login_required()
 def talk_preview(event_permalink):
@@ -622,7 +639,7 @@ def logout():
 def dashboard_admin():
     events_created = eventClass.get_total_count()
     talks_created = talkClass.get_total_count()
-    attendees_number = len(userClass.get_users_by_role('User'))
+    attendees_number = len(eventClass.get_attendees())
     organizers_number = len(eventClass.get_organizers())
 
     user_email = session['user']['email']
@@ -696,6 +713,34 @@ def users_list():
 
     return render_template('users.html', users=list_users, meta_title='Users')
 
+
+@app.route('/attendees')
+@login_required()
+@privileged_user()
+def attendees():
+    attendees = eventClass.get_attendees()
+    list_users = []
+
+    for attendee in attendees:
+        user = userClass.get_user(attendee)
+        list_users.append(user['data'])
+
+    return render_template('attendees.html', users=list_users, meta_title='Attendees')
+
+
+@app.route('/organizers')
+@login_required()
+@privileged_user()
+def organizers_list():
+    organizers = eventClass.get_organizers()
+    list_users = []
+
+    for organizer in organizers:
+        user = userClass.get_user(organizer)
+        list_users.append(user['data'])
+
+
+    return render_template('organizers.html', users=list_users, meta_title='Organizers')
 
 @app.route('/edit_user?id=<id>')
 @login_required()

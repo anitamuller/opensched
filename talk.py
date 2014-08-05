@@ -35,15 +35,15 @@ class Talk:
                 if 'attendees' not in talk:
                     talk['attendees'] = []
 
-                if event is None or (event_permalink is not None and event_permalink == talk['event']):
+                if talk is not None or (event_permalink is not None and event_permalink == talk['event']):
                     self.response['data'].append({'id': talk['_id'],
                                                   'name': talk['name'],
                                                   'event': talk['event'],
                                                   'summary': talk['summary'],
                                                   'description': talk['description'],
-                                                  'date': talk['date'],
-                                                  'start': talk['start'],
-                                                  'end': talk['end'],
+                                                  'date': date_to_string(talk['date'], 'short'),
+                                                  'start': time_to_string(talk['start']),
+                                                  'end': time_to_string(talk['end']),
                                                   'room': talk['room'],
                                                   'speaker': talk['speaker'],
                                                   'permalink': talk['permalink'],

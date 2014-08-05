@@ -1,0 +1,80 @@
+{%- extends 'index.html' -%}
+{%- block head -%}
+{%- include 'head.html' -%}
+{%- block additional_css -%}
+<link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
+{%- endblock -%}
+{%- endblock -%}
+{%- block body -%}
+<div id="wrapper">
+   {%- include 'side_nav.html' -%}
+   <div id="page-wrapper">
+      <div class="row">
+         <div class="col-lg-12">
+            {%- if users -%}
+            <div class="page-header">
+               <h1>Attendees</h1>
+            </div>
+            <div class="content">
+               {%- with messages = get_flashed_messages(with_categories=True) -%}
+               {%- if messages -%}
+               {%- for category, message in messages -%}
+               <div class="response">
+                  <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+               </div>
+               {%- endfor -%}
+               {%- endif -%}
+               {%- endwith -%}
+
+               <table style="align:center; width:60%;">
+
+                  {%- for user in users -%}
+                  <tr>
+                     <td>
+                     <div class="photo-user">
+                        <img src="{{ user['gravatar_url'] }}" class="img-circle">
+                     </div>
+                     </td>
+                     <td><strong>{{ user['name'] }}</strong></td>
+                     <td><a title="Email" href="{{ url_for('edit_user', id=user['_id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
+
+                     <td><div class="btn-group">
+                            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-gear"></i>  <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a title="Edit user" href="{{ url_for('edit_user', id=user['id']) }}">Edit user</a></li>
+                                {%- if user['id'] != session['user']['email'] and user.role != 'admin' -%}
+                                <li><a title="Delete user" href="{{ url_for('delete_user', id=user['id']) }}">Delete user</a></li>
+                                {%- endif -%}
+                            </ul>
+                         </div>
+                     </td>
+                     </br>
+                  </tr>
+
+                  {%- endfor -%}
+                  </table>
+            </div>
+            {%- endif -%}
+         </div>
+      </div>
+   </div>
+</div>
+{%- endblock -%}
+{%- block scripts -%}
+<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{{ url_for('static', filename='js/plugins/metisMenu/metisMenu.min.js') }}"></script>
+<!-- Custom Theme JavaScript -->
+<script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
+{%- endblock -%}

@@ -11,7 +11,7 @@
 <div id="wrapper">
    {%- include 'side_nav.html' -%}
    <div id="page-wrapper">
-      <div class="talk">
+      <div class="event">
          <div class="row">
             <div class="col-lg-12">
                {%- if talks -%}
@@ -28,46 +28,38 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <a href="{{ url_for('new_talk', event_permalink=event_permalink) }}" class="response btn btn-primary">Add new</a>
-                  </br></br>
-                  <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
-                  <script src="{{ url_for('static', filename='js/bulk-actions.js') }}"></script>
-                  <table class="table table-hover" ng-app="" ng-controller="talksController">
+                  <table class="table table-hover">
                      <tr class="active">
-                        <td>
-                            <input type="checkbox" id="select-all" ng-click="clickDelete()" />
-                            <button id="delete-talks" ng-show="showButtonTrash" type="button" class="btn btn-primary" ng-click="talksToDelete()"><i class="fa fa-trash-o"></i></i></button>
-
-                        </td>
-
-                        </button>
+                        <th>Event</th>
                         <th>Name</th>
                         <th>Date</th>
                         <th>Start time</th>
                         <th>End time</th>
                         <th>Room</th>
+                        <th>Speaker</th>
                         <th>Attendance</th>
                         <th></th>
-
                      </tr>
                      {%- for talk in talks -%}
                      <tr>
-                        <td><input type="checkbox" class="delete-talk" name="delete-talk" value="{{ talk['permalink'] }}" id="talk['permalink']" ng-click="clickDelete()"></td>
-                        <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
-                        <td>{{ talk['date']  }}</td>
+                        <td>{{ talk['event_name'] }}</td>
+                        <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=talk['event'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
+                        <td>{{ talk['date'] }}</td>
                         <td>{{ talk['start'] }}</td>
                         <td>{{ talk['end'] }}</td>
                         <td>{{ talk['room'] }}</td>
-                        <td><a title="{{ talk['name'] }} attendance" href="{{ url_for('talk_attendance', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" >{{ talk['attendance'] }}</a></td>
+                        <td><a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></td>
+                        <td><a title="{{ talk['name'] }} attendance" href="{{ url_for('talk_attendance', event_permalink=talk['event'], talk_permalink=talk['permalink']) }}" >{{ talk['attendance'] }}</a></td>
+
                         <td><div class="btn-group">
                                 <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-gear"></i>  <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a title="Add attendees to talk" href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}">Invite people</a></li>
+                                <li><a title="Add attendees to talk" href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}">Invite people</a></li>
                                     <li class="divider"></li>
-                                    <li><a title="Edit talk" href="{{ url_for('talk_edit', event_permalink=event_permalink, id=talk['_id']) }}">Edit talk</a></li>
-                                    <li><a title="Delete talk" href="{{ url_for('talk_del', event_permalink=event_permalink, id=talk['_id']) }}">Delete talk</a></li>
+                                    <li><a title="Edit talk" href="{{ url_for('talk_edit', event_permalink=talk['event'], id=talk['_id']) }}">Edit talk</a></li>
+                                    <li><a title="Delete talk" href="{{ url_for('talk_del', event_permalink=talk['event'], id=talk['_id']) }}">Delete talk</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -77,54 +69,22 @@
                </div>
                {%- else -%}
                <div class="page-header">
-                    <h1>Talks not found...</h1>
+                  <h1>Talks not found...</h1>
                </div>
-               <div><a href="{{ url_for('new_talk', event_permalink=event_permalink) }}" class="response btn btn-primary">Add new</a></div>
+               {% if session.user and session.user.role == 'Admin' %}
+               <div>
+                    <a href="{{ url_for('new_talk') }}" class="response btn btn-primary">Add new</a>
+               </div>
+               {% endif %}
                {%- endif -%}
             </div>
          </div>
       </div>
    </div>
 </div>
-
-<script>
-    function talksController($scope) {
-        $scope.showButtonTrash = false;
-
-        $scope.clickDelete = function() {
-            trash = false
-            $('.delete-talk').each(function() { //loop through each checkbox
-                if (this.checked) trash = true;
-            });
-            $scope.showButtonTrash = trash
-        };
-
-        $scope.talksToDelete = function() {
-            list_talks = []
-            $('.delete-talk').each(function() { //loop through each checkbox
-                if (this.checked)
-                    list_talks.push(this.value)
-            });
-
-
-            $.ajax({
-                    url:'/delete_talks_ajax',
-                    type: 'POST',
-                    contentType:'application/json; charset=utf-8',
-                    dataType:'json',
-                    data: JSON.stringify(list_talks)
-            }).done(function( msg ) {
-                alert( "Data Saved: " + msg );
-            });
-
-        };
-
-    }
-</script>
-<script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
-
 {%- endblock -%}
 {%- block scripts -%}
+<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -136,5 +96,4 @@
 <script src="{{ url_for('static', filename='js/plugins/metisMenu/metisMenu.min.js') }}"></script>
 <!-- Custom Theme JavaScript -->
 <script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
-
 {%- endblock -%}
