@@ -125,13 +125,42 @@
             {%- if organizer_at -%}
             <div class="content">
                <ul class="user-events">
+                  <table class="table table-bordered table-hover table-condensed" style="border-radius:7px;-moz-border-radius: 7px; -webkit-border-radius : 7px;">
+
+                  <tr class="info">
+                      <td>Event</td>
+                      <td>Start Date</td>
+                      <td>End Date</td>
+                      <td>Admin</td>
+                  </tr>
                   {%- for event in organizer_at -%}
-                  <li><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a> on {{ event['start'] }}</li>
+                  <tr>
+                      <td><li><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></li></td>
+                      <td>{{ event['start'] }}</td>
+                      <td>{{ event['end'] }}</td>
+                      <td><div class="btn-group">
+                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-gear"></i>  <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                <li><a title="List talks" href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}">List talks</a></li>
+                                <li class="divider"></li>
+                                <li><a title="Add talks to event" href="{{ url_for('new_talk', event_permalink=event['permalink']) }}">Add talks</a></li>
+                                <li><a title="Invite attendees to event" href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}">Invite people</a></li>
+                                <li class="divider"></li>
+                                <li><a title="Edit event" href="{{ url_for('event_edit', id=event['id']) }}">Edit event</a></li>
+                                <li><a title="Delete event" href="{{ url_for('event_del', id=event['id']) }}">Delete</a></li>
+                                </ul>
+
+                      </div></td>
+                  </tr>
                   {%- endfor -%}
+                  </table>
+
                </ul>
             </div>
             {%- else -%}
-            <h4>Events not found...</h4>
+            </br></br>
             {%- endif -%}
          </div>
          <!-- /.col-lg-12 -->
@@ -143,13 +172,25 @@
             {%- if speaker_at -%}
             <div class="content">
                <ul class="user-events">
+                  <table class="table table-bordered table-hover table-condensed" style="border-radius:7px;-moz-border-radius: 7px; -webkit-border-radius : 7px;">
+                  <tr class="warning">
+                      <td>Event</td>
+                      <td>Start Date</td>
+                      <td>End Date</td>
+                  </tr>
                   {%- for event_speaker in speaker_at -%}
-                  <li><a title="Preview" href="{{ url_for('single_event', permalink=event_speaker['permalink']) }}" data-target="_blank">{{ event_speaker['name'] }}</a> on {{ event_speaker['start'] }}</li>
+                  <tr>
+                      <td><li><a title="Preview" href="{{ url_for('single_event', permalink=event_speaker['permalink']) }}" data-target="_blank">{{ event_speaker['name'] }}</a></li></td>
+                      <td>{{ event_speaker['start'] }}</td>
+                      <td>{{ event_speaker['end'] }}</td>
+                  </tr>
                   {%- endfor -%}
+                  </table>
+
                </ul>
             </div>
             {%- else -%}
-            <h4>Events not found...</h4>
+            </br></br>
             {%- endif -%}
             <!-- /.col-lg-12 -->
          </div>
@@ -160,13 +201,25 @@
             {%- if attendee_at -%}
             <div class="content">
                <ul class="user-events">
+                  <table class="table table-bordered table-hover table-condensed" style="border-radius:7px;-moz-border-radius: 7px; -webkit-border-radius : 7px;">
+                  <tr class="danger">
+                      <td>Event</td>
+                      <td>Start Date</td>
+                      <td>End Date</td>
+                  </tr>
                   {%- for event_attendee in attendee_at -%}
-                  <li><a title="Preview" href="{{ url_for('single_event', permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a> on {{ event_attendee['start'] }}</li>
+                  <tr>
+                      <td><li><a title="Preview" href="{{ url_for('single_event', permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a></li></td>
+                      <td>{{ event_attendee['start'] }}</td>
+                      <td>{{ event_attendee['end'] }}</td>
+                  </tr>
                   {%- endfor -%}
+                  </table>
+
                </ul>
             </div>
             {%- else -%}
-            <h4>Events not found...</h4>
+            </br></br>
             {%- endif -%}
          </div>
          <!-- /.col-lg-12 -->
