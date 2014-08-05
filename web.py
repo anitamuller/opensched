@@ -169,9 +169,12 @@ def new_event():
     if request.method == 'POST':
         event_name = request.form.get('event-name').strip()
         event_summary = request.form.get('event-summary')
-        event_description = request.form.get('event-description')
+        event_venue = request.form.get('event-venue')
+        event_start = request.form.get('event-start')
+        event_end = request.form.get('event-end')
 
-        if not event_name or not event_summary or not event_description:
+        if not event_name or not event_summary or not event_venue \
+                or not event_start or not event_end:
             error = True
         else:
             tags = cgi.escape(request.form.get('event-tags'))
@@ -179,10 +182,10 @@ def new_event():
 
             event_data = {'name': event_name,
                           'summary': event_summary,
-                          'description': event_description,
+                          'description': request.form.get('event-description'),
                           'start': string_to_date(request.form.get('event-start')),
                           'end': string_to_date(request.form.get('event-end')),
-                          'venue': request.form.get('event-venue'),
+                          'venue': event_venue,
                           'tags': tags_array,
                           'organizer': session['user']['email'],
                           'talks': [],
@@ -277,12 +280,20 @@ def new_talk(event_permalink):
     error = False
     error_type = 'validate'
     if request.method == 'POST':
+        #only are optionals the fields description and tags
         talk_name = request.form.get('talk-name').strip()
         talk_summary = request.form.get('talk-summary')
-        talk_description = request.form.get('talk-description')
+        talk_room = request.form.get('talk-room')
+        talk_date = request.form.get('talk-date')
+        talk_start = request.form.get('talk-start')
+        talk_end = request.form.get('talk-end')
+        talk_speaker = request.form.get('talk-speaker')
 
-        if not talk_name or not talk_summary or not talk_description:
+        if not talk_name or not talk_summary or not talk_room\
+                or not talk_date or not talk_start or not talk_end \
+                or not talk_speaker:
             error = True
+
         else:
             tags = cgi.escape(request.form.get('talk-tags'))
             tags_array = extract_tags(tags)
@@ -290,16 +301,17 @@ def new_talk(event_permalink):
             talk_data = {'name': talk_name,
                          'event': event_permalink,
                          'summary': talk_summary,
-                         'description': talk_description,
+                         'description': request.form.get('talk-description'),
                          'date': string_to_date(request.form.get('talk-date')),
                          'start': string_to_time(request.form.get('talk-start')),
                          'end': string_to_time(request.form.get('talk-end')),
-                         'room': request.form.get('talk-room'),
+                         'room': talk_room,
                          'tags': tags_array,
                          'attendees': [],
-                         'speaker': request.form.get('talk-speaker')}
+                         'speaker': talk_speaker}
 
             talk = talkClass.validate_talk_data(talk_data)
+
             talk_with_permalink = talkClass.generate_permalink(talk)
 
             if request.form.get('talk-preview') == '1':
@@ -329,6 +341,12 @@ def new_talk(event_permalink):
 
                     speaker_mail = request.form.get('talk-speaker')
                     talk_permalink = talk_with_permalink['permalink']
+
+                    import pdb
+                    pdb.set_trace()
+                    if not userClass.exist_user(speaker_mail):
+                        eventClass.add_new_attendee(event_permalink, speaker_mail)
+                        talkClass.add_new_attendee(talk_permalink, speaker_mail)
 
                     userClass.save_speaker(speaker_mail, event_permalink, talk_permalink)
 
@@ -497,11 +515,12 @@ def talks_by_event(event_permalink):
 
     for talk_permalink in talks_list:
         talk = talkClass.get_talk_by_permalink(str(talk_permalink))
-        talk['data']['attendance'] = len(talk['data']['attendees'])
-        talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
-        talk['data']['start'] = time_to_string(talk['data']['start'])
-        talk['data']['end'] = time_to_string(talk['data']['end'])
-        talks.append(talk['data'])
+        if talk['data']:
+            talk['data']['attendance'] = len(talk['data']['attendees'])
+            talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
+            talk['data']['start'] = time_to_string(talk['data']['start'])
+            talk['data']['end'] = time_to_string(talk['data']['end'])
+            talks.append(talk['data'])
 
     return render_template('talks.html', event_permalink=event_permalink, talks=talks,
                            meta_title='Talks by event: ' + event_name)

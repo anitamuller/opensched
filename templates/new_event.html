@@ -47,29 +47,49 @@
                   {%- endwith -%}
                   <form id="event-form" role="form" method="post" action="{{ url_for('new_event') }}">
                      <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
-                        {%- if error and error_type == 'validate' -%}
-                        <label class="control-label" for="event-name">Required field</label>
-                        {%- endif -%}
-                        <input type="text" class="form-control" name="event-name" id="event-name" placeholder="Event Name" value="{{ event_name }}" required>
+                            {%- if error and error_type == 'validate' -%}
+                            <label class="control-label" for="event-name">Required Name</label>
+                            {%- endif -%}
+                            <input type="text" class="form-control" name="event-name" id="event-name" placeholder="Event Name" value="{{ event_name }}" required>
                      </div>
-                     <div class="form-group">
-                        <textarea id="event-summary" name="event-summary" class="form-control" rows="3" placeholder="Short summary of the Event">{{ event_summary }}</textarea>
-                     </div>
+
                      <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
-                        {%- if error and error_type == 'validate' -%}
-                        <label class="control-label" for="event-description">Required field</label>
-                        {%- endif -%}
-                        <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event description" required>{{ event_description }}</textarea>
+                            {%- if error and error_type == 'validate' -%}
+                            <label class="control-label" for="event-summary">Required Summary</label>
+                            {%- endif -%}
+                            <textarea id="event-summary" name="event-summary" class="form-control" rows="3" placeholder="Short summary of the Event" required>{{ event_summary }}</textarea>
                      </div>
+
                      <div class="form-group">
-                        <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event Venue" value="{{ event_venue }}" required>
+                            <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event description">{{ event_description }}</textarea>
                      </div>
-                     <div id="event-date" class="event-date">
-                        <label for="event-start">Start</label>
-                        <input type="text" class="event-start" name="event-start" id="event-start" value="{{ event_start }}"/>
-                        <label for="event-end">End</label>
-                        <input type="text" class="event-end" name="event-end" id="event-end" value="{{ event_end }}"/>
+
+                     <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                            {%- if error and error_type == 'validate' -%}
+                            <label class="control-label" for="event-venue">Required Venue</label>
+                            {%- endif -%}
+                            <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event Venue" value="{{ event_venue }}" required>
                      </div>
+
+                     <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                            {%- if error and error_type == 'validate' -%}
+                            <label class="control-label" for="event-start">Required Start Date </label>&nbsp;&nbsp;
+                            {%- else -%}
+                            <label for="event-start">Start</label>
+                            {%- endif -%}
+                            <input type="text" class="event-start" name="event-start" id="event-start" value="{{ event_start }}" required>
+                     </div>
+
+                     <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                            {%- if error and error_type == 'validate' -%}
+                            <label class="control-label" for="event-end">Required End Date </label>&nbsp;&nbsp;
+                            {%- else -%}
+                            <label for="event-end">End</label>
+                            {%- endif -%}
+                            <input type="text" class="event-end" name="event-end" id="event-end" value="{{ event_end }}" required>
+                     </div>
+
+
                      <div class="form-group">
                         <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Tags, Comma separated" value="{{ ','.join(event_tags) }}">
                      </div>

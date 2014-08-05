@@ -3,7 +3,8 @@ import hashlib
 import re
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import session
-
+import event
+import talk
 
 class User:
 
@@ -309,29 +310,46 @@ class User:
     def save_speaker(self, speaker_email, event_permalink, talk_permalink):
         exist_user = self.collection.find_one({'_id': speaker_email})
 
-        event_name = str(event_permalink)
-        talk_name = str(talk_permalink)
-        new_speaker_at = exist_user['speaker_at']
+        if not exist_user:
+            record = {'_id': speaker_email,
+                      'active': 0, 'name': None, 'password': None,
+                      'role': 'User', 'attendee_at': {}, 'speaker_at': {event_permalink: [talk_permalink]}}
 
+            try:
+                self.collection.insert(record, safe=True)
+                self.save_attendee(record, event_permalink, talk_permalink)
 
-        if not new_speaker_at.has_key(event_name):
-            new_speaker_at[event_name] = [talk_name]
+            except Exception, e:
+                self.print_debug_info(e, self.debug_mode)
+
         else:
-            talks = new_speaker_at[event_name]
-            talks.append(talk_name)
-            new_speaker_at[event_name] = talks
+            event_name = str(event_permalink)
+            talk_name = str(talk_permalink)
+            new_speaker_at = exist_user['speaker_at']
 
-        record = {'_id': exist_user['_id'],
-                  'password': exist_user['password'],
-                  'name': exist_user['name'],
-                  'active': exist_user['active'],
-                  'role': exist_user['role'],
-                  'attendee_at': exist_user['attendee_at'],
-                  'speaker_at': new_speaker_at}
 
-        #self.collection.update({'_id': exist_user['_id']}, {'$set': record}, upsert=False, multi=False)
-        self.collection.remove({'_id': exist_user['_id']})
-        self.collection.insert(record, safe=True)
+            if not new_speaker_at.has_key(event_name):
+                new_speaker_at[event_name] = [talk_name]
+            else:
+                talks = new_speaker_at[event_name]
+                talks.append(talk_name)
+                new_speaker_at[event_name] = talks
+
+            record = {'_id': exist_user['_id'],
+                      'password': exist_user['password'],
+                      'name': exist_user['name'],
+                      'active': exist_user['active'],
+                      'role': exist_user['role'],
+                      'attendee_at': exist_user['attendee_at'],
+                      'speaker_at': new_speaker_at}
+
+            #self.collection.update({'_id': exist_user['_id']}, {'$set': record}, upsert=False, multi=False)
+            self.collection.remove({'_id': exist_user['_id']})
+            self.collection.insert(record, safe=True)
+
+    def exist_user(self, user_email):
+        exist_user = self.collection.find_one({'_id': user_email})
+        return exist_user
 
     @staticmethod
     def print_debug_info(msg, show=False):
