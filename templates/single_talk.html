@@ -23,6 +23,14 @@
                     <dd>{{ talk['summary'] }}</dd>
                     <dt>Description</dt>
                     <dd>{{ talk['description'] }}</dd>
+                    <dt>Tags</dt>
+                    <dd class="tags">
+						{%- if talk['tags'] -%}
+							{%- for tag in talk['tags'] -%}
+							&nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>
+							{%- endfor -%}
+						{%- endif -%}
+					</dd>
                     </dl>
                     </blockquote>
 
@@ -61,28 +69,14 @@
                     </br></br>
 
                     &nbsp; <br/>
-					<div class="content article">
-						<div><h3>Summary</h3></div>
-						{{ talk['summary']|markdown }}
-                        <div><h3>Description</h3></div>
-						{{ talk['description']|markdown }}
-					</div>
+
                     <div>
-                        <h2>Speaker</h2>
+                        <h4>Speaker</h4>
                         <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
                         {{ speaker['name'] }}
                         <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
                     </div>
-					<div class="infopanel">
-						<div class="tags">
-							<i>tags:</i>
-							{%- if talk['tags'] -%}
-								{%- for tag in talk['tags'] -%}
-									&nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>
-								{%- endfor -%}
-							{%- endif -%}
-						</div>
-					</div>
+
 				</div>
 			</div>
 

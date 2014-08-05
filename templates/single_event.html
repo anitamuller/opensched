@@ -23,6 +23,14 @@
                     <dd>{{ event['summary'] }}</dd>
                     <dt>Description</dt>
                     <dd>{{ event['description'] }}</dd>
+                    <dt>Tags</dt>
+                    <dd class="tags">
+						{%- if event['tags'] -%}
+							{%- for tag in event['tags'] -%}
+							&nbsp;<a href="{{ url_for('events_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>
+							{%- endfor -%}
+						{%- endif -%}
+					</dd>
                     </dl>
                 </blockquote>
             {%- if session.user -%}

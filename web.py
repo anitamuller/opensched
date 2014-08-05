@@ -375,12 +375,16 @@ def talks(page):
 def talk_preview(event_permalink):
     talk = session.get('talk-preview')
 
-    talk['date'] = date_to_string(talk['date'], 'short')
-    talk['start'] = time_to_string(talk['start'])
-    talk['end'] = time_to_string(talk['end'])
+    talk_date = date_to_string(talk['date'], 'short')
+    talk['date'] = talk_date
+    talk_start = time_to_string(talk['start'])
+    talk['start'] = talk_start
+    talk_end = time_to_string(talk['end'])
+    talk['end'] = talk_end
 
     return render_template('talk_preview.html', event_permalink=event_permalink,
-                           talk=talk, meta_title='Preview talk::' + talk['name'])
+                           talk=talk, talk_start=talk_start, talk_end=talk_end, talk_date=talk_date,
+                           meta_title='Preview talk::' + talk['name'])
 
 
 @app.route('/<event_permalink>/talk_edit?id=<id>')
