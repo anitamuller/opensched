@@ -270,6 +270,18 @@ def event_del(id):
     else:
         flash('Need to be at least one event..', 'error')
 
+@app.route('/bulk_delete_events', methods=['POST'])
+def bulk_delete_events():
+    events_to_remove = request.json['events_to_remove']
+
+    for event_permalink in events_to_remove:
+        event = eventClass.get_talk_by_permalink(event_permalink)
+        event_id = event['data']['_id']
+
+        response = eventClass.delete_event(event_id)
+
+    # Retorna el resultado de la ultima eliminacion
+    return jsonify({'value': response['data']})
 
 @app.route('/<event_permalink>/newtalk', methods=['GET', 'POST'])
 @login_required()

@@ -2,7 +2,6 @@
 {%- block head -%}
 {%- include 'head.html' -%}
 {%- block additional_css -%}
-<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
@@ -19,7 +18,7 @@
                <div class="page-header">
                   <h1>Events</h1>
                </div>
-               <div class="content">
+               <div class="content" ng-app="formApp" ng-controller="eventsController">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
                   {%- if messages -%}
                   {%- for category, message in messages -%}
@@ -29,18 +28,24 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <a href="{{ url_for('new_event') }}" class="response btn btn-primary" style="margin-bottom: 20px;">Add new</a></br>
+                  <div class="table-actions">
+                    <a href="{{ url_for('new_event') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add new</a>
+                    <button id="delete-events" type="button" class="btn btn-primary" ng-click="eventsToDelete()"><i class="fa fa-trash-o"></i> Delete</button>
+                  </div>
                   <table class="table table-hover">
                      <tr class="active">
+                        <th><input type="checkbox" id="select-all" ng-click="clickDelete()" /></th>
                         <th>Name</th>
                         <th>Start date</th>
                         <th>End date</th>
                         <th>Venue</th>
                         <th>Attendance</th>
-                        <th></th>
+                        <th>Actions</th>
                      </tr>
+                     {%- set count = 1 -%}
                      {%- for event in events -%}
                      <tr>
+                        <td><input type="checkbox" class="delete-event" name="delete-event" value="{{ event['permalink'] }}" id="event['permalink']" ng-model="formData.event{{ count }}"></td>
                         <td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                         <td>{{ event['start'] }}</td>
                         <td>{{ event['end'] }}</td>
@@ -62,6 +67,7 @@
                             </div>
                         </td>
                      </tr>
+                     {% set count = count + 1 %}
                      {%- endfor -%}
                   </table>
                </div>
@@ -84,14 +90,11 @@
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-<script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
 <!-- Metis Menu Plugin JavaScript -->
 <script src="{{ url_for('static', filename='js/plugins/metisMenu/metisMenu.min.js') }}"></script>
 <!-- Custom Theme JavaScript -->
 <script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
+<!-- Bulk actions -->
+<script src="{{ url_for('static', filename='js/checkbox.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bulk-delete-events.js') }}"></script>
 {%- endblock -%}
