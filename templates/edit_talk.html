@@ -7,6 +7,7 @@
 <link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/datepicker.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/timepicker.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/summernote.css') }}" rel="stylesheet">
 {%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
@@ -64,14 +65,14 @@
                      </div>
                      <div class="form-group">
                         <label for="talk-summary">Summary</label>
-                        <textarea id="talk-summary" name="talk-summary" class="form-control" rows="3" placeholder="Talk Summary">{{ talk_summary }}</textarea>
+                        <div id="talk-summary" name="talk-summary" class="form-control">{{ talk_summary }}</div>
                      </div>
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="talk-description">Required field</label>
                         {%- endif -%}
                          <label for="talk-description">Description</label>
-                        <textarea id="talk-description" name="talk-description" class="form-control" rows="6" placeholder="Talk Description" required>{{ talk_description }}</textarea>
+                        <div id="talk-description" name="talk-description" class="form-control" required>{{ talk_description }}</div>
                      </div>
                      <div class="form-group">
                         <label for="talk-room">Room</label>
@@ -122,6 +123,9 @@
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<!-- WYSIWYG editor -->
+<script src="{{ url_for('static', filename='js/summernote.min.js') }}"></script>
 <!-- Datepicker and timepicker -->
 <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
 <script src="{{ url_for('static', filename='js/timepicker.js') }}"></script>

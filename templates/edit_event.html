@@ -7,6 +7,7 @@
 <link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/datepicker.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/timepicker.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/summernote.css') }}" rel="stylesheet">
 {%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
@@ -67,14 +68,14 @@
                      </div>
                      <div class="form-group">
                         <label for="event-summary">Event summary</label>
-                        <textarea id="event-summary" name="event-summary" class="form-control" rows="3" placeholder="Event summary">{{ event_summary }}</textarea>
+                        <div id="event-summary" name="event-summary" class="form-control">{{ event_summary }}</div>
                      </div>
                      <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="event-description">Event summary required</label>
                         {%- endif -%}
                         <label for="event-description">Event description</label>
-                        <textarea id="event-description" name="event-description" class="form-control" rows="6" placeholder="Event description" required>{{ event_description }}</textarea>
+                        <div id="event-description" name="event-description" class="form-control" required>{{ event_description }}</div>
                      </div>
                      <div class="form-group">
                          <label for="event-venue">Event venue</label>
@@ -109,6 +110,9 @@
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<!-- WYSIWYG editor -->
+<script src="{{ url_for('static', filename='js/summernote.min.js') }}"></script>
 <!-- Datepicker and timepicker -->
 <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
 <script src="{{ url_for('static', filename='js/timepicker.js') }}"></script>
