@@ -57,9 +57,7 @@ class Talk:
         return self.response
 
     def get_talk_by_permalink(self, permalink):
-        self.response['data'] = self.collection.find_one(
-                {'permalink': permalink})
-
+        self.response['data'] = self.collection.find_one({'permalink': permalink})
         return self.response
 
     def get_talk_by_id(self, talk_id):

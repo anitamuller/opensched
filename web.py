@@ -354,9 +354,8 @@ def new_talk(event_permalink):
                     speaker_mail = request.form.get('talk-speaker')
                     talk_permalink = talk_with_permalink['permalink']
 
-                    if not userClass.exist_user(speaker_mail):
-                        eventClass.add_new_attendee(event_permalink, speaker_mail)
-                        talkClass.add_new_attendee(talk_permalink, speaker_mail)
+                    eventClass.add_new_attendee(event_permalink, speaker_mail)
+                    talkClass.add_new_attendee(talk_permalink, speaker_mail)
 
                     userClass.save_speaker(speaker_mail, event_permalink, talk_permalink)
 
@@ -433,9 +432,11 @@ def talk_edit(event_permalink, id):
     #talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
 
     speakers = eventClass.get_attendance_event(event_permalink)
+
     old_speaker = talk['data']['speaker']
-    speakers.remove(old_speaker)
-    speakers.append(old_speaker)  # quedando el speaker de la charla seleccionado como corresponde
+    if old_speaker in speakers:
+        speakers.remove(old_speaker)
+        speakers.append(old_speaker)  # quedando el speaker de la charla seleccionado como corresponde
 
     return render_template('edit_talk.html',
                            event_permalink=event_permalink,
@@ -524,6 +525,7 @@ def talks_by_event(event_permalink):
 
     talks_list = eventClass.get_talks_by_event(event_permalink)
     talks = []
+
 
     for talk_permalink in talks_list:
         talk = talkClass.get_talk_by_permalink(str(talk_permalink))
