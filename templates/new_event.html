@@ -47,12 +47,12 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <form id="event-form" role="form" method="post" action="{{ url_for('new_event') }}">
+                  <form id="event-form" role="form" method="post" action="{{ url_for('new_event') }}" onsubmit="return eventForm()">
                      <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="event-name">Event name required</label>
                         {%- else -%}
-                        <label for="event-start">Event name <span class="required-field">*</span></label>
+                        <label for="event-name">Event name<span class="required-field">*</span></label>
                         {%- endif -%}
                         <input type="text" class="form-control" name="event-name" id="event-name" placeholder="Event name" value="{{ event_name }}" required>
                      </div>
@@ -60,19 +60,19 @@
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="event-summary">Event summary required</label>
                         {%- else -%}
-                        <label for="event-start">Event summary <span class="required-field">*</span></label>
+                        <label for="event-summary">Event summary <span class="required-field">*</span></label>
                         {%- endif -%}
-                        <div id="event-summary" name="event-summary" class="form-control" required>{{ event_summary }}</div>
+                        <textarea id="event-summary" name="event-summary" class="form-control" value="{{ event_summary }}">{{ event_summary }}</textarea>
                      </div>
                      <div class="form-group">
                         <label for="event-start">Event description</label>
-                        <div id="event-description" name="event-description" class="form-control">{{ event_description }}</div>
+                        <textarea id="event-description" name="event-description" value="{{ event_description }}" class="form-control">{{ event_description }}</textarea>
                      </div>
                      <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="event-venue">Event venue required</label>
                         {%- else -%}
-                        <label for="event-start">Event venue <span class="required-field">*</span></label>
+                        <label for="event-venue">Event venue<span class="required-field">*</span></label>
                         {%- endif -%}
                         <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event venue" value="{{ event_venue }}" required>
                      </div>
@@ -95,7 +95,7 @@
                         </span>
                      </div>
                      <div class="form-group">
-                        <label for="event-start">Event tags</label>
+                        <label for="event-tags">Event tags</label>
                         <input type="text" name="event-tags" class="form-control" id="event-tags" placeholder="Tags, comma separated" value="{{ ','.join(event_tags) }}">
                      </div>
                      <div class="form-group">
@@ -115,9 +115,9 @@
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <!-- WYSIWYG editor -->
 <script src="{{ url_for('static', filename='js/summernote.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/summernote-events.js') }}"></script>
 <!-- Datepicker and timepicker -->
 <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
 <script src="{{ url_for('static', filename='js/timepicker.js') }}"></script>
