@@ -271,6 +271,17 @@ def event_del(id):
         for attendee in event_attendees:
             userClass.remove_attendee(attendee, event_permalink)
 
+        #eliminate talks associate to the event
+        event_talks = event['data']['talks']
+        for talk in event_talks:
+            talk_event = talkClass.get_talk_by_permalink(talk)
+            import pdb
+            pdb.set_trace()
+            talk_id = talk_event['data']['_id']
+            talk_del(event_permalink,talk_id)
+
+
+
         response = eventClass.delete_event(id)
         if response['data'] is True:
             flash('Event removed!', 'success')
@@ -415,10 +426,11 @@ def talks(page):
     count = talkClass.get_total_count()
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
 
-    for talk in talks['data']:
-        event_permalink = talk['event']
-        event = eventClass.get_event_by_permalink(event_permalink)
-        talk['event_name'] = event['data']['name']
+    if talks['data']:
+        for talk in talks['data']:
+            event_permalink = talk['event']
+            event = eventClass.get_event_by_permalink(event_permalink)
+            talk['event_name'] = event['data']['name']
 
     return render_template('talks_list.html', talks=talks['data'], pagination=pag, meta_title='Talks')
 
@@ -616,8 +628,8 @@ def event_attendance(event_permalink):
     list_attendance = []
 
     for attendee in attendance:
-        user = userClass.get_user_by_email(str(attendee))
-        list_attendance.append(user)
+        user = userClass.get_user(str(attendee))
+        list_attendance.append(user['data'])
 
     return render_template('event_attendance.html', event_permalink=event_permalink, users=list_attendance,
                            event_name=event_name, meta_title='Event attendance: ' + event_name)
@@ -631,8 +643,8 @@ def talk_attendance(event_permalink, talk_permalink):
     list_attendance = []
 
     for attendee in attendance:
-        user = userClass.get_user_by_email(str(attendee))
-        list_attendance.append(user)
+        user = userClass.get_user(str(attendee))
+        list_attendance.append(user['data'])
 
     return render_template('talk_attendance.html', talk_permalink=talk_permalink, event_permalink= event_permalink,
                            users=list_attendance,

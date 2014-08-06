@@ -69,13 +69,8 @@
                </div>
                {%- else -%}
                <div class="page-header">
-                  <h1>Talks not found...</h1>
+                  <div class="alert alert-info" role="alert" style="border-color:#D9EDF7;"><h4 style="font-size: 14px">No Talks in SchedOpen</h4></div>
                </div>
-               {% if session.user and session.user.role == 'Admin' %}
-               <div>
-                    <a href="{{ url_for('new_talk') }}" class="response btn btn-primary">Add new</a>
-               </div>
-               {% endif %}
                {%- endif -%}
             </div>
          </div>

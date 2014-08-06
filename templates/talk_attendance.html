@@ -15,7 +15,7 @@
          <div class="col-lg-12">
             <div class="page-header">
                {%- if users -%}
-               <h1>{{ talk_name }} Attendance</h1>
+               <h1>{{ talk_name }}: Attendance</h1>
             </div>
             <div class="content">
                {%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -27,37 +27,40 @@
                {%- endfor -%}
                {%- endif -%}
                {%- endwith -%}
-               <table class="table table-striped">
-                  <tr>
-                     <th>Name</th>
-                     <th>Email</th>
-                     <th>Role</th>
-                     <th>Action</th>
-                  </tr>
+
+                <table style="align: center; width: 60%;">
                   {%- for user in users -%}
                   <tr>
-                     <td>{{ user['name'] }}</td>
-                     <td><a title="Email" href="{{ url_for('edit_user', id=user['id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
-                     <td>{{ user['role'] }}</td>
+                     <td>
+                     <div>
+                        <img src="{{ user['gravatar_url'] }}" class="img-circle">
+                     </div>
+                     </td>
+                     <td><strong>{{ user['name'] }}</strong></td>
+                     <td><a title="Email" href="{{ url_for('edit_user', id=user['_id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
+                     {%- if user.role == 'Admin' -%}
                      <td><div class="btn-group">
                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-gear"></i>  <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a title="Edit user" href="{{ url_for('edit_user', id=user['_id']) }}">Edit user</a></li>
-                                {%- if user['id'] != session['user']['email'] and user.role != 'admin' -%}
-                                <li><a title="Delete user" href="{{ url_for('delete_user', id=user['_id']) }}">Delete user</a></li>
-                                {%- endif -%}
+                                <li><a title="Edit user" href="{{ url_for('edit_user', id=user['id']) }}">Edit user</a></li>
+
+                                <li><a title="Delete user" href="{{ url_for('delete_user', id=user['id']) }}">Delete user</a></li>
+
                             </ul>
                          </div>
                      </td>
+                     {%- endif -%}
+                     </br>
                   </tr>
                   {%- endfor -%}
-               </table>
+                  </table>
+
             </div>
             {%- else -%}
             <div class="page-header">
-                <h2>No people invited to {{ talk_name }} </h2>
+                 <div class="alert alert-info" role="alert" style="border-color:#D9EDF7;"><h4 style="font-size: 14px">No people invited to this event: '{{ talk_name }}'</h4></div>
             </div>
             <div class="content">
                 <a href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk_permalink) }}" class="btn btn-primary">Invite People</a>

@@ -365,8 +365,10 @@ class User:
         new_speaker_at = user['speaker_at']
 
         if not talk_permalink:
-            del new_attendee_at[event_permalink]
-            del new_speaker_at[event_permalink]
+            if new_attendee_at.has_key(str(event_permalink)):
+                del new_attendee_at[str(event_permalink)]
+            if new_speaker_at.has_key(str(event_permalink)):
+                del new_speaker_at[(event_permalink)]
 
             record = {'_id': user['_id'],
                       'password': user['password'],
@@ -380,15 +382,17 @@ class User:
             self.collection.insert(record, safe=True)
 
         else:
-            talks_attendee_at = new_attendee_at[event_permalink]
-            if talk_permalink in talks_attendee_at:
-                talks_attendee_at.remove(talk_permalink)
-                new_attendee_at[event_permalink] = talks_attendee_at
+            if new_attendee_at.has_key(str(event_permalink)):
+                talks_attendee_at = new_attendee_at[event_permalink]
+                if talk_permalink in talks_attendee_at:
+                    talks_attendee_at.remove(talk_permalink)
+                    new_attendee_at[event_permalink] = talks_attendee_at
 
-            talks_speaker_at = new_speaker_at[event_permalink]
-            if talk_permalink in talks_speaker_at:
-                talks_speaker_at.remove(talk_permalink)
-                new_speaker_at[event_permalink] = talks_speaker_at
+            if new_speaker_at.has_key(str(event_permalink)):
+                talks_speaker_at = new_speaker_at[event_permalink]
+                if talk_permalink in talks_speaker_at:
+                    talks_speaker_at.remove(talk_permalink)
+                    new_speaker_at[event_permalink] = talks_speaker_at
 
             record = {'_id': user['_id'],
                       'password': user['password'],
