@@ -264,6 +264,13 @@ def event_edit(id):
 @login_required()
 def event_del(id):
     if eventClass.get_total_count() >= 1:
+        #actualizate field attendee_at of users invited to the event
+        event = eventClass.get_event_by_id(id)
+        event_permalink = event['data']['permalink']
+        event_attendees = event['data']['attendees']
+        for attendee in event_attendees:
+            userClass.remove_attendee(attendee, event_permalink)
+
         response = eventClass.delete_event(id)
         if response['data'] is True:
             flash('Event removed!', 'success')
@@ -458,6 +465,11 @@ def talk_del(event_permalink, id):
         event_talks = event['data']['talks']
         event_talks.remove(talk_permalink)
         eventClass.modify_talks_event(event_permalink, event_talks)
+
+        #actualizate fields speaker_at and attendee_at of users invited to the event
+        event_attendees = event['data']['attendees']
+        for attendee in event_attendees:
+            userClass.remove_attendee(attendee, event_permalink, talk_permalink)
 
         if response['data'] is True:
             flash('Talk removed!', 'success')

@@ -305,8 +305,8 @@ class Event:
 
     def edit_event(self, event_id, event_data):
         self.response['error'] = None
-        del event_data['permalink']
-        event_data = self.generate_permalink(event_data)
+        #del event_data['permalink']
+        #event_data = self.generate_permalink(event_data)
 
         try:
             self.collection.update(

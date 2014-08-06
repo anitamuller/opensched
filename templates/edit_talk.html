@@ -55,52 +55,73 @@
                   {%- endwith -%}
                   <a href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="response btn btn-primary">Invite People</a> </br></br>
                   <form id="post-form" role="form" method="post" action="{{ url_for('new_talk', event_permalink=event_permalink) }}">
-                     <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+                     <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
-                        <label class="control-label" for="talk-name">Talk name</label>
+                        <label class="control-label" for="talk-name">Talk name required</label>
+                        {%- else -%}
+                        <label for="talk-name">Talk name <span class="required-field">*</span></label>
                         {%- endif -%}
-                        <label for="talk-name">Name</label>
-                        <input type="text" class="form-control" name="talk-name" id="talk-name" placeholder="Talk Name" required value="{{ talk_name }}">
+                        <input type="text" class="form-control" name="talk-name" id="talk-name" placeholder="Talk name" value="{{ talk_name }}" required />
+                     </div>
+                     <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                        {%- if error and error_type == 'validate' -%}
+                        <label class="control-label" for="talk-summary">Talk summary required</label>
+                        {%- else -%}
+                        <label for="talk-summary">Talk summary <span class="required-field">*</span></label>
+                        {%- endif -%}
+                        <textarea id="talk-summary" name="talk-summary" class="form-control" rows="3" placeholder="Talk short summary" required>{{ talk_summary }}</textarea>
                      </div>
                      <div class="form-group">
-                        <label for="talk-summary">Summary</label>
-                        <textarea id="talk-summary" name="talk-summary" class="form-control" rows="3" placeholder="Talk Summary">{{ talk_summary }}</textarea>
+                        <label for="talk-description">Talk description</label>
+                        <textarea id="talk-description" name="talk-description" class="form-control" rows="6" placeholder="Talk description">{{ talk_description }}</textarea>
                      </div>
-                     <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+                     <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
-                        <label class="control-label" for="talk-description">Required field</label>
+                        <label class="control-label" for="talk-room">Talk room required</label>
+                        {%- else -%}
+                        <label for="talk-room">Talk room <span class="required-field">*</span></label>
                         {%- endif -%}
-                         <label for="talk-description">Description</label>
-                        <textarea id="talk-description" name="talk-description" class="form-control" rows="6" placeholder="Talk Description" required>{{ talk_description }}</textarea>
-                     </div>
-                     <div class="form-group">
-                        <label for="talk-room">Room</label>
-                        <input type="text" class="form-control" name="talk-room" id="talk-room" placeholder="Talk Room" value="{{ talk_room }}" required>
+                        <input type="text" class="form-control" name="talk-room" id="talk-room" placeholder="Talk room" value="{{ talk_room }}" required />
                      </div>
                      <div id="event-date" class="event-date">
-                        <label for="talk-date">Date</label>
-                        <input type="text" class="talk-date" name="talk-date" id="talk-date" value="{{ talk_date }}"/>
+                        <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                           {%- if error and error_type == 'validate' -%}
+                           <label class="control-label" for="talk-date">Talk date required</label>
+                           {%- else -%}
+                           <label for="talk-date">Date <span class="required-field">*</span></label>
+                           {%- endif -%}
+                           <input type="text" class="talk-date" name="talk-date" id="talk-date" value="{{ talk_date }}" required>
+                        </div>
                      </div>
                      <div class="talk-time">
-                        <label for="talk-start">Start</label>
-                        <input type="text" class="talk-start" name="talk-start" id="talk-start" value="{{ talk_start }}"/>
-                        <label for="talk-end">End</label>
-                        <input type="text" class="talk-end" name="talk-end" id="talk-end" value="{{ talk_end }}"/>
+                        <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                           {%- if error and error_type == 'validate' -%}
+                           <label class="control-label" for="talk-start">Talk start time required</label>
+                           <label class="control-label" for="talk-end">Talk end time required</label>
+                           {%- endif -%}
+                           <label for="talk-start">Start <span class="required-field">*</span></label>
+                           <input type="text" class="talk-start" name="talk-start" id="talk-start" value="{{ talk_start }}" required/>
+                           <label for="talk-end">End <span class="required-field">*</span></label>
+                           <input type="text" class="talk-end" name="talk-end" id="talk-end" value="{{ talk_end }}" required/>
+                        </div>
                      </div>
                      <div class="form-group">
                         <label for="talk-tags">Tags</label>
                         <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ talk_tags }}">
                      </div>
-                     <fieldset>
-                        <legend>Speaker</legend>
-                        <div class="form-group">
-                           <select name="talk-speaker" width="300px" >
-                              {% for option in speakers_list %}
-                              <option name="{{ option }}" selected>{{ option }} </option>
-                              {% endfor %}
-                           </select>
-                        </div>
-                     </fieldset>
+                     <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
+                        {%- if error and error_type == 'validate' -%}
+                        <label class="control-label" for="talk-speaker">Required field</label>
+                        {%- else -%}
+                        <label for="talk-speaker">Speaker <span class="required-field">*</span></label>
+                        {%- endif -%}
+                        <input type="email" list="speakers_list" name="talk-speaker" id="talk-speaker" placeholder="Speaker email" class="form-control" required>
+                        <datalist id="speakers_list">
+                           {% for option in speakers_list %}
+                           {% endfor %}
+                        </datalist>
+                     </div>
+                     </br>
                      <div class="form-group">
                         <input type="hidden" name="talk-preview" id="preview">
                         <input type="hidden" name="talk-id" value="{{ talk['_id'] }}">
@@ -110,7 +131,6 @@
                         <input id="talk-submit" type="submit" class="btn btn-primary" value="Edit">
                         <input id="talk-preview" type="submit" class="btn" value="Preview">
                      </div>
-
                   </form>
                </div>
             </div>

@@ -313,7 +313,8 @@ class User:
         if not exist_user:
             record = {'_id': speaker_email,
                       'active': 0, 'name': None, 'password': None,
-                      'role': 'User', 'attendee_at': {}, 'speaker_at': {event_permalink: [talk_permalink]}}
+                      'role': 'User', 'attendee_at': {event_permalink: [talk_permalink]},
+                      'speaker_at': {event_permalink: [talk_permalink]}}
 
             try:
                 self.collection.insert(record, safe=True)
@@ -326,7 +327,7 @@ class User:
             event_name = str(event_permalink)
             talk_name = str(talk_permalink)
             new_speaker_at = exist_user['speaker_at']
-
+            new_attendee_at = exist_user['attendee_at']
 
             if not new_speaker_at.has_key(event_name):
                 new_speaker_at[event_name] = [talk_name]
@@ -335,12 +336,19 @@ class User:
                 talks.append(talk_name)
                 new_speaker_at[event_name] = talks
 
+            if not new_attendee_at.has_key(event_name):
+                new_attendee_at[event_name] = [talk_name]
+            else:
+                talks = new_attendee_at[event_name]
+                talks.append(talk_name)
+                new_attendee_at[event_name] = talks
+
             record = {'_id': exist_user['_id'],
                       'password': exist_user['password'],
                       'name': exist_user['name'],
                       'active': exist_user['active'],
                       'role': exist_user['role'],
-                      'attendee_at': exist_user['attendee_at'],
+                      'attendee_at': new_attendee_at,
                       'speaker_at': new_speaker_at}
 
             #self.collection.update({'_id': exist_user['_id']}, {'$set': record}, upsert=False, multi=False)
@@ -350,6 +358,49 @@ class User:
     def exist_user(self, user_email):
         exist_user = self.collection.find_one({'_id': user_email})
         return exist_user
+
+    def remove_attendee(self, attendee_email, event_permalink, talk_permalink=None):
+        user = self.get_user_by_email(attendee_email)
+        new_attendee_at = user['attendee_at']
+        new_speaker_at = user['speaker_at']
+
+        if not talk_permalink:
+            del new_attendee_at[event_permalink]
+            del new_speaker_at[event_permalink]
+
+            record = {'_id': user['_id'],
+                      'password': user['password'],
+                      'name': user['name'],
+                      'active': user['active'],
+                      'role': user['role'],
+                      'attendee_at': new_attendee_at,
+                      'speaker_at': new_speaker_at}
+
+            self.collection.remove({'_id': user['_id']})
+            self.collection.insert(record, safe=True)
+
+        else:
+            talks_attendee_at = new_attendee_at[event_permalink]
+            if talk_permalink in talks_attendee_at:
+                talks_attendee_at.remove(talk_permalink)
+                new_attendee_at[event_permalink] = talks_attendee_at
+
+            talks_speaker_at = new_speaker_at[event_permalink]
+            if talk_permalink in talks_speaker_at:
+                talks_speaker_at.remove(talk_permalink)
+                new_speaker_at[event_permalink] = talks_speaker_at
+
+            record = {'_id': user['_id'],
+                      'password': user['password'],
+                      'name': user['name'],
+                      'active': user['active'],
+                      'role': user['role'],
+                      'attendee_at': new_attendee_at,
+                      'speaker_at': new_speaker_at}
+
+            self.collection.remove({'_id': user['_id']})
+            self.collection.insert(record, safe=True)
+
 
     @staticmethod
     def print_debug_info(msg, show=False):
