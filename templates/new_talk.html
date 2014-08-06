@@ -7,6 +7,7 @@
 <link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/datepicker.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/timepicker.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/summernote.css') }}" rel="stylesheet">
 {%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
@@ -65,11 +66,11 @@
                         {%- else -%}
                         <label for="talk-summary">Talk summary <span class="required-field">*</span></label>
                         {%- endif -%}
-                        <textarea id="talk-summary" name="talk-summary" class="form-control" rows="3" placeholder="Talk short summary" required>{{ talk_summary }}</textarea>
+                        <textarea id="talk-summary" name="talk-summary" class="form-control">{{ talk_summary }}</textarea>
                      </div>
                      <div class="form-group">
                         <label for="talk-description">Talk description</label>
-                        <textarea id="talk-description" name="talk-description" class="form-control" rows="6" placeholder="Talk description">{{ talk_description }}</textarea>
+                        <textarea id="talk-description" name="talk-description" class="form-control">{{ talk_description }}</textarea>
                      </div>
                      <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
@@ -136,6 +137,9 @@
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<!-- WYSIWYG editor -->
+<script src="{{ url_for('static', filename='js/summernote.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/summernote-talks.js') }}"></script>
 <!-- Datepicker and timepicker -->
 <script src="{{ url_for('static', filename='js/timepicker.js') }}"></script>
 <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
