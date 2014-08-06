@@ -227,3 +227,11 @@ input[type='checkbox'] {
 .table-actions {
     margin-bottom: 2%;
 }
+
+label {
+    margin-right: 2%;
+}
+
+.required-field {
+    color: red;
+}
