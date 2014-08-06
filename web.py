@@ -354,8 +354,6 @@ def new_talk(event_permalink):
                     speaker_mail = request.form.get('talk-speaker')
                     talk_permalink = talk_with_permalink['permalink']
 
-                    import pdb
-                    pdb.set_trace()
                     if not userClass.exist_user(speaker_mail):
                         eventClass.add_new_attendee(event_permalink, speaker_mail)
                         talkClass.add_new_attendee(talk_permalink, speaker_mail)
