@@ -1142,7 +1142,8 @@ userClass = user.User(app.config)
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
 app.jinja_env.globals['meta_description'] = app.config['SITE_DESCRIPTION']
-app.jinja_env.globals['recent_events'] = eventClass.get_events(10, 0)['data']
+if eventClass.get_events(10, 0)['data']:
+    app.jinja_env.globals['recent_events'] = eventClass.get_events(10, 0)['data']
 app.jinja_env.globals['tags'] = eventClass.get_tags()['data']
 
 if not app.config['DEBUG']:

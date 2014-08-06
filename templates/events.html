@@ -32,6 +32,7 @@
                     <a href="{{ url_for('new_event') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add new</a>
                     <button id="delete-events" type="button" class="btn btn-primary" ng-click="eventsToDelete()"><i class="fa fa-trash-o"></i> Delete</button>
                   </div>
+                  </br>
                   <table class="table table-hover">
                      <tr class="active">
                         <th><input type="checkbox" id="select-all" ng-click="clickDelete()" /></th>
@@ -77,7 +78,7 @@
                </div>
                {% if session.user and session.user.role == 'Admin' %}
                <div>
-                    <a href="{{ url_for('new_event') }}" class="response btn btn-primary">Add new</a>
+                    <a href="{{ url_for('new_event') }}" class="response btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add new</a>
                </div>
                {% endif %}
                {%- endif -%}

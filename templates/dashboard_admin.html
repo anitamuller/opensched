@@ -134,7 +134,7 @@
                   </tr>
                   {%- for event in organizer_at -%}
                   <tr>
-                      <td><li><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></li></td>
+                      <td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                       <td>{{ event['start'] }}</td>
                       <td>{{ event['end'] }}</td>
                       <td><div class="btn-group">
@@ -179,7 +179,7 @@
                   </tr>
                   {%- for event_speaker in speaker_at -%}
                   <tr>
-                      <td><li><a title="Preview" href="{{ url_for('single_event', permalink=event_speaker['permalink']) }}" data-target="_blank">{{ event_speaker['name'] }}</a></li></td>
+                      <td><a title="Preview" href="{{ url_for('single_event', permalink=event_speaker['permalink']) }}" data-target="_blank">{{ event_speaker['name'] }}</a></td>
                       <td>{{ event_speaker['start'] }}</td>
                       <td>{{ event_speaker['end'] }}</td>
                   </tr>
@@ -208,7 +208,7 @@
                   </tr>
                   {%- for event_attendee in attendee_at -%}
                   <tr>
-                      <td><li><a title="Preview" href="{{ url_for('single_event', permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a></li></td>
+                      <td><a title="Preview" href="{{ url_for('single_event', permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a></td>
                       <td>{{ event_attendee['start'] }}</td>
                       <td>{{ event_attendee['end'] }}</td>
                   </tr>
