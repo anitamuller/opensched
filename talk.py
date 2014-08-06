@@ -1,6 +1,7 @@
 import datetime
 import cgi
 import event
+import user
 from bson.objectid import ObjectId
 from helper_functions import *
 
@@ -126,33 +127,55 @@ class Talk:
 
     def edit_talk(self, talk_id, talk_data):
         self.response['error'] = None
-        #del talk_data['permalink']
-        #talk_data = self.generate_permalink(talk_data)
+        self.response['permalink-changed'] = None
+        talk_name = talk_data['name']
+        name_without_spaces=talk_name.replace(" ", "_")
+        name_lower_without_spaces = name_without_spaces.lower()
 
-        talk_attendees = self.get_talk_by_id(talk_id)
-        talk_attendees_ = talk_attendees['data']['attendees']
+        exist_talk = self.collection.find_one({'_id': ObjectId(talk_id)})
+        exist_permalink = exist_talk['permalink']
+        exist_attendees = exist_talk['attendees']
+        exist_event = exist_talk['event']
 
-        try:
-            record = {'name': talk_data['name'],
-                      'event': talk_data['event'],
-                      'summary': talk_data['summary'],
-                      'description': talk_data['description'],
-                      'date': talk_data['date'],
-                      'start': talk_data['start'],
-                      'end': talk_data['end'],
-                      'room': talk_data['room'],
-                      'speaker': talk_data['speaker'],
-                      'permalink': talk_data['permalink'],
-                      'tags': talk_data['tags'],
-                      'attendees': talk_attendees_}
+        if name_lower_without_spaces == exist_permalink:
+            #the name didn't change, so permalink is the same
 
-            self.collection.update(
-                {'_id': ObjectId(talk_id)}, {'$set': record}, upsert=False, multi=False)
+            talk_data['permalink'] = exist_permalink
+            talk_data['attendees'] = exist_attendees
+            try:
+                self.collection.update(
+                    {'_id': ObjectId(talk_id)}, {"$set": talk_data}, upsert=False)
+                self.response['data'] = True
 
-            self.response['data'] = True
-        except Exception, e:
-            self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Talk update error..'
+            except Exception, e:
+                self.print_debug_info(e, self.debug_mode)
+                self.response['error'] = 'Talk update error..'
+
+        else:
+
+            try:
+                record = {'name': talk_data['name'],
+                          'event': talk_data['event'],
+                          'summary': talk_data['summary'],
+                          'description': talk_data['description'],
+                          'date': talk_data['date'],
+                          'start': talk_data['start'],
+                          'end': talk_data['end'],
+                          'room': talk_data['room'],
+                          'speaker': talk_data['speaker'],
+                          'permalink': talk_data['permalink'],
+                          'tags': talk_data['tags'],
+                          'attendees': exist_attendees}
+
+                self.collection.update(
+                    {'_id': ObjectId(talk_id)}, {'$set': record}, upsert=False, multi=False)
+                self.response['data'] = True
+
+                self.response['permalink-changed'] = [exist_permalink, talk_data['permalink']]
+
+            except Exception, e:
+                self.print_debug_info(e, self.debug_mode)
+                self.response['error'] = 'Talk update error..'
 
         return self.response
 

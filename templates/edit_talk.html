@@ -115,7 +115,7 @@
                         {%- else -%}
                         <label for="talk-speaker">Speaker <span class="required-field">*</span></label>
                         {%- endif -%}
-                        <input type="email" list="speakers_list" name="talk-speaker" id="talk-speaker" placeholder="Speaker email" class="form-control" required>
+                        <input type="email" list="speakers_list" name="talk-speaker" id="talk-speaker" placeholder="Speaker email" class="form-control" value="{{ talk_speaker }}" required>
                         <datalist id="speakers_list">
                            {% for option in speakers_list %}
                            {% endfor %}

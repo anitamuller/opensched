@@ -192,10 +192,10 @@ def new_event():
                           'attendees': []}
 
             event = eventClass.validate_event_data(event_data)
-            event_with_permalink= eventClass.generate_permalink(event)
-
+            event_with_permalink = eventClass.generate_permalink(event)
             if request.form.get('event-preview') == '1':
                 session['event-preview'] = event_with_permalink
+
                 session[
                     'event-preview']['action'] = 'edit' if request.form.get('event-id') else 'add'
                 if request.form.get('event-id'):
@@ -330,8 +330,8 @@ def new_talk(event_permalink):
                          'speaker': talk_speaker}
 
             talk = talkClass.validate_talk_data(talk_data)
-
             talk_with_permalink = talkClass.generate_permalink(talk)
+            talk_permalink = talk_with_permalink['permalink']
 
             if request.form.get('talk-preview') == '1':
                 session['talk-preview'] = talk_with_permalink
@@ -347,8 +347,26 @@ def new_talk(event_permalink):
                 session.pop('talk-preview', None)
 
                 if request.form.get('talk-id'):
-                    response = talkClass.edit_talk(
-                        request.form['talk-id'], talk)
+
+                    response = talkClass.edit_talk(request.form['talk-id'], talk)
+
+                    if response['permalink-changed']:
+                        old_permalink, new_permalink = response['permalink-changed']
+                        event = eventClass.get_event_by_permalink(event_permalink)
+                        event_talks = event['data']['talks']
+                        event_talks.remove(old_permalink)
+                        event_talks.append(new_permalink)
+                        eventClass.modify_talks_event(event_permalink, event_talks)
+
+                        #actualizate fields speaker_at and attendee_at of users invited to the event
+                        event_attendees = event['data']['attendees']
+
+                        for attendee in event_attendees:
+                            user_attendee = userClass.get_user_by_email(attendee)
+                            userClass.remove_attendee(attendee, event_permalink, old_permalink)
+                            userClass.save_attendee(user_attendee, event_permalink, new_permalink)
+                            userClass.save_speaker(attendee, event_permalink, new_permalink)
+
                     if not response['error']:
                         flash('Talk updated!', 'success')
                         return redirect(url_for('talks_by_event', event_permalink=event_permalink))

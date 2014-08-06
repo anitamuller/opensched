@@ -305,16 +305,36 @@ class Event:
 
     def edit_event(self, event_id, event_data):
         self.response['error'] = None
-        #del event_data['permalink']
-        #event_data = self.generate_permalink(event_data)
 
-        try:
-            self.collection.update(
-                {'_id': ObjectId(event_id)}, {"$set": event_data}, upsert=False)
-            self.response['data'] = True
-        except Exception, e:
-            self.print_debug_info(e, self.debug_mode)
-            self.response['error'] = 'Event update error..'
+        event_name = event_data['name']
+        name_without_spaces=event_name.replace(" ", "_")
+        name_lower_without_spaces = name_without_spaces.lower()
+
+        exist_event = self.collection.find_one({'_id': ObjectId(event_id)})
+        exist_permalink = exist_event['permalink']
+
+        if name_lower_without_spaces == exist_permalink:
+            #the name didn't change, so permalink is the same
+            event_data['permalink'] = exist_permalink
+            try:
+                self.collection.update(
+                    {'_id': ObjectId(event_id)}, {"$set": event_data}, upsert=False)
+                self.response['data'] = True
+            except Exception, e:
+                self.print_debug_info(e, self.debug_mode)
+                self.response['error'] = 'Event update error..'
+
+        else:
+            del event_data['permalink']
+            event_data = self.generate_permalink(event_data)
+
+            try:
+                self.collection.remove({'_id': ObjectId(event_id)})
+                self.response['data'] = self.collection.insert(event_data)
+                self.response['data'] = True
+            except Exception, e:
+                self.print_debug_info(e, self.debug_mode)
+                self.response['error'] = 'Event update error..'
 
         return self.response
 
