@@ -238,8 +238,8 @@ def new_event():
 def event_edit(id):
     event = eventClass.get_event_by_id(id)
 
-    event['data']['start'] = date_to_string(event['data']['start'], 'short')
-    event['data']['end'] = date_to_string(event['data']['end'], 'short')
+    event['data']['start'] = format_date(event['data']['start'])
+    event['data']['end'] = format_date(event['data']['end'])
 
     if event['data']['attendees'] == []:
         event['data']['attendees'] = ""
@@ -420,6 +420,8 @@ def talk_preview(event_permalink):
 def talk_edit(event_permalink, id):
     talk = talkClass.get_talk_by_id(id)
     session['talk-permalink'] = talk['data']['permalink']
+
+    talk['data']['date'] = format_date(talk['data']['date'])
 
     if talk['error']:
         flash(talk['error'], 'error')

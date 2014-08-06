@@ -83,6 +83,12 @@ def date_to_string(date, date_format):
     return parsed
 
 
+def format_date(date):
+    """Formats a python date"""
+    formatted = date.strftime("%d/%m/%Y")
+    return formatted
+
+
 def string_to_time(time):
     """Transforms a string time in a python time"""
     # Intentar guardar el dia tambien
