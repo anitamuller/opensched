@@ -19,6 +19,15 @@
             </div>
 
             <div class="content">
+               {%- with messages = get_flashed_messages(with_categories=True) -%}
+                    {%- if messages -%}
+                        {%- for category, message in messages -%}
+                        <div class="response">
+                            <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                        </div>
+                        {%- endfor -%}
+                    {%- endif -%}
+               {%- endwith -%}
                <a href="{{ url_for('add_user') }}" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add User</a>
                <table style="align: center; width: 60%;">
                   {%- for user in users -%}
@@ -31,18 +40,20 @@
                      <td><strong>{{ user['name'] }}</strong></td>
                      <td><a title="Email" href="{{ url_for('edit_user', id=user['_id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
 
+                     {%- if user.role == 'Admin' -%}
                      <td><div class="btn-group">
                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-gear"></i>  <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a title="Edit user" href="{{ url_for('edit_user', id=user['id']) }}">Edit user</a></li>
+                                <li><a title="Edit user" href="{{ url_for('edit_user', id=user['_id']) }}">Edit user</a></li>
                                 {%- if user['id'] != session['user']['email'] and user.role != 'Admin' -%}
-                                <li><a title="Delete user" href="{{ url_for('delete_user', id=user['id']) }}">Delete user</a></li>
+                                <li><a title="Delete user" href="{{ url_for('delete_user', id=user['_id']) }}">Delete user</a></li>
                                 {%- endif -%}
                             </ul>
                          </div>
                      </td>
+                     {%- endif -%}
                      </br>
                   </tr>
                   {%- endfor -%}

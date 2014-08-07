@@ -9,13 +9,13 @@
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
-                  {%- if messages -%}
-                  {%- for category, message in messages -%}
-                  <div class="response">
-                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-                  </div>
-                  {%- endfor -%}
-                  {%- endif -%}
+                        {%- if messages -%}
+                            {%- for category, message in messages -%}
+                            <div class="response">
+                                <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                            </div>
+                            {%- endfor -%}
+                        {%- endif -%}
                   {%- endwith -%}
                   <a href="{{ url_for('new_event') }}" class="response btn btn-primary">Add new</a>
                   <table class="table table-striped">
@@ -29,7 +29,7 @@
                      </tr>
                      {%- for event in events -%}
                      <tr>
-                        <td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
+                        <td><a href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                         <td>{{ event['summary'] }}</td>
                         <td>{{ event['start'] }}</td>
                         <td>{{ event['end'] }}</td>

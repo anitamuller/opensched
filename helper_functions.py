@@ -60,7 +60,7 @@ def privileged_user():
                 flash('You must be logged in..', 'error')
                 return redirect(url_for('login'))
             elif session.get('user').get('role') != 'Admin':
-                flash('Not authorized..', 'error')
+                flash('You are not authorized to see this page..', 'error')
                 return redirect(url_for('index'))
             return f(*args, **kwargs)
         return wrapped

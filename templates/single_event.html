@@ -12,7 +12,7 @@
    <div class="row">
       <div class="col-lg-8">
          <div class="page-header">
-            <h1><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></h1>
+            <h1><a href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></h1>
          </div>
          <div>
              <div class="add-space row"></div>
@@ -89,7 +89,7 @@
 
                <form name="talks_by_event" ng-controller="Talks_by_Event">
                     <h3><input type="checkbox" ng-model="checkbox-{{ talk['permalink'] }}" ng-true-value="'YES'" ng-false-value="'NO'" ng-change="new_schedule_talk(event_permalink,talk['permalink'])">
-                    <a title="Preview" href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></h3>
+                    <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></h3>
                </form>
 
 

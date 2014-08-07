@@ -20,13 +20,13 @@
                </div>
                <div class="content" ng-app="formApp" ng-controller="eventsController">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
-                  {%- if messages -%}
-                  {%- for category, message in messages -%}
-                  <div class="response">
-                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-                  </div>
-                  {%- endfor -%}
-                  {%- endif -%}
+                        {%- if messages -%}
+                            {%- for category, message in messages -%}
+                            <div class="response">
+                                <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                            </div>
+                            {%- endfor -%}
+                        {%- endif -%}
                   {%- endwith -%}
                   <div class="table-actions">
                     <a href="{{ url_for('new_event') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add new</a>
@@ -47,11 +47,11 @@
                      {%- for event in events -%}
                      <tr>
                         <td><input type="checkbox" class="delete-item" name="delete-item" value="{{ event['permalink'] }}" id="event['permalink']" ng-model="formData.event{{ count }}"></td>
-                        <td><a title="Preview" href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
+                        <td><a href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                         <td>{{ event['start'] }}</td>
                         <td>{{ event['end'] }}</td>
                         <td>{{ event['venue'] }}</td>
-                        <td><a title="{{ event['name'] }} attendance" href="{{ url_for('event_attendance', event_permalink=event['permalink']) }}" >{{ event['attendance'] }}</a></td>
+                        <td><a title="Event attendees" href="{{ url_for('event_attendance', event_permalink=event['permalink']) }}" >{{ event['attendance'] }}</a></td>
                         <td><div class="btn-group">
                                 <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-gear"></i>  <span class="caret"></span>

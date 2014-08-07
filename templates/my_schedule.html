@@ -10,17 +10,17 @@
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
-                  {%- if messages -%}
-                  {%- for category, message in messages -%}
-                  <div class="response">
-                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-                  </div>
-                  {%- endfor -%}
-                  {%- endif -%}
+                        {%- if messages -%}
+                            {%- for category, message in messages -%}
+                            <div class="response">
+                                <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                            </div>
+                            {%- endfor -%}
+                        {%- endif -%}
                   {%- endwith -%}
                   <ul class="user-events">
                      {%- for talk in talks -%}
-                        <li><a title="Preview" href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></li>
+                        <li><a href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></li>
                      {%- endfor -%}
                   </ul>
                </div>

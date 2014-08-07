@@ -841,7 +841,7 @@ def edit_user(id):
 @login_required()
 def view_user(id):
     user = userClass.get_user(id)
-    return render_template('view_user.html', user=user['data'], meta_title='View user')
+    return render_template('view_user.html', user=user['data'], meta_title='Perfil user')
 
 
 @app.route('/delete_user?id=<id>')

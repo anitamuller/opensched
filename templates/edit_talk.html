@@ -46,13 +46,13 @@
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
-                  {%- if messages -%}
-                  {%- for category, message in messages -%}
-                  <div class="response">
-                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-                  </div>
-                  {%- endfor -%}
-                  {%- endif -%}
+                        {%- if messages -%}
+                            {%- for category, message in messages -%}
+                            <div class="response">
+                                <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                            </div>
+                            {%- endfor -%}
+                        {%- endif -%}
                   {%- endwith -%}
                   <a href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="response btn btn-primary">Invite People</a> </br></br>
                   <form id="post-form" role="form" method="post" action="{{ url_for('new_talk', event_permalink=event_permalink) }}">

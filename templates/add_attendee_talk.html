@@ -19,13 +19,13 @@
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
-                  {%- if messages -%}
-                  {%- for category, message in messages -%}
-                  <div class="response">
-                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-                  </div>
-                  {%- endfor -%}
-                  {%- endif -%}
+                        {%- if messages -%}
+                            {%- for category, message in messages -%}
+                            <div class="response">
+                                <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                            </div>
+                            {%- endfor -%}
+                        {%- endif -%}
                   {%- endwith -%}
                   <form class="form-attendee" role="form" method="post" action="{{ url_for('save_attendee_talk', event_permalink=event_permalink, talk_permalink=talk_permalink) }}">
                      <fieldset>

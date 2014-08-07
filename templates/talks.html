@@ -20,13 +20,13 @@
                </div>
                <div class="content" ng-app="formApp" ng-controller="talksController">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
-                  {%- if messages -%}
-                  {%- for category, message in messages -%}
-                  <div class="response">
-                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-                  </div>
-                  {%- endfor -%}
-                  {%- endif -%}
+                    {%- if messages -%}
+                        {%- for category, message in messages -%}
+                        <div class="response">
+                            <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                        </div>
+                        {%- endfor -%}
+                    {%- endif -%}
                   {%- endwith -%}
                   <div class="table-actions">
                     <a href="{{ url_for('new_talk', event_permalink=event_permalink) }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add new</a>
@@ -48,7 +48,7 @@
                      {%- for talk in talks -%}
                      <tr>
                         <td><input type="checkbox" class="delete-item" name="delete-item" value="{{ talk['permalink'] }}" id="talk['permalink']" ng-model="formData.talk{{ count }}"></td>
-                        <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
+                        <td><a href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
                         <td>{{ talk['date']  }}</td>
                         <td>{{ talk['start'] }}</td>
                         <td>{{ talk['end'] }}</td>

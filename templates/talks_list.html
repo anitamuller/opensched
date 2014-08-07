@@ -20,13 +20,13 @@
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
-                  {%- if messages -%}
-                  {%- for category, message in messages -%}
-                  <div class="response">
-                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-                  </div>
-                  {%- endfor -%}
-                  {%- endif -%}
+                    {%- if messages -%}
+                        {%- for category, message in messages -%}
+                        <div class="response">
+                            <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                        </div>
+                        {%- endfor -%}
+                    {%- endif -%}
                   {%- endwith -%}
                   <table class="table table-hover">
                      <tr class="active">
@@ -43,7 +43,7 @@
                      {%- for talk in talks -%}
                      <tr>
                         <td>{{ talk['event_name'] }}</td>
-                        <td><a title="Preview" href="{{ url_for('single_talk', event_permalink=talk['event'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
+                        <td><a href="{{ url_for('single_talk', event_permalink=talk['event'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></td>
                         <td>{{ talk['date'] }}</td>
                         <td>{{ talk['start'] }}</td>
                         <td>{{ talk['end'] }}</td>

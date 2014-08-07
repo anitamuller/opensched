@@ -19,13 +19,13 @@
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
-                  {%- if messages -%}
-                  {%- for category, message in messages -%}
-                  <div class="response">
-                     <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
-                  </div>
-                  {%- endfor -%}
-                  {%- endif -%}
+                        {%- if messages -%}
+                            {%- for category, message in messages -%}
+                            <div class="response">
+                                <span class="message {{ category }}">{%- if category == 'success' -%}✔{%- endif -%}&nbsp;{{ message }}</span>
+                            </div>
+                            {%- endfor -%}
+                        {%- endif -%}
                   {%- endwith -%}
                   {%- if user -%}
                   <form class="form-user" role="form" method="post" action="{{ url_for('save_user') }}">
@@ -93,7 +93,7 @@
                            <input name="user-role" type="hidden" value="user">
                         {%- endif -%}
                            <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                           <input id="post-submit" type="submit" class="btn btn-primary" value="Submit">
+                           <input id="post-submit" type="submit" class="btn btn-primary" value="Edit">
                         </div>
                      </div>
                   </form>
