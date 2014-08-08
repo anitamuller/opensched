@@ -2,7 +2,6 @@
 {%- block head -%}
 {%- include 'head.html' -%}
 {%- block additional_css -%}
-<link href="{{ url_for('static', filename='css/plugins/metisMenu/metisMenu.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
 {%- endblock -%}
 {%- endblock -%}
@@ -12,7 +11,7 @@
    <div class="row">
       <div class="col-lg-8">
          <div class="page-header">
-            <h1><a href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></h1>
+            <h1>{{ event['name'] }}</h1>
          </div>
          <div>
              <div class="add-space row"></div>
@@ -34,19 +33,14 @@
                 </blockquote>
             {%- if session.user -%}
             <div ng-app="" ng-controller="eventController">
-
                 <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="btn btn-primary">My Schedule</a>
                 <button ng-click="clickSpeakers()" class="btn btn-primary">Speakers</button>
                 <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
-
-
-
-
-                <div ng-show="showSpeakers">
-                    <ul class="list_none">
+                <div class="speakers-list" ng-show="showSpeakers">
                     {%- if not speakers -%}
-                        <h4>No talks, so no speakers until now!</h4>
+                        <h4>There are no speakers registered for this event yet.</h4>
                     {%- endif -%}
+                    <ul class="list_none">
                     {%- for speaker in speakers -%}
                         <li>
                             <div>
@@ -58,13 +52,11 @@
                     {%- endfor -%}
                     </ul>
                 </div>
-                </br>
-
-                <div ng-show="showAttendees">
-                    <ul class="list_none">
+                <div class="attendees-list" ng-show="showAttendees">
                     {%- if not attendees -%}
-                        <h4>No attendees until now!</h4>
+                        <h4>There are no attendees for this event yet.</h4>
                     {%- endif -%}
+                    <ul class="list_none">
                     {%- for attendee in attendees -%}
                         <li>
                             <div>
@@ -76,33 +68,26 @@
                     {%- endfor -%}
                     </ul>
                 </div>
-
             </div>
             {%- else -%}
             <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Sign up</a>
             {%- endif -%}
          </div>
-         &nbsp; <br/>
          <div>
             <ul class="user-talks">
                {%- for talk in talks -%}
-
                <form name="talks_by_event" ng-controller="Talks_by_Event">
                     <h3><input type="checkbox" ng-model="checkbox-{{ talk['permalink'] }}" ng-true-value="'YES'" ng-false-value="'NO'" ng-change="new_schedule_talk(event_permalink,talk['permalink'])">
                     <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></h3>
                </form>
-
-
-
                {%- endfor -%}
             </ul>
          </div>
       </div>
    </div>
-
-
-
-    <script>
+</div>
+<script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
+<script>
     function eventController($scope) {
         $scope.showSpeakers = false;
         $scope.showAttendees = false;
@@ -116,12 +101,7 @@
 
         };
     }
-    </script>
-
-    <script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
-
-
-</div>
+</script>
 {%- endif -%}
 {%- include 'sidebar_event.html' -%}
 {%- endblock -%}

@@ -1,11 +1,7 @@
 import cgi
 import os
-from flask import Flask, render_template, abort, url_for, request, flash, session, redirect
-from flaskext.markdown import Markdown
-from mdx_github_gists import GitHubGistExtension
-from mdx_strike import StrikeExtension
-from mdx_quote import QuoteExtension
-from werkzeug.contrib.atom import AtomFeed
+from flask import Flask, render_template, abort, url_for, request, flash, session, redirect, Markup
+import base64
 import event
 import talk
 import user
@@ -16,10 +12,6 @@ from flask import jsonify
 
 
 app = Flask(__name__)
-md = Markdown(app)
-md.register_extension(GitHubGistExtension)
-md.register_extension(StrikeExtension)
-md.register_extension(QuoteExtension)
 app.config.from_object('config')
 
 
@@ -61,21 +53,10 @@ def talks_by_tag(event_permalink, tag, page):
 
 @app.route('/<permalink>')
 def single_event(permalink):
-    if session.has_key('user'):
-        if session.has_key('redirect_event'):
-            session.pop('redirect_event')
-    else:
-        session['redirect_event'] = permalink
-
     event = eventClass.get_event_by_permalink(permalink)
 
     if not event['data']:
         abort(404)
-
-    date_start = date_to_string(event['data']['start'], 'short')
-    event['data']['start'] = date_start
-    date_end = date_to_string(event['data']['end'], 'short')
-    event['data']['end'] = date_end
 
     talks_list = event['data']['talks']
 
@@ -103,9 +84,20 @@ def single_event(permalink):
         user_with_gravatar_img = userClass.get_user(speaker_event)
         speakers.append(user_with_gravatar_img['data'])
 
-    return render_template('single_event.html', event=event['data'], event_start= date_start, event_end = date_end,
-                           talks=talks, tags=tags,
-                           attendees=attendees, speakers=speakers,
+    # Format data retrieved from the DB
+    event['data']['summary'] = base64.b64decode(event['data']['summary'])
+    event['data']['description'] = base64.b64decode(event['data']['description'])
+    event['data']['start'] = date_to_string(event['data']['start'], 'short')
+    event['data']['end'] = date_to_string(event['data']['end'], 'short')
+
+    return render_template('single_event.html',
+                           event=event['data'],
+                           event_start=event['data']['start'],
+                           event_end=event['data']['end'],
+                           talks=talks,
+                           tags=tags,
+                           attendees=attendees,
+                           speakers=speakers,
                            meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
 
@@ -168,13 +160,13 @@ def new_event():
     error_type = 'validate'
     if request.method == 'POST':
         event_name = request.form.get('event-name').strip()
-        event_summary = request.form.get('event-summary')
+        event_summary = base64.b64encode(request.form.get('event-summary'))
         event_venue = request.form.get('event-venue')
         event_start = request.form.get('event-start')
         event_end = request.form.get('event-end')
 
-        if not event_name or not event_summary or not event_venue \
-                or not event_start or not event_end:
+        if not (event_name and event_summary and event_venue
+                and event_start and event_end):
             error = True
         else:
             tags = cgi.escape(request.form.get('event-tags'))
@@ -182,7 +174,7 @@ def new_event():
 
             event_data = {'name': event_name,
                           'summary': event_summary,
-                          'description': request.form.get('event-description'),
+                          'description': base64.b64encode(request.form.get('event-description')),
                           'start': string_to_date(request.form.get('event-start')),
                           'end': string_to_date(request.form.get('event-end')),
                           'venue': event_venue,
@@ -238,9 +230,6 @@ def new_event():
 def event_edit(id):
     event = eventClass.get_event_by_id(id)
 
-    event['data']['start'] = format_date(event['data']['start'])
-    event['data']['end'] = format_date(event['data']['end'])
-
     if event['data']['attendees'] == []:
         event['data']['attendees'] = ""
 
@@ -253,6 +242,12 @@ def event_edit(id):
     if session.get('event-preview') and session['event-preview']['action'] == 'add':
         session.pop('event-preview', None)
 
+    # Format data retrieved from the DB
+    event['data']['summary'] = base64.b64decode(event['data']['summary'])
+    event['data']['description'] = base64.b64decode(event['data']['description'])
+    event['data']['start'] = format_date(event['data']['start'])
+    event['data']['end'] = format_date(event['data']['end'])
+
     return render_template('edit_event.html',
                            meta_title='Edit event::' + event['data']['name'],
                            event=event['data'],
@@ -264,23 +259,19 @@ def event_edit(id):
 @login_required()
 def event_del(id):
     if eventClass.get_total_count() >= 1:
-        #actualizate field attendee_at of users invited to the event
+        # Update users invited to the event attendee_at field
         event = eventClass.get_event_by_id(id)
         event_permalink = event['data']['permalink']
         event_attendees = event['data']['attendees']
         for attendee in event_attendees:
             userClass.remove_attendee(attendee, event_permalink)
 
-        #eliminate talks associate to the event
+        # Remove event talks
         event_talks = event['data']['talks']
         for talk in event_talks:
             talk_event = talkClass.get_talk_by_permalink(talk)
-            import pdb
-            pdb.set_trace()
             talk_id = talk_event['data']['_id']
             talk_del(event_permalink,talk_id)
-
-
 
         response = eventClass.delete_event(id)
         if response['data'] is True:
@@ -310,20 +301,19 @@ def new_talk(event_permalink):
     error = False
     error_type = 'validate'
     if request.method == 'POST':
-        #only are optionals the fields description and tags
+        # Fields description and tags are optional
         talk_name = request.form.get('talk-name').strip()
-        talk_summary = request.form.get('talk-summary')
+        talk_summary = base64.b64encode(request.form.get('talk-summary'))
         talk_room = request.form.get('talk-room')
         talk_date = request.form.get('talk-date')
         talk_start = request.form.get('talk-start')
         talk_end = request.form.get('talk-end')
         talk_speaker = request.form.get('talk-speaker')
 
-        if not talk_name or not talk_summary or not talk_room\
-                or not talk_date or not talk_start or not talk_end \
-                or not talk_speaker:
+        if not (talk_name and talk_summary and talk_room
+                and talk_date and talk_start and talk_end
+                and talk_speaker):
             error = True
-
         else:
             tags = cgi.escape(request.form.get('talk-tags'))
             tags_array = extract_tags(tags)
@@ -331,7 +321,7 @@ def new_talk(event_permalink):
             talk_data = {'name': talk_name,
                          'event': event_permalink,
                          'summary': talk_summary,
-                         'description': request.form.get('talk-description'),
+                         'description': base64.b64encode(request.form.get('talk-description')),
                          'date': string_to_date(request.form.get('talk-date')),
                          'start': string_to_time(request.form.get('talk-start')),
                          'end': string_to_time(request.form.get('talk-end')),
@@ -369,7 +359,7 @@ def new_talk(event_permalink):
                         event_talks.append(new_permalink)
                         eventClass.modify_talks_event(event_permalink, event_talks)
 
-                        #actualizate fields speaker_at and attendee_at of users invited to the event
+                        # Update users invited to the event speaker_at and attendee_at fields
                         event_attendees = event['data']['attendees']
 
                         for attendee in event_attendees:
@@ -457,8 +447,6 @@ def talk_edit(event_permalink, id):
     talk = talkClass.get_talk_by_id(id)
     session['talk-permalink'] = talk['data']['permalink']
 
-    talk['data']['date'] = format_date(talk['data']['date'])
-
     if talk['error']:
         flash(talk['error'], 'error')
         return redirect(url_for('talks', event_permalink=event_permalink))
@@ -466,14 +454,17 @@ def talk_edit(event_permalink, id):
     if session.get('talk-preview') and session['talk-preview']['action'] == 'add':
         session.pop('talk-preview', None)
 
-    #talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
-
     speakers = eventClass.get_attendance_event(event_permalink)
 
     old_speaker = talk['data']['speaker']
+
     if old_speaker in speakers:
         speakers.remove(old_speaker)
         speakers.append(old_speaker)  # quedando el speaker de la charla seleccionado como corresponde
+
+    talk['data']['date'] = format_date(talk['data']['date'])
+    talk['data']['summary'] = base64.b64decode(talk['data']['summary'])
+    talk['data']['description'] = base64.b64decode(talk['data']['description'])
 
     return render_template('edit_talk.html',
                            event_permalink=event_permalink,
@@ -534,30 +525,31 @@ def bulk_delete_talks():
 
 @app.route('/<event_permalink>/<talk_permalink>')
 def single_talk(event_permalink, talk_permalink):
-    if session.has_key('user'):
-        if session.has_key('redirect_talk') and session.has_key('redirect_event'):
-            session.pop('redirect_event')
-            session.pop('redirect_talk')
-    else:
-        session['redirect_event'] = event_permalink
-        session['redirect_talk'] = talk_permalink
-
     talk = talkClass.get_talk_by_permalink(talk_permalink)
 
-    speaker_talk = talk['data']['speaker']
-    speaker_with_gravatar = userClass.get_user(speaker_talk)
+    if not talk['data']:
+        abort(404)
 
-    attendees_talk = talk['data']['attendees']
-    list_attendees = []
-    for attendee_talk in attendees_talk:
-        attendee = userClass.get_user(attendee_talk)
-        list_attendees.append(attendee['data'])
+    talk_speaker = talk['data']['speaker']
+    speaker_with_gravatar = userClass.get_user(talk_speaker)
 
+    talk_attendees = talk['data']['attendees']
+    attendees = []
+    for talk_attendee in talk_attendees:
+        attendee = userClass.get_user(talk_attendee)
+        attendees.append(attendee['data'])
+
+    talk['data']['summary'] = base64.b64decode(talk['data']['summary'])
+    talk['data']['description'] = base64.b64decode(talk['data']['description'])
     talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
     talk['data']['start'] = time_to_string(talk['data']['start'])
     talk['data']['end'] = time_to_string(talk['data']['end'])
-    return render_template('single_talk.html', event_permalink=event_permalink, talk=talk['data'],
-                           speaker=speaker_with_gravatar['data'], attendees=list_attendees,
+
+    return render_template('single_talk.html',
+                           event_permalink=event_permalink,
+                           talk=talk['data'],
+                           speaker=speaker_with_gravatar['data'],
+                           attendees=attendees,
                            meta_title='Talk: ' + '::' + talk['data']['name'])
 
 @app.route('/<event_permalink>/talks')
@@ -567,7 +559,6 @@ def talks_by_event(event_permalink):
 
     talks_list = eventClass.get_talks_by_event(event_permalink)
     talks = []
-
 
     for talk_permalink in talks_list:
         talk = talkClass.get_talk_by_permalink(str(talk_permalink))
@@ -1151,6 +1142,7 @@ eventClass = event.Event(app.config)
 talkClass = talk.Talk(app.config)
 userClass = user.User(app.config)
 
+app.jinja_env.autoescape = False
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
 app.jinja_env.globals['meta_description'] = app.config['SITE_DESCRIPTION']

@@ -1,4 +1,4 @@
-import datetime
+import base64
 import cgi
 from bson.objectid import ObjectId
 from helper_functions import *
@@ -39,8 +39,8 @@ class Event:
 
                 self.response['data'].append({'id': event['_id'],
                                               'name': event['name'],
-                                              'summary': event['summary'],
-                                              'description': event['description'],
+                                              'summary': base64.b64decode(event['summary']),
+                                              'description': base64.b64decode(event['description']),
                                               'start': date_to_string(event['start'], 'short'),
                                               'end': date_to_string(event['end'], 'short'),
                                               'venue': event['venue'],
@@ -110,8 +110,8 @@ class Event:
             for event in cursor:
                 self.response['data'].append({'id': event['_id'],
                                               'name': event['name'],
-                                              'summary': event['summary'],
-                                              'description': event['description'],
+                                              'summary': base64.b64decode(event['summary']),
+                                              'description': base64.b64decode(event['description']),
                                               'start': date_to_string(event['start'], 'short'),
                                               'end': date_to_string(event['end'], 'short'),
                                               'venue': event['venue'],
@@ -238,20 +238,23 @@ class Event:
         event_attendees = new_event['attendees']
         event_tags = new_event['tags']
 
-        self.collection.update({'permalink': permalink},
-                               {'name': event_name, 'summary': event_summary,
-                                'description': event_description, 'organizer': event_organizer,
-                                'permalink': event_permalink, 'venue': event_venue,
-                                'start': event_start, 'end': event_end,
-                                'attendees': event_attendees, 'tags': event_tags,
-                                'talks': event_talks
-                                })
+        self.collection.update({'permalink': permalink}, {'name': event_name,
+                                                          'summary': event_summary,
+                                                          'description': event_description,
+                                                          'organizer': event_organizer,
+                                                          'permalink': event_permalink,
+                                                          'venue': event_venue,
+                                                          'start': event_start,
+                                                          'end': event_end,
+                                                          'attendees': event_attendees,
+                                                          'tags': event_tags,
+                                                          'talks': event_talks
+        })
 
     def add_new_attendee(self, permalink, email_attendee):
-        self.response['data'] = self.collection.find_one(
-                     {'permalink': permalink})
-
+        self.response['data'] = self.collection.find_one({'permalink': permalink})
         event_attendees = self.response['data']['attendees']
+
         if not email_attendee in event_attendees:
             event_attendees.append(email_attendee)
 
@@ -268,14 +271,18 @@ class Event:
             event_talks = new_event['talks']
             event_tags = new_event['tags']
 
-            self.collection.update({'permalink': permalink},
-                               {'name': event_name, 'summary': event_summary,
-                                'description': event_description, 'organizer': event_organizer,
-                                'permalink': event_permalink, 'venue': event_venue,
-                                'start': event_start, 'end': event_end,
-                                'attendees': event_attendees, 'tags': event_tags,
-                                'talks': event_talks
-                                })
+            self.collection.update({'permalink': permalink}, {'name': event_name,
+                                                              'summary': event_summary,
+                                                              'description': event_description,
+                                                              'organizer': event_organizer,
+                                                              'permalink': event_permalink,
+                                                              'venue': event_venue,
+                                                              'start': event_start,
+                                                              'end': event_end,
+                                                              'attendees': event_attendees,
+                                                              'tags': event_tags,
+                                                              'talks': event_talks
+            })
 
     def modify_talks_event(self, permalink, talks):
         self.response['data'] = self.collection.find_one(
