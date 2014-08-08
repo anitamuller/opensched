@@ -1,7 +1,5 @@
-import datetime
+import base64
 import cgi
-import event
-import user
 from bson.objectid import ObjectId
 from helper_functions import *
 
@@ -40,8 +38,8 @@ class Talk:
                     self.response['data'].append({'id': talk['_id'],
                                                   'name': talk['name'],
                                                   'event': talk['event'],
-                                                  'summary': talk['summary'],
-                                                  'description': talk['description'],
+                                                  'summary': base64.b64decode(talk['summary']),
+                                                  'description': base64.b64decode(talk['description']),
                                                   'date': date_to_string(talk['date'], 'short'),
                                                   'start': time_to_string(talk['start']),
                                                   'end': time_to_string(talk['end']),
@@ -206,18 +204,18 @@ class Talk:
 
     def generate_permalink(self, talk_data):
         cond = {'name': talk_data['name'], 'event': talk_data['event']}
-        talks_samename = self.collection.find(cond).count()
+        talks_same_name = self.collection.find(cond).count()
 
-        name_without_spaces=talk_data['name'].replace(" ", "_")
-        name_lower_without_spaces = name_without_spaces.lower()
+        name_lower_no_spaces = talk_data['name'].replace(" ", "_").lower()
 
-        if talks_samename == 0:
-            permalink = name_lower_without_spaces
+        if talks_same_name == 0:
+            permalink = name_lower_no_spaces
         else:
-            newpermalink = talks_samename + 1
-            permalink = name_lower_without_spaces + '-' + str(newpermalink)
+            new_permalink = talks_same_name + 1
+            permalink = name_lower_no_spaces + '-' + str(new_permalink)
 
         talk_data['permalink'] = permalink
+
         return talk_data
 
     def add_new_attendee(self, permalink, email_attendee):
@@ -241,15 +239,19 @@ class Talk:
         talk_end = new_talk['end']
         talk_tags = new_talk['tags']
 
-        self.collection.update({'permalink': permalink},
-                               {'name': talk_name, 'event': talk_event, 'summary': talk_summary,
-                                'description': talk_description, 'speaker': talk_speaker,
-                                'permalink': talk_permalink, 'room': talk_room,
-                                'date': talk_date,'start': talk_start, 'end': talk_end,
-                                'attendees': talk_attendees, 'tags': talk_tags
-                                })
-
-
+        self.collection.update({'permalink': permalink}, {'name': talk_name,
+                                                          'event': talk_event,
+                                                          'summary': talk_summary,
+                                                          'description': talk_description,
+                                                          'speaker': talk_speaker,
+                                                          'permalink': talk_permalink,
+                                                          'room': talk_room,
+                                                          'date': talk_date,
+                                                          'start': talk_start,
+                                                          'end': talk_end,
+                                                          'attendees': talk_attendees,
+                                                          'tags': talk_tags
+                                                          })
 
     @staticmethod
     def print_debug_info(msg, show=False):

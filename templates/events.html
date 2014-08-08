@@ -78,13 +78,9 @@
                </div>
                {%- else -%}
                <div class="page-header">
-                 <div class="alert alert-info" role="alert" style="border-color:#D9EDF7;"><h4 style="font-size: 14px">No Events in SchedOpen, create your Event!</h4></div>
+                 <div class="alert alert-info" role="alert">You are not organizing any event yet!</div>
+                 <a href="{{ url_for('new_event') }}" class="response btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Create event</a>
                </div>
-               {% if session.user and session.user.role == 'Admin' %}
-               <div>
-                    <a href="{{ url_for('new_event') }}" class="response btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add new</a>
-               </div>
-               {% endif %}
                {%- endif -%}
             </div>
          </div>

@@ -235,3 +235,18 @@ label {
 .required-field {
     color: red;
 }
+
+.table-dashboard {
+    border-radius: 7px;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    text-align: center;
+}
+
+.speakers-list {
+    margin: 4% 0;
+}
+
+.attendees-list {
+    margin: 4% 0;
+}

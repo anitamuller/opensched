@@ -127,12 +127,11 @@
             {%- if organizer_at -%}
             <div class="content">
                <ul class="user-events">
-                  <table class="table table-bordered table-hover table-condensed" style="border-radius:7px;-moz-border-radius: 7px; -webkit-border-radius : 7px;">
-
+                  <table class="table table-bordered table-hover table-condensed table-dashboard">
                   <tr class="info">
                       <td>Event</td>
-                      <td>Start Date</td>
-                      <td>End Date</td>
+                      <td>Start date</td>
+                      <td>End date</td>
                       <td>Admin</td>
                   </tr>
                   {%- for event in organizer_at -%}
@@ -162,7 +161,7 @@
                </ul>
             </div>
             {%- else -%}
-            <div class="alert alert-info" role="alert">You didn't organize any event</div>
+            <div class="alert alert-info" role="alert">You don't have events to organize.</div>
             {%- endif -%}
          </div>
          <!-- /.col-lg-12 -->
@@ -174,7 +173,7 @@
             {%- if speaker_at -%}
             <div class="content">
                <ul class="user-events">
-                  <table class="table table-bordered table-hover table-condensed" style="border-radius:7px;-moz-border-radius: 7px; -webkit-border-radius : 7px;">
+                  <table class="table table-bordered table-hover table-condensed table-dashboard">
                   <tr class="warning">
                       <td>Event</td>
                       <td>Start Date</td>
@@ -192,7 +191,7 @@
                </ul>
             </div>
             {%- else -%}
-            <div class="alert alert-info" role="alert">No events speaker at</div>
+            <div class="alert alert-info" role="alert">You don't have events to speak at.</div>
             {%- endif -%}
             <!-- /.col-lg-12 -->
          </div>
@@ -203,11 +202,11 @@
             {%- if attendee_at -%}
             <div class="content">
                <ul class="user-events">
-                  <table class="table table-bordered table-hover table-condensed" style="border-radius:7px;-moz-border-radius: 7px; -webkit-border-radius : 7px;">
+                  <table class="table table-bordered table-hover table-condensed table-dashboard">
                   <tr class="danger">
                       <td>Event</td>
-                      <td>Start Date</td>
-                      <td>End Date</td>
+                      <td>Start date</td>
+                      <td>End date</td>
                   </tr>
                   {%- for event_attendee in attendee_at -%}
                   <tr>
@@ -221,7 +220,7 @@
                </ul>
             </div>
             {%- else -%}
-            <div class="alert alert-info" role="alert">No events attendee at</div>
+            <div class="alert alert-info" role="alert">You don't have events to attend to.</div>
             {%- endif -%}
          </div>
          <!-- /.col-lg-12 -->
