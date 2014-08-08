@@ -681,7 +681,7 @@ def login():
             else:
                 userClass.start_session(user_data['data'])
                 role = user_data['data'].get('role')
-                if role == 'user':
+                if role == 'User':
                     if not session.has_key('redirect_event') and not session.has_key('redirect_talk'):
                         return redirect(url_for('dashboard_user'))
                     else:
@@ -702,7 +702,7 @@ def login():
     else:
         if session.get('user'):
             role = session.get('user').get('role')
-            if role == 'user':
+            if role == 'User':
                 return redirect(url_for('dashboard_user'))
             else:
                 return redirect(url_for('dashboard_admin'))
@@ -1154,8 +1154,7 @@ userClass = user.User(app.config)
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
 app.jinja_env.globals['meta_description'] = app.config['SITE_DESCRIPTION']
-if eventClass.get_events(10, 0)['data']:
-    app.jinja_env.globals['recent_events'] = eventClass.get_events(10, 0)['data']
+app.jinja_env.globals['recent_events'] = eventClass.get_events(10, 0)['data']
 app.jinja_env.globals['tags'] = eventClass.get_tags()['data']
 
 if not app.config['DEBUG']:
