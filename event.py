@@ -285,8 +285,7 @@ class Event:
             })
 
     def modify_talks_event(self, permalink, talks):
-        self.response['data'] = self.collection.find_one(
-                     {'permalink': permalink})
+        self.response['data'] = self.collection.find_one({'permalink': permalink})
         new_event = self.response['data']
 
         event_name = new_event['name']
@@ -301,14 +300,18 @@ class Event:
         event_tags = new_event['tags']
         event_talks = talks
 
-        self.collection.update({'permalink': permalink},
-                               {'name': event_name, 'summary': event_summary,
-                                'description': event_description, 'organizer': event_organizer,
-                                'permalink': event_permalink, 'venue': event_venue,
-                                'start': event_start, 'end': event_end,
-                                'attendees': event_attendees, 'tags': event_tags,
-                                'talks': event_talks
-                                })
+        self.collection.update({'permalink': permalink}, {'name': event_name,
+                                                          'summary': event_summary,
+                                                          'description': event_description,
+                                                          'organizer': event_organizer,
+                                                          'permalink': event_permalink,
+                                                          'venue': event_venue,
+                                                          'start': event_start,
+                                                          'end': event_end,
+                                                          'attendees': event_attendees,
+                                                          'tags': event_tags,
+                                                          'talks': event_talks
+                                                          })
 
     def edit_event(self, event_id, event_data):
         self.response['error'] = None

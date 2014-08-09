@@ -35,7 +35,7 @@
                   </br>
                   <table class="table table-hover">
                      <tr class="active">
-                        <th><input type="checkbox" id="select-all" ng-click="clickDelete()" /></th>
+                        <th><input type="checkbox" class="delete-event" id="select-all" ng-click="clickDelete()" /></th>
                         <th>Name</th>
                         <th>Start date</th>
                         <th>End date</th>
@@ -46,7 +46,7 @@
                      {%- set count = 1 -%}
                      {%- for event in events -%}
                      <tr>
-                        <td><input type="checkbox" class="delete-item" name="delete-item" value="{{ event['permalink'] }}" id="event['permalink']" ng-model="formData.event{{ count }}"></td>
+                        <td><input type="checkbox" class="delete-event checkbox-bulk" name="delete-event" value="{{ event['permalink'] }}" id="event['permalink']" ng-model="formData.event{{ count }}" ng-click="clickDelete()"></td>
                         <td><a href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                         <td>{{ event['start'] }}</td>
                         <td>{{ event['end'] }}</td>

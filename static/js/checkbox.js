@@ -1,15 +1,40 @@
 $(function() {
-     $('#select-all').on('click', function(){  //  on click
-         if(this.checked) { // check select status
-            $('.delete-item').each(function() {  //  loop through each checkbox
-                this.checked = true;  //  select all checkboxes with class "delete-talk_checkbox"
+    $('#select-all').on('click', function() {
+        if (this.checked) {
+            // Select all events
+            $('.delete-event').each(function() {
+                this.checked = true;
             });
-            }else{
-                $('.delete-item').each(function() {  //  loop through each checkbox
-                    this.checked = false;  //  deselect all checkboxes with class "delete-talk_checkbox"
-                });
-                }
+            // Select all talks
+            $('.delete-talk').each(function() {
+                this.checked = true;
+            });
+        } else {
+            // Unselect all events
+            $('.delete-event').each(function() {
+                this.checked = false;
+            });
+            // Unselect all talks
+            $('.delete-talk').each(function() {
+                this.checked = false;
+            });
+        }
     });
+
+    $('.checkbox-bulk').on('click', function() {
+        all_selected = true;
+
+        $('.checkbox-bulk').each(function() {
+            if (this.checked == false) {
+                all_selected = false;
+            }
+        });
+
+        if (all_selected) {
+            $('#select-all').prop("checked", true);
+        } else {
+            $('#select-all').prop("checked", false);
+        }
+    });
+
 });
-
-

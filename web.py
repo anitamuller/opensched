@@ -258,39 +258,44 @@ def event_edit(id):
 @app.route('/event_delete?id=<id>')
 @login_required()
 def event_del(id):
-    if eventClass.get_total_count() >= 1:
-        # Update users invited to the event attendee_at field
-        event = eventClass.get_event_by_id(id)
-        event_permalink = event['data']['permalink']
-        event_attendees = event['data']['attendees']
-        for attendee in event_attendees:
-            userClass.remove_attendee(attendee, event_permalink)
 
-        # Remove event talks
-        event_talks = event['data']['talks']
-        for talk in event_talks:
-            talk_event = talkClass.get_talk_by_permalink(talk)
-            talk_id = talk_event['data']['_id']
-            talk_del(event_permalink,talk_id)
+    # Update users invited to the event attendee_at field
+    event = eventClass.get_event_by_id(id)
+    event_permalink = event['data']['permalink']
+    event_attendees = event['data']['attendees']
+    for attendee in event_attendees:
+        userClass.remove_attendee(attendee, event_permalink)
 
-        response = eventClass.delete_event(id)
-        if response['data'] is True:
-            flash('Event removed!', 'success')
-            return redirect(url_for('events'))
-        else:
-            flash(response['error'], 'error')
+    # Remove event talks
+    event_talks = event['data']['talks']
+    for talk in event_talks:
+        talk_event = talkClass.get_talk_by_permalink(talk)
+        talk_id = talk_event['data']['_id']
+        talk_del(event_permalink,talk_id)
+
+    response = eventClass.delete_event(id)
+
+    if response['data'] is True:
+        flash('Event removed!', 'success')
+        return redirect(url_for('events'))
     else:
-        flash('Need to be at least one event..', 'error')
+        flash(response['error'], 'error')
+
 
 @app.route('/bulk_delete_events', methods=['POST'])
 def bulk_delete_events():
     events_to_remove = request.json['events_to_remove']
 
     for event_permalink in events_to_remove:
-        event = eventClass.get_talk_by_permalink(event_permalink)
+        event = eventClass.get_event_by_permalink(event_permalink)
         event_id = event['data']['_id']
 
         response = eventClass.delete_event(event_id)
+
+    if response['data'] is True:
+        flash('Event removed!', 'success')
+    else:
+        flash(response['error'], 'error')
 
     # Retorna el resultado de la ultima eliminacion
     return jsonify({'value': response['data']})
@@ -478,26 +483,24 @@ def talk_edit(event_permalink, id):
 @app.route('/<event_permalink>/talk_delete?id=<id>')
 @login_required()
 def talk_del(event_permalink, id):
-    if talkClass.get_total_count() >= 1:
-        talk = talkClass.get_talk_by_id(id)
-        talk_permalink = talk['data']['permalink']
-        response = talkClass.delete_talk(id)
-        event = eventClass.get_event_by_permalink(event_permalink)
-        event_talks = event['data']['talks']
-        event_talks.remove(talk_permalink)
-        eventClass.modify_talks_event(event_permalink, event_talks)
 
-        #actualizate fields speaker_at and attendee_at of users invited to the event
-        event_attendees = event['data']['attendees']
-        for attendee in event_attendees:
-            userClass.remove_attendee(attendee, event_permalink, talk_permalink)
+    talk = talkClass.get_talk_by_id(id)
+    talk_permalink = talk['data']['permalink']
+    response = talkClass.delete_talk(id)
+    event = eventClass.get_event_by_permalink(event_permalink)
+    event_talks = event['data']['talks']
+    event_talks.remove(talk_permalink)
+    eventClass.modify_talks_event(event_permalink, event_talks)
 
-        if response['data'] is True:
-            flash('Talk removed!', 'success')
-        else:
-            flash(response['error'], 'error')
+    # Update users invited to the event speaker_at and attendee_at fields
+    event_attendees = event['data']['attendees']
+    for attendee in event_attendees:
+        userClass.remove_attendee(attendee, event_permalink, talk_permalink)
+
+    if response['data'] is True:
+        flash('Talk removed!', 'success')
     else:
-        flash('Need to be at least one talk..', 'error')
+        flash(response['error'], 'error')
 
     return redirect(url_for('talks_by_event', event_permalink=event_permalink))
 
@@ -510,14 +513,19 @@ def bulk_delete_talks():
         talk = talkClass.get_talk_by_permalink(talk_permalink)
         talk_id = talk['data']['_id']
 
-        response = talkClass.delete_talk(talk_id)
-
         event_permalink = talk['data']['event']
         event = eventClass.get_event_by_permalink(event_permalink)
 
         event_talks = event['data']['talks']
         event_talks.remove(talk_permalink)
         eventClass.modify_talks_event(event_permalink, event_talks)
+
+        response = talkClass.delete_talk(talk_id)
+
+    if response['data'] is True:
+        flash('Talk removed!', 'success')
+    else:
+        flash(response['error'], 'error')
 
     # Retorna el resultado de la ultima eliminacion
     return jsonify({'value': response['data']})
@@ -593,7 +601,7 @@ def my_schedule(event_permalink):
         list_talks.append(talk_complete['data'])
 
     return render_template('my_schedule.html', event_permalink=event_permalink, talks=list_talks,
-                           meta_title='Talks attendee at of event: ' + event_name)
+                           meta_title='My schedule: ' + event_name)
 
 
 
