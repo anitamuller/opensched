@@ -38,20 +38,19 @@
                     </div>
                        <div ng-app="" ng-controller="talkController">
                         <div>
+                            <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
                         {%- if session.user -%}
                             <a href="{{ url_for('new_schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Add to my schedule!</a>
-                            <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
                         {%- else -%}
-                            <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
-                            <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">Sign up</a>
+                            <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">sign up</a>
                         {%- endif -%}
                         </div>
-
                         <div ng-show="showAttendees">
                             <ul class="list_none">
                             {%- if not attendees -%}
-                                <h4>No attendees until now!</h4>
+                                <h4>There are no attendees for this event yet.</h4>
                             {%- endif -%}
+                                <h4>Attendees ({%- len(attendees) %-})</h4>
                             {%- for attendee in attendees -%}
                             <li>
                                 <div>
@@ -64,11 +63,6 @@
                             </ul>
                         </div>
                     </div>
-
-                    </br></br>
-
-                    &nbsp; <br/>
-
                     <div>
                         <h4>Speaker</h4>
                         <img src="{{ speaker['gravatar_url'] }}" class="img-circle">

@@ -512,15 +512,18 @@ def bulk_delete_talks():
     for talk_permalink in talks_to_remove:
         talk = talkClass.get_talk_by_permalink(talk_permalink)
         talk_id = talk['data']['_id']
-
         event_permalink = talk['data']['event']
+        response = talkClass.delete_talk(talk_id)
         event = eventClass.get_event_by_permalink(event_permalink)
-
         event_talks = event['data']['talks']
         event_talks.remove(talk_permalink)
         eventClass.modify_talks_event(event_permalink, event_talks)
 
-        response = talkClass.delete_talk(talk_id)
+        # Update users invited to the event speaker_at and attendee_at fields
+        event_attendees = event['data']['attendees']
+        for attendee in event_attendees:
+            userClass.remove_attendee(attendee, event_permalink, talk_permalink)
+            response = talkClass.delete_talk(talk_id)
 
     if response['data'] is True:
         flash('Talk removed!', 'success')

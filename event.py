@@ -308,6 +308,7 @@ class Event:
                                                           'venue': event_venue,
                                                           'start': event_start,
                                                           'end': event_end,
+                                                          'end': event_end,
                                                           'attendees': event_attendees,
                                                           'tags': event_tags,
                                                           'talks': event_talks

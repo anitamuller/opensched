@@ -1,16 +1,17 @@
 <div class="col-lg-3 visible-lg sidebar">
    {%- if talk -%}
-   <h1>{{ talk['name'] }}</h1>
+   <h3><strong>Talk</strong> details</h3>
    <small>{{ talk['date'] }} • {{ talk['start'] }} - {{ talk['end'] }}</small><br/>
    <small>Room {{ talk['room'] }}</small><br/>
    <small>Speaker <a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></small>
    {%- endif -%}
-   &nbsp; <br/>
 
-   <h3>Let your friends know!</h3>
+   <div class="divider"></div>
+
+   <h3><strong>Let your friends</strong> know!</h3>
    <div class="social row-fluid">
       <!-- AddThis Button BEGIN -->
-      <div class="addthis_toolbox addthis_default_style addthis_16x16_style">
+      <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
          <a class="addthis_button_twitter"></a>
          <a class="addthis_button_facebook"></a>
          <a class="addthis_button_google_plusone_share"></a>
@@ -20,5 +21,17 @@
       <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-526fe54e082798d3"></script>
       <!-- AddThis Button END -->
    </div>
-   &nbsp; <br/>
+
+   <div class="divider"></div>
+
+   {%- if tags -%}
+   <h3><strong>Talk</strong> tags</h3>
+   <hr>
+   <ul>
+      {% for tag in tags %}
+      <li><a href="{{ url_for('talks_by_tag', event_permalink=event['permalink'], page=1, tag=tag['title']) }}">{{ tag['title'] }} <sup class="badge">{{ tag['count'] }}</sup></a></li>
+      {% endfor %}
+   </ul>
+   {%- endif -%}
+
 </div>

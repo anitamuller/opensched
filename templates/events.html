@@ -14,7 +14,6 @@
       <div class="event">
          <div class="row">
             <div class="col-lg-12">
-
                <div class="page-header">
                   <h1>Events</h1>
                </div>
@@ -28,18 +27,14 @@
                             {%- endfor -%}
                         {%- endif -%}
                   {%- endwith -%}
-                  {%- if not events -%}
-                  <a href="{{ url_for('new_event') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add new</a>
-                  {%- endif -%}
                   {%- if events -%}
                   <div class="table-actions">
                     <a href="{{ url_for('new_event') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add new</a>
                     <button id="delete-events" type="button" class="btn btn-primary" ng-click="eventsToDelete()"><i class="fa fa-trash-o"></i> Delete</button>
                   </div>
-                  </br>
                   <table class="table table-hover">
                      <tr class="active">
-                        <th><input type="checkbox" class="delete-event" id="select-all" ng-click="clickDelete()" /></th>
+                        <th><input type="checkbox" id="select-all" ng-click="clickDelete()" /></th>
                         <th>Name</th>
                         <th>Start date</th>
                         <th>End date</th>
@@ -77,9 +72,9 @@
                   </table>
                </div>
                {%- else -%}
-               <div class="page-header">
+               <div>
                  <div class="alert alert-info" role="alert">You are not organizing any event yet!</div>
-                 <a href="{{ url_for('new_event') }}" class="response btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Create event</a>
+                 <a href="{{ url_for('new_event') }}" class="response btn btn-primary"><i class="fa fa-plus"></i> Create event</a>
                </div>
                {%- endif -%}
             </div>

@@ -36,8 +36,12 @@ $(function() {
 
         if (all_selected) {
             $('#select-all').prop("checked", true);
+            $("#delete-events").prop("disabled", false);
+            $("#delete-talks").prop("disabled", false);
         } else {
             $('#select-all').prop("checked", false);
+            $("#delete-events").prop("disabled", true);
+            $("#delete-talks").prop("disabled", true);
         }
     });
 });

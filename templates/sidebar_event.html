@@ -1,16 +1,17 @@
 <div class="col-lg-3 visible-lg sidebar">
    {%- if event -%}
-   <h2>Event details</h2>
-   <p>Organized by <a title="Event Organizer" href="{{ url_for('view_user', id=event['organizer']) }}" data-target="_blank"> {{ event['organizer'] }}</a></p>
+   <h3><strong>Event</strong> details</h3>
+   <p>Organized by <a title="Event organizer" href="{{ url_for('view_user', id=event['organizer']) }}" data-target="_blank"> {{ event['organizer'] }}</a></p>
    <p>{{ event['description'] }}</p>
    <p>From <strong>{{event_start}}</strong> to <strong>{{ event_end }}</strong> at {{ event['venue'] }}</p>
    {%- endif -%}
-   &nbsp; <br/>
 
-   <h2>Let your friends know!</h2>
+   <div class="sidebar-divider"></div>
+
+   <h3><strong>Let your friends</strong> know!</h3>
    <div class="social row-fluid">
       <!-- AddThis Button BEGIN -->
-      <div class="addthis_toolbox addthis_default_style addthis_16x16_style">
+      <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
          <a class="addthis_button_twitter"></a>
          <a class="addthis_button_facebook"></a>
          <a class="addthis_button_google_plusone_share"></a>
@@ -20,10 +21,11 @@
       <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-526fe54e082798d3"></script>
       <!-- AddThis Button END -->
    </div>
-   &nbsp; <br/>
+
+   <div class="sidebar-divider"></div>
 
    {%- if tags -%}
-   <h2>Top tags talks</h2>
+   <h3><strong>Top talk</strong> topics</h3>
    <hr>
    <ul>
       {% for tag in tags %}

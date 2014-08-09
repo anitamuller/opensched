@@ -1,82 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-	{%- block head -%}{%- include 'head.html' -%}{%- endblock -%}
-	<body>
-		<div id="wrapper" class="fullwidth">
-			{%- block nav -%}
-                {%- include 'nav.html' -%}
+   {%- block head -%}{%- include 'head.html' -%}{%- endblock -%}
+   <body>
+      <div id="wrapper" class="fullwidth">
+         {%- block nav -%}
+         {%- include 'nav.html' -%}
+         {%- endblock -%}
+         <div class="container">
+            {%- block body -%}
+            {%- if events -%}
+            {%- for event in events -%}
+            <div class="clearfix">
+               <div class="row">
+                  <div class="col-lg-8">
+                     <div class="page-header">
+                        <h2><a href="{{ url_for('single_event', permalink=event['permalink']) }}">{{ event['name'] }}</a></h2>
+                     </div>
+                     <div>Event organized by <a title="Organizer" href="{{ url_for('view_user', id=event['organizer']) }} " data-target="_blank"> {{ event['organizer'] }}</a></div>
+                     <div>From {{ event['start'] }} to {{ event['end'] }} at {{ event['venue'] }}</div>
+                     <div class="content no-lightbox">
+                        {{ event['summary'] }}
+                     </div>
+                     <div class="infopanel">
+                        <div class="tags">
+                           <li class="icon-tags" title="tags"></li>
+                           {%- if event['tags'] -%}
+                           {%- for tag in event['tags'] -%}
+                           &nbsp;<a href="{{ url_for('events_by_tag', tag=tag) }}">{{ tag }}</a>
+                           {%- endfor -%}
+                           {%- endif -%}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="divider"></div>
+            {%- endfor -%}
+            {% else %}
+            <div class="clearfix">
+               <div class="row">
+                  <div class="col-lg-8">
+                     <div class="page-header">
+                        <div class="alert alert-info" role="alert">There are no events to show.</div>
+                        <div>
+                           {%- if session.user -%}
+                           <a href="{{ url_for('new_event') }}">Create your own event!</a>
+                           {%- else -%}
+                           <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">sign up</a> to create your own event
+                           {%- endif -%}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            {%- endif -%}
+            {%- include 'sidebar.html' -%}
             {%- endblock -%}
-			<div class="container">
-            	{%- block body -%}
-					{%- if events -%}
-						{%- for event in events -%}
-							<div class="clearfix">
-								<div class="row">
-									<div class="col-lg-8">
-										<div class="page-header">
-											<h2><a href="{{ url_for('single_event', permalink=event['permalink']) }}" style="color:#250E9C;">{{ event['name'] }}</a></h2>
-											<p><span class="icon-time"></span>
-                                            <td>Organized by <a title="Organizer" href="{{ url_for('view_user', id=event['organizer']) }} " data-target="_blank" style="color:#250E9C;"> {{ event['organizer'] }}</a></td></p>
-
-                                            <blockquote class=".col-md-4" style="margin-top=30px;">
-                                                <dl class="dl-horizontal">
-                                                <dt>Summary</dt>
-                                                <dd>{{ event['summary'] }}</dd>
-                                                <dt>Description</dt>
-                                                <dd>{{ event['description'] }}</dd>
-                                                <dt>Tags</dt>
-                                                <dd class="tags">
-						                        {%- if event['tags'] -%}
-							                    {%- for tag in event['tags'] -%}
-							                    <a href="{{ url_for('events_by_tag', event_permalink=event_permalink, tag=tag) }}" style="color:#250E9C;">{{tag }}</a>&nbsp;
-                                                {%- endfor -%}
-						                        {%- endif -%}
-					                            </dd>
-                                                </dl>
-                                            </blockquote>
-                                        </div>
-
-									</div>
-								</div>
-							</div>
-						{%- endfor -%}
-					{% else %}
-						<div class="clearfix">
-							<div class="row">
-								<div class="col-lg-8">
-									<div class="page-header">
-										<div class="alert alert-info" role="alert" style="border-color:#D9EDF7;"><h4 style="font-size: 14px">No Events in SchedOpen, create your Event!</h4></div>
-									</div>
-								</div>
-							</div>
-						</div>
-					{%- endif -%}
-					{%- include 'sidebar.html' -%}
-				{%- endblock -%}
-				{% if pagination and pagination.pages > 1 %}
-					<div class="pagination-wrap">
-						<ul class="pagination">
-						  {% for page in pagination.iter_pages() %}
-						    {% if page %}
-						        <li>{% if page == pagination.page %}class="active"{% endif %}><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
-						    {% else %}
-						      <li><span class=ellipsis>…</span></li>
-						    {% endif %}
-						  {% endfor %}
-						  {% if pagination.has_next %}
-						    <li><a href="{{ url_for_other_page(pagination.page + 1)
-						      }}">&raquo;</a></li>
-						  {% endif %}
-						</ul>
-					</div>
-				{% endif %}
-			</div>
-		</div>
-		{%- include 'footer.html' -%}
-		{%- block scripts -%}
-			<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
-			<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-			<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-		{%- endblock -%}
-	</body>
+            {% if pagination and pagination.pages > 1 %}
+            <div class="pagination-wrap">
+               <ul class="pagination">
+                  {% for page in pagination.iter_pages() %}
+                  {% if page %}
+                  <li>{% if page == pagination.page %}class="active"{% endif %}><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
+                  {% else %}
+                  <li><span class=ellipsis>…</span></li>
+                  {% endif %}
+                  {% endfor %}
+                  {% if pagination.has_next %}
+                  <li><a href="{{ url_for_other_page(pagination.page + 1)
+                     }}">&raquo;</a></li>
+                  {% endif %}
+               </ul>
+            </div>
+            {% endif %}
+         </div>
+      </div>
+      {%- include 'footer.html' -%}
+      {%- block scripts -%}
+      <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+      {%- endblock -%}
+   </body>
 </html>

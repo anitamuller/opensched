@@ -52,7 +52,7 @@
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="event-name">Event name required</label>
                         {%- else -%}
-                        <label for="event-name">Event name<span class="required-field">*</span></label>
+                        <label for="event-name">Event name <span class="required-field">*</span></label>
                         {%- endif -%}
                         <input type="text" class="form-control" name="event-name" id="event-name" placeholder="Event name" value="{{ event_name }}" required>
                      </div>
@@ -72,7 +72,7 @@
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="event-venue">Event venue required</label>
                         {%- else -%}
-                        <label for="event-venue">Event venue<span class="required-field">*</span></label>
+                        <label for="event-venue">Event venue <span class="required-field">*</span></label>
                         {%- endif -%}
                         <input type="text" class="form-control" name="event-venue" id="event-venue" placeholder="Event venue" value="{{ event_venue }}" required>
                      </div>
