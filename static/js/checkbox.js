@@ -9,6 +9,8 @@ $(function() {
             $('.delete-talk').each(function() {
                 this.checked = true;
             });
+            $("#delete-events").prop("disabled", false);
+            $("#delete-talks").prop("disabled", false);
         } else {
             // Unselect all events
             $('.delete-event').each(function() {
@@ -18,6 +20,8 @@ $(function() {
             $('.delete-talk').each(function() {
                 this.checked = false;
             });
+            $("#delete-events").prop("disabled", true);
+            $("#delete-talks").prop("disabled", true);
         }
     });
 
@@ -36,5 +40,4 @@ $(function() {
             $('#select-all').prop("checked", false);
         }
     });
-
 });
