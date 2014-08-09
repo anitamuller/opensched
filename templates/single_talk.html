@@ -7,87 +7,67 @@
 {%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
-	{%- if talk -%}
-		<div class="talk clearfix">
-			<div class="row">
-				<div class="col-lg-8">
-					<div class="page-header">
-						<h1>{{ talk['name'] }}</h1>
-                    </div>
+{%- if talk -%}
+<div class="talk clearfix">
+   <div class="row">
+      <div class="col-lg-8">
+         <div class="page-header">
+            <h2>{{ talk['name'] }}</h2>
+         </div>
+         <div>{{ talk['description'] }}</div>
+         <div class="infopanel">
+            <div class="tags">
+               <span title="tags"><i class="fa fa-tags fa-fw"></i></span>
+               {%- if talk['tags'] -%}
+               {%- for tag in talk['tags'] -%}
+               &nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>
+               {%- endfor -%}
+               {%- endif -%}
+            </div>
+         </div>
+         <div class="single-talk-buttons" ng-app="" ng-controller="talkController">
+            <div>
+               {%- if session.user -%}
+               <a href="{{ url_for('new_schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Add to my schedule!</a>
+               {%- else -%}
+               <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">sign up</a>
+               {%- endif -%}
+               <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
+            </div>
+            <div ng-show="showAttendees">
+               <ul class="attendees-list">
+                  {%- if attendees -%}
+                  <h4>Attendees</h4>
+                  {%- for attendee in attendees -%}
+                  <li>
+                     <div>
+                        <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
+                        <strong>{{ attendee['name'] }}</strong>
+                        <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
+                     </div>
+                  </li>
+                  {%- endfor -%}
+                  {%- else -%}
+                  <h4>There are no attendees for this event yet.</h4>
+                  {%- endif -%}
+               </ul>
+            </div>
+         </div>
+      </div>
+   </div>
+   <script>
+      function talkController($scope) {
+          $scope.showAttendees = false;
 
-                    <div class="add-space row"></div>
-                    <blockquote class=".col-md-4" style="margin-top=30px;">
-                    <dl class="dl-horizontal">
-                    <dt>Summary</dt>
-                    <dd>{{ talk['summary'] }}</dd>
-                    <dt>Description</dt>
-                    <dd>{{ talk['description'] }}</dd>
-                    <dt>Tags</dt>
-                    <dd class="tags">
-						{%- if talk['tags'] -%}
-							{%- for tag in talk['tags'] -%}
-							<a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>&nbsp;
-							{%- endfor -%}
-						{%- endif -%}
-					</dd>
-                    </dl>
-                    </blockquote>
-
-
-                    <div class="add-space row">
-                    </div>
-                       <div ng-app="" ng-controller="talkController">
-                        <div>
-                            <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
-                        {%- if session.user -%}
-                            <a href="{{ url_for('new_schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Add to my schedule!</a>
-                        {%- else -%}
-                            <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">sign up</a>
-                        {%- endif -%}
-                        </div>
-                        <div ng-show="showAttendees">
-                            <ul class="list_none">
-                            {%- if not attendees -%}
-                                <h4>There are no attendees for this event yet.</h4>
-                            {%- endif -%}
-                                <h4>Attendees ({%- len(attendees) %-})</h4>
-                            {%- for attendee in attendees -%}
-                            <li>
-                                <div>
-                                    <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
-                                    <td><strong>{{ attendee['name'] }}</strong></td>
-                                    <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
-                                </div>
-                            </li>
-                            {%- endfor -%}
-                            </ul>
-                        </div>
-                    </div>
-                    <div>
-                        <h4>Speaker</h4>
-                        <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
-                        {{ speaker['name'] }}
-                        <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
-                    </div>
-
-				</div>
-			</div>
-
-            <script>
-            function talkController($scope) {
-                $scope.showAttendees = false;
-
-                $scope.clickAttendees = function() {
-                    $scope.showAttendees = !$scope.showAttendees;
-                };
-            }
-            </script>
-
-            <script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
-
-		</div>
-	{%- endif -%}
-	{%- include 'sidebar_talk.html' -%}
+          $scope.clickAttendees = function() {
+              $scope.showAttendees = !$scope.showAttendees;
+          };
+      }
+   </script>
+   <script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
+</div>
+{%- endif -%}
+{%- include 'sidebar_talk.html' -%}
 {%- endblock -%}
 {%- block additional_js -%}
 <script src="{{ url_for('static', filename='js/lightbox-2.6.min.js') }}"></script>

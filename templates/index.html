@@ -16,14 +16,15 @@
                      <div class="page-header">
                         <h2><a href="{{ url_for('single_event', permalink=event['permalink']) }}">{{ event['name'] }}</a></h2>
                      </div>
-                     <div>Event organized by <a title="Organizer" href="{{ url_for('view_user', id=event['organizer']) }} " data-target="_blank"> {{ event['organizer'] }}</a></div>
-                     <div>From {{ event['start'] }} to {{ event['end'] }} at {{ event['venue'] }}</div>
-                     <div class="content no-lightbox">
+                     <div><i class="fa fa-user fa-fw"></i> Event organized by <a title="Organizer" href="{{ url_for('view_user', id=event['organizer']) }} " data-target="_blank"> {{ event['organizer'] }}</a></div>
+                     <div><i class="fa fa-clock-o fa-fw"></i> From {{ event['start'] }} to {{ event['end'] }}</div>
+                     <div><i class="fa fa-map-marker fa-fw"></i> <a title="venue" href="https://www.google.com/maps/place/{{ event['venue'] }}" data-target="_blank">{{ event['venue'] }}</a></div>
+                     <div class="content no-lightbox" style="margin-top: 3%;">
                         {{ event['summary'] }}
                      </div>
                      <div class="infopanel">
                         <div class="tags">
-                           <li class="icon-tags" title="tags"></li>
+                           <span title="tags"><i class="fa fa-tags fa-fw"></i> </span>
                            {%- if event['tags'] -%}
                            {%- for tag in event['tags'] -%}
                            &nbsp;<a href="{{ url_for('events_by_tag', tag=tag) }}">{{ tag }}</a>
@@ -34,7 +35,7 @@
                   </div>
                </div>
             </div>
-            <div class="divider"></div>
+            <div class="index-divider"></div>
             {%- endfor -%}
             {% else %}
             <div class="clearfix">

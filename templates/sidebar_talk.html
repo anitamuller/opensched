@@ -1,12 +1,13 @@
 <div class="col-lg-3 visible-lg sidebar">
    {%- if talk -%}
    <h3><strong>Talk</strong> details</h3>
-   <small>{{ talk['date'] }} • {{ talk['start'] }} - {{ talk['end'] }}</small><br/>
-   <small>Room {{ talk['room'] }}</small><br/>
-   <small>Speaker <a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></small>
+   <div><i class="fa fa-user fa-fw"></i> Presented by <a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></div>
+   <div><i class="fa fa-clock-o fa-fw"></i> On {{ talk['date'] }}, from {{ talk['start'] }} to {{ talk['end'] }}</div>
+   <div><i class="fa fa-location-arrow fa-fw"></i> Room {{ talk['room'] }}</div>
+   <div style="margin-top: 3%;">{{ talk['summary'] }}</div>
    {%- endif -%}
 
-   <div class="divider"></div>
+   <div class="sidebar-divider"></div>
 
    <h3><strong>Let your friends</strong> know!</h3>
    <div class="social row-fluid">
@@ -29,7 +30,7 @@
    <hr>
    <ul>
       {% for tag in tags %}
-      <li><a href="{{ url_for('talks_by_tag', event_permalink=event['permalink'], page=1, tag=tag['title']) }}">{{ tag['title'] }} <sup class="badge">{{ tag['count'] }}</sup></a></li>
+      <li><a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, page=1, tag=tag['title']) }}">{{ tag['title'] }} <sup class="badge">{{ tag['count'] }}</sup></a></li>
       {% endfor %}
    </ul>
    {%- endif -%}

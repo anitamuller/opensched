@@ -205,12 +205,7 @@ input[type='checkbox'] {
     margin-bottom: 7%;
 }
 
-.user-events {
-    list-style-type: none;
-    padding: 0;
-}
-
-.user-talks {
+.user-events, .user-talks, .attendees-list, .speakers-list  {
     list-style-type: none;
     padding: 0;
 }
@@ -264,7 +259,7 @@ label {
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.divider {
+.index-divider {
     border: 0;
     height: 0;
     width: 50%;
@@ -275,4 +270,25 @@ label {
 
 .dl-horizontal dt {
    text-align: left;
+}
+
+.single-event-buttons, .single-talk-buttons {
+   margin: 2% 0;
+}
+
+.btn-talk {
+    text-align: left;
+    width: 80%;
+    margin: 1% 0;
+}
+
+.btn-talk a {
+    color: #fff;
+}
+
+.unchecked {
+    background-image: url('/static/img/unchecked.png');
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    width: 100px;
 }
