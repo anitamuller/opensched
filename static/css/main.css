@@ -286,9 +286,13 @@ label {
     color: #fff;
 }
 
-.unchecked {
-    background-image: url('/static/img/unchecked.png');
-    background-repeat: no-repeat;
-    background-size: 18px 18px;
-    width: 100px;
+.select-talk {
+    height: 18px;
+    width: 18px;
+    vertical-align: top;
+    margin: 0 5px 0 0;
+}
+
+.btn-group .event {
+    margin-bottom: 2%;
 }

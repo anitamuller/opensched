@@ -1005,9 +1005,9 @@ def save_attendee_talk(event_permalink, talk_permalink):
 
     return redirect(url_for('talks_by_event', event_permalink=event_permalink))
 
-@app.route('/<event_permalink>/<talk_permalink>/new_schedule_talk')
+@app.route('/<event_permalink>/<talk_permalink>/schedule_talk')
 @login_required()
-def new_schedule_talk(event_permalink, talk_permalink):
+def schedule_talk(event_permalink, talk_permalink):
     attendee_email = session['user']['email']
     attendee_data = userClass.get_user(attendee_email)
     attendee = attendee_data['data']

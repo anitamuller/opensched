@@ -24,14 +24,26 @@
                {%- endif -%}
             </div>
          </div>
-         {%- if session.user -%}
-         <div class="single-event-buttons" ng-app="" ng-controller="eventController">
-            <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="btn btn-primary">My Schedule</a>
-            <button ng-click="clickSpeakers()" class="btn btn-primary">Speakers</button>
-            <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
+         <div class="single-event-buttons" ng-app="singleEvent" ng-controller="singleEventController">
+            <div class="btn-group event">
+                <button ng-click="clickSchedule()" class="btn btn-primary" id="schedule-btn">Schedule</button>
+                <button ng-click="clickSpeakers()" class="btn btn-primary" id="speakers-btn">Speakers</button>
+                <button ng-click="clickAttendees()" class="btn btn-primary" id="attendees-btn">Attendees</button>
+            </div>
+            <div class="schedule" ng-show="showSchedule">
+                {%- if not session.user -%}
+                    <div style="margin: 2% 0;"><a href="{{ url_for('login') }}">Log in</a> or <a href="{{ url_for('register') }}">sign up</a> to bookmark your favorite talks.</div>
+                {%- endif -%}
+                {%- for talk in talks -%}
+                <span class="btn btn-info btn-talk">
+                    <img id="select-talk" src="/static/img/unchecked.png" class="select-talk" ng-click="changeImage()"/>
+                    <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a>
+                </span>
+            {%- endfor -%}
+            </div>
             <div class="speakers-list" ng-show="showSpeakers">
                {%- if not speakers -%}
-               <h4>There are no speakers registered for this event yet.</h4>
+               <div>There are no speakers registered for this event yet.</div>
                {%- endif -%}
                <ul class="speakers-list">
                   {%- for speaker in speakers -%}
@@ -47,7 +59,7 @@
             </div>
             <div class="attendees-list" ng-show="showAttendees">
                {%- if not attendees -%}
-               <h4>There are no attendees for this event yet.</h4>
+               <div>There are no attendees for this event yet.</div>
                {%- endif -%}
                <ul class="attendees-list">
                   {%- for attendee in attendees -%}
@@ -62,36 +74,11 @@
                </ul>
             </div>
          </div>
-         {%- else -%}
-         <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">sign up</a>
-         {%- endif -%}
-         <div>
-            {%- for talk in talks -%}
-            <span class="btn btn-info btn-talk">
-                <span class="unchecked" ng-model="checkbox-{{ talk['permalink'] }}" ng-true-value="'YES'" ng-false-value="'NO'" ng-change="new_schedule_talk(event_permalink,talk['permalink'])">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a>
-            </span>
-            {%- endfor -%}
-         </div>
       </div>
    </div>
 </div>
 <script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
-<script>
-   function eventController($scope) {
-       $scope.showSpeakers = false;
-       $scope.showAttendees = false;
-       $scope.clickSpeakers = function() {
-           $scope.showAttendees = false;
-           $scope.showSpeakers = !$scope.showSpeakers;
-       };
-       $scope.clickAttendees = function() {
-           $scope.showSpeakers = false;
-           $scope.showAttendees = !$scope.showAttendees;
-
-       };
-   }
-</script>
+<script src="{{ url_for('static', filename='js/event-options.js') }}"></script>
 {%- endif -%}
 {%- include 'sidebar_event.html' -%}
 {%- endblock -%}
