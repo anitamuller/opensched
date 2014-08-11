@@ -10,7 +10,6 @@
 <div class="event clearfix">
    <div class="row">
       <div class="col-lg-8">
-         <div id="event-permalink" hidden>{{ event['permalink'] }}</div>
          <div class="page-header">
             <h1>{{ event['name'] }}</h1>
          </div>
@@ -37,12 +36,8 @@
                 {%- endif -%}
                 {%- for talk in talks -%}
                 <span class="btn btn-info btn-talk">
-                    {%- if session.user and session.user.email in talk['attendees'] -%}
-                        <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')" />
-                    {%- elif session.user -%}
-                        <img src="/static/img/unchecked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
-                    {%- endif -%}
-                    <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
+                    <img id="select-talk" src="/static/img/unchecked.png" class="select-talk" ng-click="changeImage()"/>
+                    <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a>
                 </span>
             {%- endfor -%}
             </div>
@@ -55,11 +50,7 @@
                   <li>
                      <div>
                         <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
-                        {%- if speaker['name'] -%}
-                        <td><strong>{{ speaker['name'] }}</strong></td>
-                        {%- else -%}
-                        <td></td>
-                        {%- endif -%}
+                        <strong>{{ speaker['name'] }}</strong>
                         <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
                      </div>
                   </li>
@@ -75,11 +66,7 @@
                   <li>
                      <div>
                         <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
-                        {%- if attendee['name'] -%}
-                        <td><strong>{{ attendee['name'] }}</strong></td>
-                        {%- else -%}
-                        <td></td>
-                        {%- endif -%}
+                        <strong>{{ attendee['name'] }}</strong>
                         <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
                      </div>
                   </li>
