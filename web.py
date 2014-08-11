@@ -185,6 +185,10 @@ def new_event():
 
             event = eventClass.validate_event_data(event_data)
             event_with_permalink = eventClass.generate_permalink(event)
+
+
+            import pdb
+            pdb.set_trace()
             if request.form.get('event-preview') == '1':
                 session['event-preview'] = event_with_permalink
 
@@ -198,10 +202,8 @@ def new_event():
                 return redirect(url_for('event_preview'))
             else:
                 session.pop('event-preview', None)
-
                 if request.form.get('event-id'):
-                    response = eventClass.edit_event(
-                        request.form['event-id'], event)
+                    response = eventClass.edit_event(request.form['event-id'], event)
                     if not response['error']:
                         flash('Event updated!', 'success')
                     else:
