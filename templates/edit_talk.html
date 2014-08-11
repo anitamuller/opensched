@@ -55,7 +55,7 @@
                   {%- endif -%}
                   {%- endwith -%}
                   <a href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="response btn btn-primary">Invite People</a> </br></br>
-                  <form id="post-form" role="form" method="post" action="{{ url_for('new_talk', event_permalink=event_permalink) }}">
+                  <form id="talk-form" role="form" method="post" action="{{ url_for('new_talk', event_permalink=event_permalink) }}">
                      <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="talk-name">Talk name required</label>
