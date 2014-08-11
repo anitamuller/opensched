@@ -313,6 +313,36 @@ class Event:
                                                           'tags': event_tags,
                                                           'talks': event_talks
                                                           })
+    def modify_attendees_event(self, permalink, attendees):
+        self.response['data'] = self.collection.find_one({'permalink': permalink})
+        new_event = self.response['data']
+
+        event_name = new_event['name']
+        event_summary = new_event['summary']
+        event_description = new_event['description']
+        event_organizer = new_event['organizer']
+        event_permalink = new_event['permalink']
+        event_venue = new_event['venue']
+        event_start = new_event['start']
+        event_end = new_event['end']
+        event_tags = new_event['tags']
+        event_talks = new_event['talks']
+        event_attendees = attendees
+
+        self.collection.update({'permalink': permalink}, {'name': event_name,
+                                                          'summary': event_summary,
+                                                          'description': event_description,
+                                                          'organizer': event_organizer,
+                                                          'permalink': event_permalink,
+                                                          'venue': event_venue,
+                                                          'start': event_start,
+                                                          'end': event_end,
+                                                          'end': event_end,
+                                                          'attendees': event_attendees,
+                                                          'tags': event_tags,
+                                                          'talks': event_talks
+                                                          })
+
 
     def edit_event(self, event_id, event_data):
         self.response['error'] = None
