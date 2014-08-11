@@ -36,22 +36,21 @@
                         <img src="{{ user['gravatar_url'] }}" class="img-circle">
                      </div>
                      </td>
+                     {%- if user['name'] -%}
                      <td><strong>{{ user['name'] }}</strong></td>
+                     {%- else -%}
+                     <td></td>
+                     {%- endif -%}
                      <td><a title="Email" href="{{ url_for('view_user', id=user['_id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
-                     {%- if user.role == 'Admin' -%}
                      <td><div class="btn-group">
                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-gear"></i>  <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a title="Edit user" href="{{ url_for('edit_user', id=user['id']) }}">Edit user</a></li>
-                                {%- if user['id'] != session['user']['email'] and user.role != 'Admin' -%}
-                                <li><a title="Delete user" href="{{ url_for('delete_user', id=user['id']) }}">Delete user</a></li>
-                                {%- endif -%}
-                            </ul>
+                                <li><a title="Delete attendee" href="{{ url_for('delete_attendee_event', attendee_email=user['_id'], event_permalink=event_permalink) }}">Delete attendee</a></li>
+                             </ul>
                          </div>
                      </td>
-                    {%- endif -%}
                      </br>
                   </tr>
                   {%- endfor -%}

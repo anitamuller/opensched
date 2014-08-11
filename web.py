@@ -858,6 +858,53 @@ def delete_user(id):
             flash('User deleted!', 'success')
     return redirect(url_for('users_list'))
 
+@app.route('/<event_permalink>/delete_attendee_event/<attendee_email>')
+@login_required()
+def delete_attendee_event(attendee_email, event_permalink):
+    event = eventClass.get_event_by_permalink(event_permalink)
+    talks = event['data']['talks']
+
+    for talk in talks:
+        talk_event = talkClass.get_talk_by_permalink(talk)
+        talk_speaker = talk_event['data']['speaker']
+        if attendee_email == talk_speaker:
+            flash('The attendee cannot be deleted, is a talk Speaker!', 'error')
+            return redirect(url_for('event_attendance', event_permalink=event_permalink))
+
+    event_attendees = event['data']['attendees']
+    event_attendees.remove(attendee_email)
+    eventClass.modify_attendees_event(event_permalink, event_attendees)
+    userClass.remove_attendee(attendee_email, event_permalink)
+
+    for talk in talks:
+        talk_event= talkClass.get_talk_by_permalink(talk)
+        talk_attendees = talk_event['data']['attendees']
+        talk_attendees.remove(attendee_email)
+        talkClass.modify_attendees_talk(talk, talk_attendees)
+        userClass.remove_attendee(attendee_email, event_permalink, talk)
+
+    flash('The attendee has been deleted of the event attendees, and of the event talks attendees!', 'success')
+    return redirect(url_for('event_attendance', event_permalink=event_permalink))
+
+@app.route('/<event_permalink>/<talk_permalink>/delete_attendee_talk/<attendee_email>')
+@login_required()
+def delete_attendee_talk(attendee_email, event_permalink, talk_permalink):
+    talk = talkClass.get_talk_by_permalink(talk_permalink)
+    talk_speaker = talk['data']['speaker']
+
+    if attendee_email == talk_speaker:
+        flash('The attendee cannot be deleted, is the talk Speaker!', 'error')
+        return redirect(url_for('talk_attendance', event_permalink=event_permalink, talk_permalink=talk_permalink))
+    else:
+        talk_attendees = talk['data']['attendees']
+        talk_attendees.remove(attendee_email)
+        talkClass.modify_attendees_talk(talk_permalink, talk_attendees)
+        userClass.remove_attendee(attendee_email, event_permalink, talk_permalink)
+        flash('The attendee has been deleted!', 'success')
+        return redirect(url_for('talk_attendance', event_permalink=event_permalink, talk_permalink=talk_permalink))
+
+
+
 
 @app.route('/save_user', methods=['POST'])
 @login_required()
