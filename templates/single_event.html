@@ -36,8 +36,12 @@
                 {%- endif -%}
                 {%- for talk in talks -%}
                 <span class="btn btn-info btn-talk">
-                    <img id="select-talk" src="/static/img/unchecked.png" class="select-talk" ng-click="changeImage()"/>
-                    <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a>
+                    {%- if session.user and session.user.email in talk['attendees'] -%}
+                        <img src="/static/img/checked.png" class="select-talk" ng-click="changeImage()"/>
+                    {%- else -%}
+                        <img src="/static/img/unchecked.png" class="select-talk" ng-click="changeImage()"/>
+                    {%- endif -%}
+                    <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
                 </span>
             {%- endfor -%}
             </div>

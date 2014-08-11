@@ -26,11 +26,14 @@
             </div>
          </div>
          <div class="single-talk-buttons" ng-app="" ng-controller="talkController">
-            <div>
-               {%- if session.user -%}
-               <a href="{{ url_for('schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Add to my schedule!</a>
+            <div class="btn-group talk">
+                    <a href="{{ url_for('single_event', permalink=event_permalink) }}" class="btn btn-primary">Back to the event</a>
+               {%- if session.user and not session.user.email in talk['attendees'] -%}
+                    <a href="{{ url_for('schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Add to my schedule!</a>
+               {%- elif session.user -%}
+                    <a href="{{ url_for('schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Remove from my schedule</a>
                {%- else -%}
-               <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">sign up</a> to bookmark this talk.
+                    <a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">sign up</a> to bookmark this talk.
                {%- endif -%}
                <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
             </div>
@@ -55,16 +58,8 @@
          </div>
       </div>
    </div>
-   <script>
-      function talkController($scope) {
-          $scope.showAttendees = false;
-
-          $scope.clickAttendees = function() {
-              $scope.showAttendees = !$scope.showAttendees;
-          };
-      }
-   </script>
    <script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
+   <script src="{{ url_for('static', filename='js/talk-options.js') }}"></script>
 </div>
 {%- endif -%}
 {%- include 'sidebar_talk.html' -%}

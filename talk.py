@@ -218,12 +218,47 @@ class Talk:
 
         return talk_data
 
-    def add_new_attendee(self, permalink, email_attendee):
+    def add_new_attendee(self, permalink, attendee_email):
         self.response['data'] = self.collection.find_one(
                      {'permalink': permalink})
 
         talk_attendees = self.response['data']['attendees']
-        talk_attendees.append(email_attendee)
+        talk_attendees.append(attendee_email)
+
+        new_talk = self.response['data']
+
+        talk_name = new_talk['name']
+        talk_event = new_talk['event']
+        talk_summary = new_talk['summary']
+        talk_description = new_talk['description']
+        talk_speaker = new_talk['speaker']
+        talk_permalink = new_talk['permalink']
+        talk_room = new_talk['room']
+        talk_date = new_talk['date']
+        talk_start = new_talk['start']
+        talk_end = new_talk['end']
+        talk_tags = new_talk['tags']
+
+        self.collection.update({'permalink': permalink}, {'name': talk_name,
+                                                          'event': talk_event,
+                                                          'summary': talk_summary,
+                                                          'description': talk_description,
+                                                          'speaker': talk_speaker,
+                                                          'permalink': talk_permalink,
+                                                          'room': talk_room,
+                                                          'date': talk_date,
+                                                          'start': talk_start,
+                                                          'end': talk_end,
+                                                          'attendees': talk_attendees,
+                                                          'tags': talk_tags
+                                                          })
+
+    def remove_attendee(self, permalink, attendee_email):
+        self.response['data'] = self.collection.find_one(
+                     {'permalink': permalink})
+
+        talk_attendees = self.response['data']['attendees']
+        talk_attendees.remove(attendee_email)
 
         new_talk = self.response['data']
 

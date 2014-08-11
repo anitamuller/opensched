@@ -1012,9 +1012,16 @@ def schedule_talk(event_permalink, talk_permalink):
     attendee_data = userClass.get_user(attendee_email)
     attendee = attendee_data['data']
 
-    userClass.save_attendee(attendee, event_permalink, talk_permalink)
-    eventClass.add_new_attendee(event_permalink, attendee_email)
-    talkClass.add_new_attendee(talk_permalink, attendee_email)
+    talk = talkClass.get_talk_by_permalink(talk_permalink)
+
+    if attendee['_id'] in talk['data']['attendees']:
+        userClass.remove_attendee(attendee_email, event_permalink, talk_permalink)
+        #  The user is not removed from the event, just from the talk
+        talkClass.remove_attendee(talk_permalink, attendee_email)
+    else:
+        userClass.save_attendee(attendee, event_permalink, talk_permalink)
+        eventClass.add_new_attendee(event_permalink, attendee_email)
+        talkClass.add_new_attendee(talk_permalink, attendee_email)
 
     return redirect(url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk_permalink))
 

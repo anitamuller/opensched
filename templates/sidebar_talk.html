@@ -1,4 +1,11 @@
 <div class="col-lg-3 visible-lg sidebar">
+   {%- if session.user -%}
+   <h3><strong>My</strong> schedule</h3>
+   <div>Logged in as {{ session.user.name }}</div>
+   <div style="margin-top: 2%;"><a href="{{ url_for('my_schedule', event_permalink=event_permalink) }}" class="btn btn-primary">My schedule</a></div>
+   <div class="sidebar-divider"></div>
+   {%- endif -%}
+
    {%- if talk -%}
    <h3><strong>Talk</strong> details</h3>
    <div><i class="fa fa-user fa-fw"></i> Presented by <a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></div>

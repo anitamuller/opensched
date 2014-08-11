@@ -2,7 +2,7 @@
    {%- if session.user -%}
    <h3><strong>My</strong> schedule</h3>
    <div>Logged in as {{ session.user.name }}</div>
-   <div style="margin-top: 2%;"><a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="btn btn-primary">My Schedule</a></div>
+   <div style="margin-top: 2%;"><a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="btn btn-primary">My schedule</a></div>
    <div class="sidebar-divider"></div>
    {%- endif -%}
 
