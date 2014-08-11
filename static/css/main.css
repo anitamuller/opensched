@@ -290,7 +290,7 @@ label {
     height: 18px;
     width: 18px;
     vertical-align: top;
-    margin: 0 5px 0 0;
+    margin: 0 5px 0 -5px;
 }
 
 .btn-group .event {

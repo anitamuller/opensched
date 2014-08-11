@@ -28,15 +28,24 @@ function singleEventController($scope) {
         }
     };
 
-    $scope.changeImage = function() {
-        // $.ajax({
-        //    url: 'http://localhost:8080/schedule_talk',
-        //    type: 'POST',
-        //    data:
-        //    contentType: "application/json; charset=utf-8",
-        //}).done(function() {
-        //    window.location.reload()
-        //});
+    $scope.addSched = function(talk_permalink) {
+        var event_permalink = $('#event-permalink').text()
+        var user_email = $('#user-email').text()
+
+        if (user_email != "") {
+            $.ajax({
+                url: 'http://localhost:8080/schedule_talk_event',
+                type: 'POST',
+                data: JSON.stringify({'event_permalink': event_permalink,
+                                      'talk_permalink': talk_permalink,
+                                      'user_email': user_email}),
+                contentType: "application/json; charset=utf-8",
+            }).done(function() {
+                window.location.reload()
+            });
+        } else {
+            alert('Login or sign up to bookmark your favorite talks.');
+        }
     }
 
     $(".select-talk")
