@@ -1055,22 +1055,42 @@ def save_attendee_talk(event_permalink, talk_permalink):
 @app.route('/<event_permalink>/<talk_permalink>/schedule_talk')
 @login_required()
 def schedule_talk(event_permalink, talk_permalink):
+    #  Add to my schedule/Remove from my schedule buttons in single_talk
     attendee_email = session['user']['email']
-    attendee_data = userClass.get_user(attendee_email)
-    attendee = attendee_data['data']
+
+    _schedule_talk(event_permalink, talk_permalink, attendee_email)
+
+    return redirect(url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk_permalink))
+
+
+@app.route('/schedule_talk_event', methods=['POST'])
+@login_required()
+def schedule_talk_event():
+    #  Talks checkboxes in single_event
+    event_permalink = request.json['event_permalink']
+    talk_permalink = request.json['talk_permalink']
+    user_email = request.json['user_email']
+
+    _schedule_talk(event_permalink, talk_permalink, user_email)
+
+    return jsonify({'value': True})
+
+
+def _schedule_talk(event_permalink, talk_permalink, user_email):
+    # Auxiliary function for schedule_talk and schedule_talk_event
+    user_data = userClass.get_user(user_email)
+    attendee = user_data['data']
 
     talk = talkClass.get_talk_by_permalink(talk_permalink)
 
     if attendee['_id'] in talk['data']['attendees']:
-        userClass.remove_attendee(attendee_email, event_permalink, talk_permalink)
+        userClass.remove_attendee(user_email, event_permalink, talk_permalink)
         #  The user is not removed from the event, just from the talk
-        talkClass.remove_attendee(talk_permalink, attendee_email)
+        talkClass.remove_attendee(talk_permalink, user_email)
     else:
         userClass.save_attendee(attendee, event_permalink, talk_permalink)
-        eventClass.add_new_attendee(event_permalink, attendee_email)
-        talkClass.add_new_attendee(talk_permalink, attendee_email)
-
-    return redirect(url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk_permalink))
+        eventClass.add_new_attendee(event_permalink, user_email)
+        talkClass.add_new_attendee(talk_permalink, user_email)
 
 
 @app.route('/settings', methods=['GET', 'POST'])
