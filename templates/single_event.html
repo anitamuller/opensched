@@ -39,7 +39,7 @@
                 <span class="btn btn-info btn-talk">
                     {%- if session.user and session.user.email in talk['attendees'] -%}
                         <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')" />
-                    {%- else -%}
+                    {%- elif session.user -%}
                         <img src="/static/img/unchecked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
                     {%- endif -%}
                     <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
