@@ -36,9 +36,13 @@
                         <img src="{{ user['gravatar_url'] }}" class="img-circle">
                      </div>
                      </td>
+                     {%- if user['name'] -%}
                      <td><strong>{{ user['name'] }}</strong></td>
+                     {%- else -%}
+                     <td></td>
+                     {%- endif -%}
                      <td><a title="Email" href="{{ url_for('view_user', id=user['_id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
-                     {%- if user.role == 'Admin' -%}
+                     {%- if session.user.role == 'Admin' -%}
                      <td><div class="btn-group">
                             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-gear"></i>  <span class="caret"></span>
