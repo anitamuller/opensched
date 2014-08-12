@@ -49,7 +49,7 @@
                         <td>{{ talk['end'] }}</td>
                         <td>{{ talk['room'] }}</td>
                         <td><a title="Speaker" href="{{ url_for('view_user', id=talk['speaker']) }}" data-target="_blank"> {{ talk['speaker'] }}</a></td>
-                        <td><a title="{{ talk['name'] }} attendance" href="{{ url_for('talk_attendance', event_permalink=talk['event'], talk_permalink=talk['permalink']) }}" >{{ talk['attendance'] }}</a></td>
+                        <td><a title="{{ talk['name'] }} attendance" href="{{ url_for('talk_attendance_', event_permalink=talk['event'], talk_permalink=talk['permalink']) }}" >{{ talk['attendance'] }}</a></td>
 
                         <td><div class="btn-group">
                                 <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">

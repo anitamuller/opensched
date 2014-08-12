@@ -437,6 +437,7 @@ def new_talk(event_permalink):
 
 @app.route('/talks_list', defaults={'page': 1})
 @app.route('/talks_list/page-<int:page>')
+@privileged_user()
 @login_required()
 def talks(page):
     session.pop('talk-preview', None)
@@ -684,6 +685,21 @@ def talk_attendance(event_permalink, talk_permalink):
                            users=list_attendance,
                            talk_name=talk_name, meta_title='Talk attendance: ' + talk_name)
 
+
+@app.route('/<event_permalink>/<talk_permalink>/talk_attendance')
+def talk_attendance_(event_permalink, talk_permalink):
+    talk = talkClass.get_talk_by_permalink(talk_permalink)
+    talk_name = talk['data']['name']
+    attendance = talk['data']['attendees']
+    list_attendance = []
+
+    for attendee in attendance:
+        user = userClass.get_user(str(attendee))
+        list_attendance.append(user['data'])
+
+    return render_template('talk_attendance_.html', talk_permalink=talk_permalink, event_permalink= event_permalink,
+                           users=list_attendance,
+                           talk_name=talk_name, meta_title='Talk attendance: ' + talk_name)
 
 @app.route('/register')
 def register():
