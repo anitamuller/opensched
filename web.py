@@ -370,8 +370,8 @@ def new_talk(event_permalink):
                     session[
                         'talk-preview']['redirect'] = url_for('talk_edit', id=request.form.get('talk-id'))
                 else:
-                    session['talk-preview']['redirect'] = url_for('new_talk')
-                return redirect(url_for('talk_preview'))
+                    session['talk-preview']['redirect'] = url_for('new_talk', event_permalink=event_permalink)
+                return redirect(url_for('talk_preview',event_permalink=event_permalink))
             else:
                 session.pop('talk-preview', None)
 
