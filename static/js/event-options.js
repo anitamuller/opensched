@@ -44,6 +44,8 @@ function singleEventController($scope) {
                 window.location.reload()
             });
         } else {
+            // This shouldn't raise since we are not allowing to the
+            // add to my sched button if the user is not logged in.
             alert('Login or sign up to bookmark your favorite talks.');
         }
     }
