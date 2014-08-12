@@ -27,7 +27,8 @@
                         {%- endfor -%}
                     {%- endif -%}
                {%- endwith -%}
-
+               <a href="{{ url_for('add_attendee_event', event_permalink=event_permalink) }}" class="response btn btn-primary">Invite People</a>
+               <a href="{{ url_for('events') }}" class="response btn btn-primary"><i class="fa fa-chevron-circle-left"></i> Back to events</a>
                   <table style="align: center; width: 60%;">
                   {%- for user in users -%}
                   <tr>

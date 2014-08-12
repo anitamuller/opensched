@@ -897,9 +897,10 @@ def delete_attendee_event(attendee_email, event_permalink):
     for talk in talks:
         talk_event= talkClass.get_talk_by_permalink(talk)
         talk_attendees = talk_event['data']['attendees']
-        talk_attendees.remove(attendee_email)
-        talkClass.modify_attendees_talk(talk, talk_attendees)
-        userClass.remove_attendee(attendee_email, event_permalink, talk)
+        if attendee_email in talk_attendees:
+            talk_attendees.remove(attendee_email)
+            talkClass.modify_attendees_talk(talk, talk_attendees)
+            userClass.remove_attendee(attendee_email, event_permalink, talk)
 
     flash('The attendee has been deleted of the event attendees, and of the event talks attendees!', 'success')
     return redirect(url_for('event_attendance', event_permalink=event_permalink))
