@@ -50,7 +50,11 @@
                   <li>
                      <div>
                         <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
-                        <strong>{{ speaker['name'] }}</strong>
+                        {%- if speaker['name'] -%}
+                        <td><strong>{{ speaker['name'] }}</strong></td>
+                        {%- else -%}
+                        <td></td>
+                        {%- endif -%}
                         <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
                      </div>
                   </li>
@@ -66,7 +70,11 @@
                   <li>
                      <div>
                         <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
-                        <strong>{{ attendee['name'] }}</strong>
+                        {%- if attendee['name'] -%}
+                        <td><strong>{{ attendee['name'] }}</strong></td>
+                        {%- else -%}
+                        <td></td>
+                        {%- endif -%}
                         <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
                      </div>
                   </li>
