@@ -53,6 +53,12 @@ def talks_by_tag(event_permalink, tag, page):
 
 @app.route('/<permalink>')
 def single_event(permalink):
+    if session.has_key('user'):
+        if session.has_key('redirect_event'):
+            session.pop('redirect_event')
+    else:
+        session['redirect_event'] = permalink
+
     event = eventClass.get_event_by_permalink(permalink)
 
     if not event['data']:
@@ -554,6 +560,14 @@ def bulk_delete_talks():
 
 @app.route('/<event_permalink>/<talk_permalink>')
 def single_talk(event_permalink, talk_permalink):
+    if session.has_key('user'):
+        if session.has_key('redirect_talk') and session.has_key('redirect_event'):
+            session.pop('redirect_event')
+            session.pop('redirect_talk')
+    else:
+        session['redirect_event'] = event_permalink
+        session['redirect_talk'] = talk_permalink
+
     talk = talkClass.get_talk_by_permalink(talk_permalink)
 
     if not talk['data']:
