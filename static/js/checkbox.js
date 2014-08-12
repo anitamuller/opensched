@@ -40,8 +40,6 @@ $(function() {
             $("#delete-talks").prop("disabled", false);
         } else {
             $('#select-all').prop("checked", false);
-            $("#delete-events").prop("disabled", true);
-            $("#delete-talks").prop("disabled", true);
         }
     });
 });
