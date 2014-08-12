@@ -136,6 +136,9 @@ def event_preview():
     event['start'] = date_to_string(event['start'], 'short')
     event['end'] = date_to_string(event['end'], 'short')
 
+    event['summary'] = base64.b64decode(event['summary'])
+    event['description'] = base64.b64decode(event['description'])
+
     return render_template('event_preview.html', event=event, meta_title='Preview event::' + event['name'])
 
 
@@ -186,9 +189,6 @@ def new_event():
             event = eventClass.validate_event_data(event_data)
             event_with_permalink = eventClass.generate_permalink(event)
 
-
-            import pdb
-            pdb.set_trace()
             if request.form.get('event-preview') == '1':
                 session['event-preview'] = event_with_permalink
 
@@ -204,6 +204,21 @@ def new_event():
                 session.pop('event-preview', None)
                 if request.form.get('event-id'):
                     response = eventClass.edit_event(request.form['event-id'], event)
+
+                    if response['permalink-changed']:
+                        old_event_permalink, new_event_permalink = response['permalink-changed']
+                        event = eventClass.get_event_by_permalink(new_event_permalink)
+                        event_talks = event['data']['talks']
+
+                        for talk in event_talks:
+                            talkClass.modify_event_talk(talk, new_event_permalink)
+
+                        # Update users invited to the event speaker_at and attendee_at fields
+                        event_attendees = event['data']['attendees']
+
+                        for attendee in event_attendees:
+                            userClass.replace_event_attendee_at(attendee, old_event_permalink, new_event_permalink)
+
                     if not response['error']:
                         flash('Event updated!', 'success')
                     else:
@@ -374,6 +389,7 @@ def new_talk(event_permalink):
                             userClass.remove_attendee(attendee, event_permalink, old_permalink)
                             userClass.save_attendee(user_attendee, event_permalink, new_permalink)
                             userClass.save_speaker(attendee, event_permalink, new_permalink)
+
 
                     if not response['error']:
                         flash('Talk updated!', 'success')

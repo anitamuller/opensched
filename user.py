@@ -257,8 +257,6 @@ class User:
                         if not talk_name in talks:
                             talks.append(talk_name)
                             new_attendee_at[event_name] = talks
-                        else:
-                            return self.response
 
                     if not exist_user.has_key('password'):
                         exist_user['password'] = None
@@ -339,9 +337,11 @@ class User:
             if not new_attendee_at.has_key(event_name):
                 new_attendee_at[event_name] = [talk_name]
             else:
+
                 talks = new_attendee_at[event_name]
-                talks.append(talk_name)
-                new_attendee_at[event_name] = talks
+                if not talk_name in talks:
+                    talks.append(talk_name)
+                    new_attendee_at[event_name] = talks
 
             record = {'_id': exist_user['_id'],
                       'password': exist_user['password'],
@@ -404,6 +404,33 @@ class User:
 
             self.collection.remove({'_id': user['_id']})
             self.collection.insert(record, safe=True)
+
+    def replace_event_attendee_at(self, attendee_email, old_event_permalink, new_event_permalink):
+        user = self.get_user_by_email(attendee_email)
+        new_attendee_at = user['attendee_at']
+        new_speaker_at = user['speaker_at']
+
+        if new_attendee_at.has_key(str(old_event_permalink)):
+            old_attendee_at = new_attendee_at[old_event_permalink]
+            del new_attendee_at[str(old_event_permalink)]
+            new_attendee_at[new_event_permalink]= old_attendee_at
+
+        if new_speaker_at.has_key(str(old_event_permalink)):
+            old_speaker_at = new_speaker_at[old_event_permalink]
+            del new_speaker_at[str(old_event_permalink)]
+            new_speaker_at[new_event_permalink] = old_speaker_at
+
+        record = {'_id': user['_id'],
+                  'password': user['password'],
+                  'name': user['name'],
+                  'active': user['active'],
+                  'role': user['role'],
+                  'attendee_at': new_attendee_at,
+                  'speaker_at': new_speaker_at}
+
+        self.collection.remove({'_id': user['_id']})
+        self.collection.insert(record, safe=True)
+
 
 
     @staticmethod

@@ -346,6 +346,7 @@ class Event:
 
     def edit_event(self, event_id, event_data):
         self.response['error'] = None
+        self.response['permalink-changed'] = None
 
         event_name = event_data['name']
         name_without_spaces=event_name.replace(" ", "_")
@@ -357,6 +358,8 @@ class Event:
         if name_lower_without_spaces == exist_permalink:
             #the name didn't change, so permalink is the same
             event_data['permalink'] = exist_permalink
+            event_data['attendees'] = exist_event['attendees']
+            event_data['talks'] = exist_event['talks']
             try:
                 self.collection.update(
                     {'_id': ObjectId(event_id)}, {"$set": event_data}, upsert=False)
@@ -368,11 +371,14 @@ class Event:
         else:
             del event_data['permalink']
             event_data = self.generate_permalink(event_data)
+            event_data['attendees'] = exist_event['attendees']
+            event_data['talks'] = exist_event['talks']
 
             try:
                 self.collection.remove({'_id': ObjectId(event_id)})
                 self.response['data'] = self.collection.insert(event_data)
                 self.response['data'] = True
+                self.response['permalink-changed'] = [exist_permalink, event_data['permalink']]
             except Exception, e:
                 self.print_debug_info(e, self.debug_mode)
                 self.response['error'] = 'Event update error..'
