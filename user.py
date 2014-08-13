@@ -98,7 +98,7 @@ class User:
         self.response['error'] = None
         try:
             user = self.collection.find_one({'_id': user_id})
-            gravatar_url = self.get_gravatar_link(user.get('id', ''))
+            gravatar_url = self.get_gravatar_link(user.get('_id', ''))
             self.response['data'] = user
             self.response['data']['gravatar_url'] = gravatar_url
         except Exception, e:
