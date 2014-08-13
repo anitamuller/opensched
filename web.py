@@ -194,7 +194,7 @@ def new_event():
             tags = cgi.escape(request.form.get('event-tags'))
             tags_array = extract_tags(tags)
 
-            event_data = {'name': event_name.encode('utf-8'),
+            event_data = {'name': event_name,
                           'summary': event_summary,
                           'description': base64.b64encode(request.form.get('event-description').encode('utf-8')),
                           'start': string_to_date(request.form.get('event-start')),
@@ -361,7 +361,7 @@ def new_talk(event_permalink):
             tags = cgi.escape(request.form.get('talk-tags'))
             tags_array = extract_tags(tags)
 
-            talk_data = {'name': talk_name.encode('utf-8'),
+            talk_data = {'name': talk_name,
                          'event': event_permalink,
                          'summary': talk_summary,
                          'description': base64.b64encode(request.form.get('talk-description').encode('utf-8')),

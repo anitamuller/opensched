@@ -271,7 +271,7 @@ class Talk:
         cond = {'name': talk_data['name'], 'event': talk_data['event']}
         permalink_count = self.collection.find(cond).count()
 
-        new_permalink = talk_data['name'].decode('unicode-escape')
+        new_permalink = talk_data['name']
 
         #  Remove special chars
         new_permalink = unicodedata.normalize('NFKD', new_permalink).encode('ascii', 'ignore')

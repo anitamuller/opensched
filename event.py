@@ -412,7 +412,7 @@ class Event:
     def generate_permalink(self, event_data):
         cond = {'name': event_data['name']}
         permalink_count = self.collection.find(cond).count()
-        new_permalink = event_data['name'].decode('unicode-escape')
+        new_permalink = event_data['name']
 
         #  Remove special chars
         new_permalink = unicodedata.normalize('NFKD', new_permalink).encode('ascii', 'ignore')
