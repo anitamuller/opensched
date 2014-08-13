@@ -3,10 +3,10 @@
 <div id="wrapper">
       <div class="talk">
          <div class="row">
-            <div class="col-lg-12">
-               {%- if session.user and talks -%}
+            <div class="col-lg-8">
+               {%- if session.user and user_talks -%}
                <div class="page-header">
-                  <h2>My Schedule</h2>
+                  <h2>My schedule for {{ event['name'] }}</h2>
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -19,18 +19,22 @@
                         {%- endif -%}
                   {%- endwith -%}
                   <ul class="user-events">
-                     {%- for talk in talks -%}
-                        <li><a href="{{ url_for('single_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a></li>
+                     {%- for talk in user_talks -%}
+                        <span class="btn btn-info btn-talk">
+                            <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
+                            <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
+                        </span>
                      {%- endfor -%}
                   </ul>
                </div>
                {%- else -%}
                <div class="page-header">
-                    <div class="alert alert-info" role="alert">There are no sessions in your schedule yet. <a href="{{ url_for('single_event', permalink=event_permalink) }}">Go back to the event page and start picking talks!</a></div>
+                    <div class="alert alert-info" role="alert">There are no sessions in your schedule yet. <a href="{{ url_for('single_event', event_permalink=event_permalink) }}">Go back to the event page and start picking talks!</a></div>
                </div>
                </div>
                {%- endif -%}
             </div>
          </div>
       </div>
+{%- include 'sidebar_event.html' -%}
 {%- endblock -%}

@@ -26,60 +26,75 @@
          </div>
          <div class="single-event-buttons" ng-app="singleEvent" ng-controller="singleEventController">
             <div class="btn-group event">
-                <button ng-click="clickSchedule()" class="btn btn-primary" id="schedule-btn">Schedule</button>
+                <button ng-click="clickSchedule()" class="btn btn-primary" id="schedule-btn">Event schedule</button>
+                <button ng-click="clickMySchedule()" class="btn btn-primary" id="myschedule-btn">My schedule</button>
                 <button ng-click="clickSpeakers()" class="btn btn-primary" id="speakers-btn">Speakers</button>
                 <button ng-click="clickAttendees()" class="btn btn-primary" id="attendees-btn">Attendees</button>
             </div>
             <div class="schedule" ng-show="showSchedule">
                 {%- if not session.user -%}
-                    <div style="margin: 2% 0;"><a href="{{ url_for('login') }}">Log in</a> or <a href="{{ url_for('register') }}">sign up</a> to bookmark your favorite talks.</div>
+                    <div class="not-logged-in"><a href="{{ url_for('login') }}">Log in</a> or <a href="{{ url_for('register') }}">sign up</a> to bookmark your favorite talks.</div>
                 {%- endif -%}
                 {%- for talk in talks -%}
                 <span class="btn btn-info btn-talk">
-                    <img id="select-talk" src="/static/img/unchecked.png" class="select-talk" ng-click="changeImage()"/>
-                    <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}" data-target="_blank">{{ talk['name'] }}</a>
+                    {%- if session.user and session.user.email in talk['attendees'] -%}
+                        <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
+                    {%- elif session.user -%}
+                        <img src="/static/img/unchecked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
+                    {%- endif -%}
+                    <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
                 </span>
             {%- endfor -%}
             </div>
+            <div class="myschedule" ng-show="showMySchedule">
+               {%- if not user_schedule -%}
+                    <div class="not-logged-in"><a href="{{ url_for('login') }}">Log in</a> or <a href="{{ url_for('register') }}">sign up</a> to bookmark your favorite talks.</div>
+               {%- else -%}
+                    {%- for talk in user_schedule -%}
+                        <span class="btn btn-info btn-talk">
+                            <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
+                            <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
+                        </span>
+                    {%- endfor -%}
+               {%- endif -%}
+            </div>
             <div class="speakers-list" ng-show="showSpeakers">
                {%- if not speakers -%}
-               <div>There are no speakers registered for this event yet.</div>
-               {%- endif -%}
+                    <div>There are no speakers registered for this event yet.</div>
+               {%- else -%}
                <ul class="speakers-list">
                   {%- for speaker in speakers -%}
                   <li>
                      <div>
                         <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
                         {%- if speaker['name'] -%}
-                        <td><strong>{{ speaker['name'] }}</strong></td>
-                        {%- else -%}
-                        <td></td>
+                        <strong>{{ speaker['name'] }}</strong>
                         {%- endif -%}
                         <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
                      </div>
                   </li>
                   {%- endfor -%}
                </ul>
+               {%- endif -%}
             </div>
             <div class="attendees-list" ng-show="showAttendees">
                {%- if not attendees -%}
                <div>There are no attendees for this event yet.</div>
-               {%- endif -%}
+               {%- else -%}
                <ul class="attendees-list">
                   {%- for attendee in attendees -%}
                   <li>
                      <div>
                         <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
                         {%- if attendee['name'] -%}
-                        <td><strong>{{ attendee['name'] }}</strong></td>
-                        {%- else -%}
-                        <td></td>
+                        <strong>{{ attendee['name'] }}</strong>
                         {%- endif -%}
                         <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
                      </div>
                   </li>
                   {%- endfor -%}
                </ul>
+               {%- endif -%}
             </div>
          </div>
       </div>

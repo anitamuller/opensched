@@ -255,8 +255,6 @@ label {
     height: 0;
     width: 75%;
     margin: 8% 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .index-divider {
@@ -295,4 +293,8 @@ label {
 
 .btn-group .event {
     margin-bottom: 2%;
+}
+
+.not-logged-in, .my-schedule {
+    margin: 4% 0;
 }

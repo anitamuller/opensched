@@ -51,44 +51,53 @@ def talks_by_tag(event_permalink, tag, page):
     return render_template('index.html', events=talks['data'], pagination=pag, meta_title='Talks by tag: ' + tag)
 
 
-@app.route('/<permalink>')
-def single_event(permalink):
+@app.route('/<event_permalink>')
+def single_event(event_permalink):
     if session.has_key('user'):
         if session.has_key('redirect_event'):
             session.pop('redirect_event')
     else:
-        session['redirect_event'] = permalink
+        session['redirect_event'] = event_permalink
 
-    event = eventClass.get_event_by_permalink(permalink)
+    event = eventClass.get_event_by_permalink(event_permalink)
 
     if not event['data']:
         abort(404)
 
-    talks_list = event['data']['talks']
+    user_talks, talks, attendees, speakers, tags = [], [], [], [], []
 
-    tags = []
+    if session.get('user'):
+        user_email = session['user']['email']
+        user = userClass.get_user(user_email)
+        user_events = user['data']['attendee_at']
+        #  Returns a list of talks for the queried event
+        user_talks_ = user_events[event_permalink] if event_permalink in user_events else []
 
-    talks, attendees, speakers_event, speakers = [], [], [], []
+        for talk_permalink in user_talks_:
+            talk = talkClass.get_talk_by_permalink(str(talk_permalink))
+            user_talks.append(talk['data'])
 
-    for talk in talks_list:
-        talk_event = talkClass.get_talk_by_permalink(talk)
-        if not talk_event['data']['speaker'] in speakers_event:
-            speakers_event.append(str(talk_event['data']['speaker']))
-        talks.append(talk_event['data'])
-        tags = talkClass.get_tags(permalink)
+    talks_ = event['data']['talks']
 
-    if tags:
-        tags = tags['data']
+    speakers_ = []
 
-    attendees_event = eventClass.get_attendance_event(permalink)
+    for talk_permalink in talks_:
+        talk = talkClass.get_talk_by_permalink(talk_permalink)
+        if not talk['data']['speaker'] in speakers_:
+            speakers_.append(str(talk['data']['speaker']))
+        talks.append(talk['data'])
 
-    for attendee_event in attendees_event:
-        user_with_gravatar_img = userClass.get_user(attendee_event)
-        attendees.append(user_with_gravatar_img['data'])
+    tags = talkClass.get_tags(event_permalink)['data']
 
-    for speaker_event in speakers_event:
-        user_with_gravatar_img = userClass.get_user(speaker_event)
-        speakers.append(user_with_gravatar_img['data'])
+    attendees_ = eventClass.get_attendance_event(event_permalink)
+
+    for attendee_name in attendees_:
+        attendee = userClass.get_user(attendee_name)
+        attendees.append(attendee['data'])
+
+    for speaker_name in speakers_:
+        speaker = userClass.get_user(speaker_name)
+        speakers.append(speaker['data'])
 
     # Format data retrieved from the DB
     event['data']['summary'] = base64.b64decode(event['data']['summary'])
@@ -104,6 +113,7 @@ def single_event(permalink):
                            tags=tags,
                            attendees=attendees,
                            speakers=speakers,
+                           user_schedule=user_talks,
                            meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
 
@@ -623,21 +633,27 @@ def my_schedule(event_permalink):
 
     user_email = session['user']['email']
     user = userClass.get_user(user_email)
-    talks = user['data']['attendee_at']
 
-    if talks.has_key(event_permalink):
-        talks_attendee = talks[event_permalink]
-    else:
-        talks_attendee = []
+    user_events = user['data']['attendee_at']
+    user_talks_ = user_events[event_permalink] if event_permalink in user_events else []
+    user_talks = []
 
-    list_talks = []
+    for talk_name in user_talks_:
+        talk = talkClass.get_talk_by_permalink(str(talk_name))
+        user_talks.append(talk['data'])
 
-    for talk in talks_attendee:
-        talk_complete = talkClass.get_talk_by_permalink(str(talk))
-        list_talks.append(talk_complete['data'])
+    event['data']['summary'] = base64.b64decode(event['data']['summary'])
+    event['data']['description'] = base64.b64decode(event['data']['description'])
+    event['data']['start'] = date_to_string(event['data']['start'], 'short')
+    event['data']['end'] = date_to_string(event['data']['end'], 'short')
 
-    return render_template('my_schedule.html', event_permalink=event_permalink, talks=list_talks,
-                           meta_title='My schedule: ' + event_name)
+    tags = talkClass.get_tags(event_permalink)['data']
+
+    return render_template('my_schedule.html',
+                           tags=tags,
+                           event=event['data'],
+                           user_talks=user_talks,
+                           meta_title='My schedule for ' + event_name)
 
 
 
@@ -701,6 +717,7 @@ def talk_attendance_(event_permalink, talk_permalink):
                            users=list_attendance,
                            talk_name=talk_name, meta_title='Talk attendance: ' + talk_name)
 
+
 @app.route('/register')
 def register():
     gravatar_url = userClass.get_gravatar_link()
@@ -712,6 +729,7 @@ def add_user():
     gravatar_url = userClass.get_gravatar_link()
     role_list = ['Admin', 'User']
     return render_template('add_user.html', gravatar_url=gravatar_url, role_list=role_list,  meta_title='Register new User')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -739,7 +757,7 @@ def login():
                             return redirect(url_for('single_talk', event_permalink=session['redirect_event'],
                                                     talk_permalink=session['redirect_talk']))
                         elif session.has_key('redirect_event'):
-                            return redirect(url_for('single_event', permalink=session['redirect_event']))
+                            return redirect(url_for('single_event', event_permalink=session['redirect_event']))
                 else:
                     if not session.has_key('redirect_event') and not session.has_key('redirect_talk'):
                         return redirect(url_for('dashboard_admin'))
@@ -748,7 +766,7 @@ def login():
                             return redirect(url_for('single_talk', event_permalink=session['redirect_event'],
                                                     talk_permalink=session['redirect_talk']))
                         elif session.has_key('redirect_event'):
-                            return redirect(url_for('single_event', permalink=session['redirect_event']))
+                            return redirect(url_for('single_event', event_permalink=session['redirect_event']))
     else:
         if session.get('user'):
             role = session.get('user').get('role')
@@ -846,7 +864,6 @@ def users_list():
         user_with_gravatar = userClass.get_user(user_id)
         list_users.append(user_with_gravatar['data'])
 
-
     return render_template('users.html', users=list_users, meta_title='Users')
 
 
@@ -875,8 +892,8 @@ def organizers_list():
         user = userClass.get_user(organizer)
         list_users.append(user['data'])
 
-
     return render_template('organizers.html', users=list_users, meta_title='Organizers')
+
 
 @app.route('/edit_user?id=<id>')
 @login_required()
@@ -906,6 +923,7 @@ def delete_user(id):
             flash('User deleted!', 'success')
     return redirect(url_for('users_list'))
 
+
 @app.route('/<event_permalink>/delete_attendee_event/<attendee_email>')
 @login_required()
 def delete_attendee_event(attendee_email, event_permalink):
@@ -916,7 +934,7 @@ def delete_attendee_event(attendee_email, event_permalink):
         talk_event = talkClass.get_talk_by_permalink(talk)
         talk_speaker = talk_event['data']['speaker']
         if attendee_email == talk_speaker:
-            flash('The attendee cannot be deleted, is a talk Speaker!', 'error')
+            flash('The attendee cannot be deleted. Speakers removal is not allowed.', 'error')
             return redirect(url_for('event_attendance', event_permalink=event_permalink))
 
     event_attendees = event['data']['attendees']
@@ -932,8 +950,9 @@ def delete_attendee_event(attendee_email, event_permalink):
             talkClass.modify_attendees_talk(talk, talk_attendees)
             userClass.remove_attendee(attendee_email, event_permalink, talk)
 
-    flash('The attendee has been deleted of the event attendees, and of the event talks attendees!', 'success')
+    flash('The attendee has been deleted.', 'success')
     return redirect(url_for('event_attendance', event_permalink=event_permalink))
+
 
 @app.route('/<event_permalink>/<talk_permalink>/delete_attendee_talk/<attendee_email>')
 @login_required()
@@ -942,7 +961,7 @@ def delete_attendee_talk(attendee_email, event_permalink, talk_permalink):
     talk_speaker = talk['data']['speaker']
 
     if attendee_email == talk_speaker:
-        flash('The attendee cannot be deleted, is the talk Speaker!', 'error')
+        flash('The attendee cannot be deleted. Speakers removal is not allowed.', 'error')
         return redirect(url_for('talk_attendance', event_permalink=event_permalink, talk_permalink=talk_permalink))
     else:
         talk_attendees = talk['data']['attendees']
@@ -951,8 +970,6 @@ def delete_attendee_talk(attendee_email, event_permalink, talk_permalink):
         userClass.remove_attendee(attendee_email, event_permalink, talk_permalink)
         flash('The attendee has been deleted!', 'success')
         return redirect(url_for('talk_attendance', event_permalink=event_permalink, talk_permalink=talk_permalink))
-
-
 
 
 @app.route('/save_user', methods=['POST'])
@@ -1293,6 +1310,3 @@ if not app.config['DEBUG']:
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)),
             debug=app.config['DEBUG'])
-
-
-

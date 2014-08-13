@@ -27,7 +27,7 @@
          </div>
          <div class="single-talk-buttons" ng-app="" ng-controller="talkController">
             <div class="btn-group talk">
-                    <a href="{{ url_for('single_event', permalink=event_permalink) }}" class="btn btn-primary">Back to the event</a>
+                    <a href="{{ url_for('single_event', event_permalink=event_permalink) }}" class="btn btn-primary">Back to the event</a>
                     <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
                {%- if session.user and not session.user.email in talk['attendees'] -%}
                     <a href="{{ url_for('schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Add to my schedule!</a>

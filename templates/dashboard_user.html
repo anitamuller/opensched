@@ -33,7 +33,7 @@
                   </tr>
                   {%- for event in organizer_at -%}
                   <tr>
-                      <td><a href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
+                      <td><a href="{{ url_for('single_event', event_permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                       <td>{{ event['start'] }}</td>
                       <td>{{ event['end'] }}</td>
                       <td><a title="Event Venue" href="https://www.google.com/maps/place/{{ event['venue'] }}" data-target="_blank">{{ event['venue'] }}</a></td>
@@ -80,7 +80,7 @@
                   </tr>
                   {%- for event_speaker in speaker_at -%}
                   <tr>
-                      <td><a href="{{ url_for('single_event', permalink=event_speaker['permalink']) }}" data-target="_blank">{{ event_speaker['name'] }}</a></td>
+                      <td><a href="{{ url_for('single_event', event_permalink=event_speaker['permalink']) }}" data-target="_blank">{{ event_speaker['name'] }}</a></td>
                       <td>{{ event_speaker['start'] }}</td>
                       <td>{{ event_speaker['end'] }}</td>
                       <td><a title="Event Venue" href="https://www.google.com/maps/place/{{ event_speaker['venue'] }}" data-target="_blank">{{ event_speaker['venue'] }}</a></td>
@@ -111,7 +111,7 @@
                   </tr>
                   {%- for event_attendee in attendee_at -%}
                   <tr>
-                      <td><a href="{{ url_for('single_event', permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a></td>
+                      <td><a href="{{ url_for('single_event', event_permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a></td>
                       <td>{{ event_attendee['start'] }}</td>
                       <td>{{ event_attendee['end'] }}</td>
                       <td><a title="Event Venue" href="https://www.google.com/maps/place/{{ event_attendee['venue'] }}" data-target="_blank">{{ event_attendee['venue'] }}</a></td>

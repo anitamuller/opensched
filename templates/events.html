@@ -46,7 +46,7 @@
                      {%- for event in events -%}
                      <tr>
                         <td><input type="checkbox" class="delete-event checkbox-bulk" name="delete-event" value="{{ event['permalink'] }}" id="event['permalink']" ng-model="formData.event{{ count }}" ng-click="clickDelete()"></td>
-                        <td><a href="{{ url_for('single_event', permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
+                        <td><a href="{{ url_for('single_event', event_permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
                         <td>{{ event['start'] }}</td>
                         <td>{{ event['end'] }}</td>
                         <td>{{ event['venue'] }}</td>

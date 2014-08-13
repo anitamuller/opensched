@@ -1,14 +1,16 @@
 <div class="col-lg-3 visible-lg sidebar">
    {%- if session.user -%}
    <h3><strong>My</strong> schedule</h3>
+   <hr>
    <div>Logged in as {{ session.user.name }}</div>
    <div id="user-email" hidden>{{ session.user.email }}</div>
-   <div style="margin-top: 2%;"><a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="btn btn-primary">My schedule</a></div>
+   <div class="my-schedule"><a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="btn btn-primary">My schedule</a></div>
    <div class="sidebar-divider"></div>
    {%- endif -%}
 
    {%- if event -%}
    <h3><strong>Event</strong> details</h3>
+   <hr>
    <div><i class="fa fa-user fa-fw"></i> Organized by <a title="Event organizer" href="{{ url_for('view_user', id=event['organizer']) }}" data-target="_blank"> {{ event['organizer'] }}</a></div>
    <div><i class="fa fa-clock-o fa-fw"></i> From {{event_start}} to {{ event_end }}</div>
    <div><i class="fa fa-map-marker fa-fw"></i> <a title="venue" href="https://www.google.com/maps/place/{{ event['venue'] }}" data-target="_blank">{{ event['venue'] }}</a></div>
@@ -17,6 +19,7 @@
    {%- endif -%}
 
    <h3><strong>Let your friends</strong> know!</h3>
+   <hr>
    <div class="social row-fluid">
       <!-- AddThis Button BEGIN -->
       <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
@@ -29,7 +32,6 @@
       <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-526fe54e082798d3"></script>
       <!-- AddThis Button END -->
    </div>
-
    <div class="sidebar-divider"></div>
 
    {%- if tags -%}
@@ -40,5 +42,6 @@
       <li><a href="{{ url_for('talks_by_tag', event_permalink=event['permalink'], page=1, tag=tag['title']) }}">{{ tag['title'] }} <sup class="badge">{{ tag['count'] }}</sup></a></li>
       {% endfor %}
    </ul>
+   <div class="sidebar-divider"></div>
    {%- endif -%}
 </div>

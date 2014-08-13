@@ -2,20 +2,32 @@ var singleEvent = angular.module('singleEvent', []);
 
 function singleEventController($scope) {
     $scope.showSchedule = true;
+    $scope.showMySchedule = false;
     $scope.showSpeakers = false;
     $scope.showAttendees = false;
 
     $scope.clickSchedule = function() {
         if ($scope.showSchedule == false) {
+            $scope.showMySchedule = false;
             $scope.showSpeakers = false;
             $scope.showAttendees = false;
             $scope.showSchedule = !$scope.showSchedule;
         }
     }
 
+    $scope.clickMySchedule = function() {
+        if ($scope.showMySchedule == false) {
+            $scope.showSchedule = false;
+            $scope.showSpeakers = false;
+            $scope.showAttendees = false;
+            $scope.showMySchedule = !$scope.showMySchedule;
+        }
+    }
+
     $scope.clickSpeakers = function() {
         if ($scope.showSpeakers == false) {
             $scope.showSchedule = false;
+            $scope.showMySchedule = false;
             $scope.showAttendees = false;
             $scope.showSpeakers = !$scope.showSpeakers;
         }
@@ -23,6 +35,7 @@ function singleEventController($scope) {
     $scope.clickAttendees = function() {
         if ($scope.showAttendees == false) {
             $scope.showSchedule = false;
+            $scope.showMySchedule = false;
             $scope.showSpeakers = false;
             $scope.showAttendees = !$scope.showAttendees;
         }
