@@ -10,6 +10,7 @@
 <div class="event clearfix">
    <div class="row">
       <div class="col-lg-8">
+         <div id="event-permalink" hidden>{{ event['permalink'] }}</div>
          <div class="page-header">
             <h1>{{ event['name'] }}</h1>
          </div>
@@ -35,20 +36,26 @@
                 {%- if not session.user -%}
                     <div class="not-logged-in"><a href="{{ url_for('login') }}">Log in</a> or <a href="{{ url_for('register') }}">sign up</a> to bookmark your favorite talks.</div>
                 {%- endif -%}
-                {%- for talk in talks -%}
-                <span class="btn btn-info btn-talk">
-                    {%- if session.user and session.user.email in talk['attendees'] -%}
-                        <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
-                    {%- elif session.user -%}
-                        <img src="/static/img/unchecked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
-                    {%- endif -%}
-                    <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
-                </span>
-            {%- endfor -%}
+                {%- if not talks -%}
+                    <div>There are no talks for this event yet.</div>
+                {%- else -%}
+                    {%- for talk in talks -%}
+                        <span class="btn btn-info btn-talk">
+                        {%- if session.user and session.user.email in talk['attendees'] -%}
+                            <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
+                        {%- elif session.user -%}
+                            <img src="/static/img/unchecked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
+                        {%- endif -%}
+                        <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
+                        </span>
+                    {%- endfor -%}
+                {%- endif -%}
             </div>
             <div class="myschedule" ng-show="showMySchedule">
-               {%- if not user_schedule -%}
+               {%- if not session.user -%}
                     <div class="not-logged-in"><a href="{{ url_for('login') }}">Log in</a> or <a href="{{ url_for('register') }}">sign up</a> to bookmark your favorite talks.</div>
+               {%- elif not talks or not user_schedule -%}
+                    <div>There are no talks for this event yet.</div>
                {%- else -%}
                     {%- for talk in user_schedule -%}
                         <span class="btn btn-info btn-talk">

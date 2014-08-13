@@ -1,5 +1,6 @@
 import base64
 import cgi
+import unicodedata
 from bson.objectid import ObjectId
 from helper_functions import *
 
@@ -39,8 +40,8 @@ class Event:
 
                 self.response['data'].append({'id': event['_id'],
                                               'name': event['name'],
-                                              'summary': base64.b64decode(event['summary']),
-                                              'description': base64.b64decode(event['description']),
+                                              'summary': base64.b64decode(event['summary']).decode('utf-8'),
+                                              'description': base64.b64decode(event['description']).decode('utf-8'),
                                               'start': date_to_string(event['start'], 'short'),
                                               'end': date_to_string(event['end'], 'short'),
                                               'venue': event['venue'],
@@ -110,8 +111,8 @@ class Event:
             for event in cursor:
                 self.response['data'].append({'id': event['_id'],
                                               'name': event['name'],
-                                              'summary': base64.b64decode(event['summary']),
-                                              'description': base64.b64decode(event['description']),
+                                              'summary': base64.b64decode(event['summary']).decode('utf-8'),
+                                              'description': base64.b64decode(event['description']).decode('utf-8'),
                                               'start': date_to_string(event['start'], 'short'),
                                               'end': date_to_string(event['end'], 'short'),
                                               'venue': event['venue'],
@@ -410,18 +411,20 @@ class Event:
 
     def generate_permalink(self, event_data):
         cond = {'name': event_data['name']}
-        events_samename = self.collection.find(cond).count()
+        permalink_count = self.collection.find(cond).count()
+        new_permalink = event_data['name'].decode('unicode-escape')
 
-        name_without_spaces=event_data['name'].replace(" ", "_")
-        name_lower_without_spaces = name_without_spaces.lower()
+        #  Remove special chars
+        new_permalink = unicodedata.normalize('NFKD', new_permalink).encode('ascii', 'ignore')
+        #  Replace spaces for dashes
+        new_permalink = new_permalink.replace(" ", "_")
+        #  To lowercase
+        new_permalink = new_permalink.lower()
 
-        if events_samename == 0:
-            permalink = name_lower_without_spaces
-        else:
-            newpermalink = events_samename + 1
-            permalink = name_lower_without_spaces + '-' + str(newpermalink)
+        permalink = new_permalink if not permalink_count else new_permalink + '-' + str(permalink_count + 1)
 
         event_data['permalink'] = permalink
+
         return event_data
 
     def get_talks_by_event(self, permalink):

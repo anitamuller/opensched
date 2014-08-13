@@ -1,5 +1,6 @@
 import base64
 import cgi
+import unicodedata
 from bson.objectid import ObjectId
 from helper_functions import *
 
@@ -38,8 +39,8 @@ class Talk:
                     self.response['data'].append({'id': talk['_id'],
                                                   'name': talk['name'],
                                                   'event': talk['event'],
-                                                  'summary': base64.b64decode(talk['summary']),
-                                                  'description': base64.b64decode(talk['description']),
+                                                  'summary': base64.b64decode(talk['summary']).decode('utf-8'),
+                                                  'description': base64.b64decode(talk['description']).decode('utf-8'),
                                                   'date': date_to_string(talk['date'], 'short'),
                                                   'start': time_to_string(talk['start']),
                                                   'end': time_to_string(talk['end']),
@@ -268,15 +269,18 @@ class Talk:
 
     def generate_permalink(self, talk_data):
         cond = {'name': talk_data['name'], 'event': talk_data['event']}
-        talks_same_name = self.collection.find(cond).count()
+        permalink_count = self.collection.find(cond).count()
 
-        name_lower_no_spaces = talk_data['name'].replace(" ", "_").lower()
+        new_permalink = talk_data['name'].decode('unicode-escape')
 
-        if talks_same_name == 0:
-            permalink = name_lower_no_spaces
-        else:
-            new_permalink = talks_same_name + 1
-            permalink = name_lower_no_spaces + '-' + str(new_permalink)
+        #  Remove special chars
+        new_permalink = unicodedata.normalize('NFKD', new_permalink).encode('ascii', 'ignore')
+        #  Replace spaces for dashes
+        new_permalink = new_permalink.replace(" ", "_")
+        #  To lowercase
+        new_permalink = new_permalink.lower()
+
+        permalink = new_permalink if not permalink_count else new_permalink + '-' + str(permalink_count + 1)
 
         talk_data['permalink'] = permalink
 

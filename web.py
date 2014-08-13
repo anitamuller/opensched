@@ -100,8 +100,8 @@ def single_event(event_permalink):
         speakers.append(speaker['data'])
 
     # Format data retrieved from the DB
-    event['data']['summary'] = base64.b64decode(event['data']['summary'])
-    event['data']['description'] = base64.b64decode(event['data']['description'])
+    event['data']['summary'] = base64.b64decode(event['data']['summary']).decode('utf-8')
+    event['data']['description'] = base64.b64decode(event['data']['description']).decode('utf-8')
     event['data']['start'] = date_to_string(event['data']['start'], 'short')
     event['data']['end'] = date_to_string(event['data']['end'], 'short')
 
@@ -152,8 +152,8 @@ def event_preview():
     event['start'] = date_to_string(event['start'], 'short')
     event['end'] = date_to_string(event['end'], 'short')
 
-    event['summary'] = base64.b64decode(event['summary'])
-    event['description'] = base64.b64decode(event['description'])
+    event['summary'] = base64.b64decode(event['summary']).decode('utf-8')
+    event['description'] = base64.b64decode(event['description']).decode('utf-8')
 
     return render_template('event_preview.html', event=event, meta_title='Preview event::' + event['name'])
 
@@ -179,7 +179,7 @@ def new_event():
     error_type = 'validate'
     if request.method == 'POST':
         event_name = request.form.get('event-name').strip()
-        event_summary = base64.b64encode(request.form.get('event-summary'))
+        event_summary = base64.b64encode(request.form.get('event-summary').encode('utf-8'))
         event_venue = request.form.get('event-venue')
         event_start = request.form.get('event-start')
         event_end = request.form.get('event-end')
@@ -191,9 +191,9 @@ def new_event():
             tags = cgi.escape(request.form.get('event-tags'))
             tags_array = extract_tags(tags)
 
-            event_data = {'name': event_name,
+            event_data = {'name': event_name.encode('utf-8'),
                           'summary': event_summary,
-                          'description': base64.b64encode(request.form.get('event-description')),
+                          'description': base64.b64encode(request.form.get('event-description').encode('utf-8')),
                           'start': string_to_date(request.form.get('event-start')),
                           'end': string_to_date(request.form.get('event-end')),
                           'venue': event_venue,
@@ -276,8 +276,8 @@ def event_edit(id):
         session.pop('event-preview', None)
 
     # Format data retrieved from the DB
-    event['data']['summary'] = base64.b64decode(event['data']['summary'])
-    event['data']['description'] = base64.b64decode(event['data']['description'])
+    event['data']['summary'] = base64.b64decode(event['data']['summary']).decode('utf-8')
+    event['data']['description'] = base64.b64decode(event['data']['description']).decode('utf-8')
     event['data']['start'] = format_date(event['data']['start'])
     event['data']['end'] = format_date(event['data']['end'])
 
@@ -341,7 +341,7 @@ def new_talk(event_permalink):
     if request.method == 'POST':
         # Fields description and tags are optional
         talk_name = request.form.get('talk-name').strip()
-        talk_summary = base64.b64encode(request.form.get('talk-summary'))
+        talk_summary = base64.b64encode(request.form.get('talk-summary').encode('utf-8'))
         talk_room = request.form.get('talk-room')
         talk_date = request.form.get('talk-date')
         talk_start = request.form.get('talk-start')
@@ -356,13 +356,13 @@ def new_talk(event_permalink):
             tags = cgi.escape(request.form.get('talk-tags'))
             tags_array = extract_tags(tags)
 
-            talk_data = {'name': talk_name,
+            talk_data = {'name': talk_name.encode('utf-8'),
                          'event': event_permalink,
                          'summary': talk_summary,
-                         'description': base64.b64encode(request.form.get('talk-description')),
+                         'description': base64.b64encode(request.form.get('talk-description').encode('utf-8')),
                          'date': string_to_date(request.form.get('talk-date')),
-                         'start': string_to_time(request.form.get('talk-start')),
-                         'end': string_to_time(request.form.get('talk-end')),
+                         'start': string_to_time(request.form.get('talk-date'), request.form.get('talk-start')),
+                         'end': string_to_time(request.form.get('talk-date'), request.form.get('talk-end')),
                          'room': talk_room,
                          'tags': tags_array,
                          'attendees': [],
@@ -503,8 +503,8 @@ def talk_edit(event_permalink, id):
         speakers.append(old_speaker)  # quedando el speaker de la charla seleccionado como corresponde
 
     talk['data']['date'] = format_date(talk['data']['date'])
-    talk['data']['summary'] = base64.b64decode(talk['data']['summary'])
-    talk['data']['description'] = base64.b64decode(talk['data']['description'])
+    talk['data']['summary'] = base64.b64decode(talk['data']['summary']).decode('utf-8')
+    talk['data']['description'] = base64.b64decode(talk['data']['description']).decode('utf-8')
 
     return render_template('edit_talk.html',
                            event_permalink=event_permalink,
@@ -593,8 +593,8 @@ def single_talk(event_permalink, talk_permalink):
         attendee = userClass.get_user(talk_attendee)
         attendees.append(attendee['data'])
 
-    talk['data']['summary'] = base64.b64decode(talk['data']['summary'])
-    talk['data']['description'] = base64.b64decode(talk['data']['description'])
+    talk['data']['summary'] = base64.b64decode(talk['data']['summary']).decode('utf-8')
+    talk['data']['description'] = base64.b64decode(talk['data']['description']).decode('utf-8')
     talk['data']['date'] = date_to_string(talk['data']['date'], 'short')
     talk['data']['start'] = time_to_string(talk['data']['start'])
     talk['data']['end'] = time_to_string(talk['data']['end'])
@@ -642,8 +642,8 @@ def my_schedule(event_permalink):
         talk = talkClass.get_talk_by_permalink(str(talk_name))
         user_talks.append(talk['data'])
 
-    event['data']['summary'] = base64.b64decode(event['data']['summary'])
-    event['data']['description'] = base64.b64decode(event['data']['description'])
+    event['data']['summary'] = base64.b64decode(event['data']['summary']).decode('utf-8')
+    event['data']['description'] = base64.b64decode(event['data']['description']).decode('utf-8')
     event['data']['start'] = date_to_string(event['data']['start'], 'short')
     event['data']['end'] = date_to_string(event['data']['end'], 'short')
 

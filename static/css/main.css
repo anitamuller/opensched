@@ -238,12 +238,8 @@ label {
     text-align: center;
 }
 
-.speakers-list {
-    margin: 4% 0;
-}
-
-.attendees-list {
-    margin: 4% 0;
+.schedule, .myschedule, .speakers-list, .attendees-list {
+    margin: 2% 0;
 }
 
 .dashboard-alert {

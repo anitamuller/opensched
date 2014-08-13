@@ -89,10 +89,10 @@ def format_date(date):
     return formatted
 
 
-def string_to_time(time):
+def string_to_time(date, time):
     """Transforms a string time in a python time"""
-    # Intentar guardar el dia tambien
-    parsed = datetime.datetime.strptime(time, "%I:%M %p")
+    datetime_ = date + " " + time
+    parsed = datetime.datetime.strptime(datetime_, "%d/%m/%Y %I:%M %p")
     return parsed
 
 
