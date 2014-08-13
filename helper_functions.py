@@ -76,7 +76,7 @@ def string_to_date(date):
 def date_to_string(date, date_format):
     """Transforms a python date in a string date"""
     if date_format == 'short':
-        parsed = date.strftime('%d') + "/" + date.strftime('%m') + "/" + date.strftime('%y')
+        parsed = date.strftime('%d') + "/" + date.strftime('%m') + "/" + date.strftime('%Y')
     else:
         parsed = date.strftime('%A') + date.strftime('%d') + ", " + \
                       date.strftime('%B') + ", " + date.strftime('%Y')
