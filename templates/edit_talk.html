@@ -15,28 +15,27 @@
    {%- include 'side_nav.html' -%}
    <div id="page-wrapper">
       {% if session.get('talk-preview', None) %}
-      {% set talk_name = session['talk-preview'].get('name', None) %}
-      {% set talk_summary = session['talk-preview'].get('summary', None) %}
-      {% set talk_description = session['talk-preview'].get('description', None) %}
-      {% set talk_date = session['talk-preview'].get('date', None) %}
-      {% set talk_start = session['talk-preview'].get('start', None) %}
-      {% set talk_end = session['talk-preview'].get('end', None) %}
-      {% set talk_room = session['talk-preview'].get('room', None) %}
-      {% set talk_speaker = session['talk-preview'].get('speaker', None) %}
-      {% set talk_tags = session['talk-preview'].get('tags', None) %}
-      {% if tags %}
-      {% set talk_tags = ','.join(tags) %}
-      {% endif %}
+            {% set talk_name = session['talk-preview'].get('name', None) %}
+            {% set talk_summary = session['talk-preview'].get('summary', None) %}
+            {% set talk_description = session['talk-preview'].get('description', None) %}
+            {% set talk_date = session['talk-preview'].get('date', None) %}
+            {% set talk_start = session['talk-preview'].get('start', None) %}
+            {% set talk_end = session['talk-preview'].get('end', None) %}
+            {% set talk_room = session['talk-preview'].get('room', None) %}
+            {% set talk_speaker = session['talk-preview'].get('speaker', None) %}
+            {% if tags %}
+                {% set talk_tags = ','.join(session['talk-preview'].get('tags', None)) %}
+            {% endif %}
       {% else %}
-      {% set talk_name = talk.get('name') %}
-      {% set talk_summary = talk.get('summary') %}
-      {% set talk_description = talk.get('description') %}
-      {% set talk_date = talk.get('date') %}
-      {% set talk_start = talk.get('start') %}
-      {% set talk_end = talk.get('end') %}
-      {% set talk_room = talk.get('room') %}
-      {% set talk_speaker = talk.get('speaker') %}
-      {% set talk_tags = talk.get('tags') %}
+            {% set talk_name = talk.get('name') %}
+            {% set talk_summary = talk.get('summary') %}
+            {% set talk_description = talk.get('description') %}
+            {% set talk_date = talk.get('date') %}
+            {% set talk_start = talk.get('start') %}
+            {% set talk_end = talk.get('end') %}
+            {% set talk_room = talk.get('room') %}
+            {% set talk_speaker = talk.get('speaker') %}
+            {% set talk_tags = talk.get('tags') %}
       {% endif %}
       <div class="event clearfix">
          <div class="row">
@@ -108,7 +107,7 @@
                      </div>
                      <div class="form-group">
                         <label for="talk-tags">Tags</label>
-                        <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Comma separated" value="{{ talk_tags }}">
+                        <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Tags, comma separated" value="{{ talk_tags }}">
                      </div>
 
                      <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">

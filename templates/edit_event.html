@@ -15,29 +15,23 @@
    {%- include 'side_nav.html' -%}
    <div id="page-wrapper">
       {% if session.get('event-preview', None) %}
-      {% set event_name = session['event-preview'].get('name', None) %}
-      {% set event_summary = session['event-preview'].get('summary', None) %}
-      {% set event_description = session['event-preview'].get('description', None) %}
-      {% set event_start = session['event-preview'].get('start', None) %}
-      {% set event_end = session['event-preview'].get('end', None) %}
-      {% set event_venue = session['event-preview'].get('venue', None) %}
-      {% set event_tags = session['event-preview'].get('tags', None) %}
-      {% if tags %}
-      {% set event_tags = ','.join(tags) %}
-      {% endif %}
-      {% set event_attendees = session['event-preview'].get('attendees', None) %}
-      {% if attendees %}
-      {% set event_attendees = ','.join(attendees) %}
-      {% endif %}
+            {% set event_name = session['event-preview'].get('name', None) %}
+            {% set event_summary = session['event-preview'].get('summary', None) %}
+            {% set event_description = session['event-preview'].get('description', None) %}
+            {% set event_start = session['event-preview'].get('start', None) %}
+            {% set event_end = session['event-preview'].get('end', None) %}
+            {% set event_venue = session['event-preview'].get('venue', None) %}
+            {% if tags %}
+                {% set event_tags = ','.join(session['event-preview'].get('tags', None)) %}
+            {% endif %}
       {% else %}
-      {% set event_name = event.get('name') %}
-      {% set event_summary = event.get('summary') %}
-      {% set event_description = event.get('description') %}
-      {% set event_start = event.get('start') %}
-      {% set event_end = event.get('end') %}
-      {% set event_venue = event.get('venue') %}
-      {% set event_tags = event.get('tags') %}
-      {% set event_attendees = event.get('attendees') %}
+            {% set event_name = event.get('name') %}
+            {% set event_summary = event.get('summary') %}
+            {% set event_description = event.get('description') %}
+            {% set event_start = event.get('start') %}
+            {% set event_end = event.get('end') %}
+            {% set event_venue = event.get('venue') %}
+            {% set event_tags = event.get('tags') %}
       {% endif %}
       <div class="event clearfix">
          <div class="row">
