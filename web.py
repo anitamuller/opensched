@@ -39,6 +39,7 @@ def events_by_tag(tag, page):
 @app.route('/<event_permalink>/talks/tag/<tag>', defaults={'page': 1})
 @app.route('/<event_permalink>/talks/tag/<tag>/page-<int:page>')
 def talks_by_tag(event_permalink, tag, page):
+    event_permalink = cgi.escape(event_permalink)
     skip = (page - 1) * int(app.config['PER_PAGE'])
     talks = talkClass.get_talks(int(app.config['PER_PAGE']), skip, event_permalink=event_permalink, tag=tag)
     count = talkClass.get_total_count(tag=tag)
@@ -53,6 +54,8 @@ def talks_by_tag(event_permalink, tag, page):
 
 @app.route('/<event_permalink>')
 def single_event(event_permalink):
+    event_permalink = cgi.escape(event_permalink)
+
     if session.has_key('user'):
         if session.has_key('redirect_event'):
             session.pop('redirect_event')
@@ -336,6 +339,8 @@ def bulk_delete_events():
 @app.route('/<event_permalink>/newtalk', methods=['GET', 'POST'])
 @login_required()
 def new_talk(event_permalink):
+    event_permalink = cgi.escape(event_permalink)
+
     error = False
     error_type = 'validate'
     if request.method == 'POST':
@@ -467,6 +472,8 @@ def talks(page):
 @app.route('/<event_permalink>/talk_preview')
 @login_required()
 def talk_preview(event_permalink):
+    event_permalink = cgi.escape(event_permalink)
+
     talk = session.get('talk-preview')
 
     talk_date = date_to_string(talk['date'], 'short')
@@ -484,6 +491,8 @@ def talk_preview(event_permalink):
 @app.route('/<event_permalink>/talk_edit?id=<id>')
 @login_required()
 def talk_edit(event_permalink, id):
+    event_permalink = cgi.escape(event_permalink)
+
     talk = talkClass.get_talk_by_id(id)
     session['talk-permalink'] = talk['data']['permalink']
 
@@ -518,6 +527,7 @@ def talk_edit(event_permalink, id):
 @app.route('/<event_permalink>/talk_delete?id=<id>')
 @login_required()
 def talk_del(event_permalink, id):
+    event_permalink = cgi.escape(event_permalink)
 
     talk = talkClass.get_talk_by_id(id)
     talk_permalink = talk['data']['permalink']
@@ -571,6 +581,9 @@ def bulk_delete_talks():
 
 @app.route('/<event_permalink>/<talk_permalink>')
 def single_talk(event_permalink, talk_permalink):
+    event_permalink = cgi.escape(event_permalink)
+    talk_permalink = cgi.escape(talk_permalink)
+
     if session.has_key('user'):
         if session.has_key('redirect_talk') and session.has_key('redirect_event'):
             session.pop('redirect_event')
@@ -608,6 +621,8 @@ def single_talk(event_permalink, talk_permalink):
 
 @app.route('/<event_permalink>/talks')
 def talks_by_event(event_permalink):
+    event_permalink = cgi.escape(event_permalink)
+
     event = eventClass.get_event_by_permalink(event_permalink)
     event_name = event['data']['name']
 
@@ -628,6 +643,8 @@ def talks_by_event(event_permalink):
 
 @app.route('/<event_permalink>/my_schedule')
 def my_schedule(event_permalink):
+    event_permalink = cgi.escape(event_permalink)
+
     event = eventClass.get_event_by_permalink(event_permalink)
     event_name = event['data']['name']
 
@@ -660,6 +677,8 @@ def my_schedule(event_permalink):
 @app.route('/<event_permalink>/add_attendee_event')
 @login_required()
 def add_attendee_event(event_permalink):
+    event_permalink = cgi.escape(event_permalink)
+
     return render_template('add_attendee_event.html', event_permalink=event_permalink,
                            meta_title='Invite attendee to event')
 
@@ -667,12 +686,16 @@ def add_attendee_event(event_permalink):
 @app.route('/<event_permalink>/<talk_permalink>/add_attendee_talk')
 @login_required()
 def add_attendee_talk(event_permalink, talk_permalink):
+    event_permalink = cgi.escape(event_permalink)
+
     return render_template('add_attendee_talk.html', event_permalink=event_permalink,
                            talk_permalink=talk_permalink, meta_title='Invite attendee to talk')
 
 
 @app.route('/<event_permalink>/attendance')
 def event_attendance(event_permalink):
+    event_permalink = cgi.escape(event_permalink)
+
     event = eventClass.get_event_by_permalink(event_permalink)
     event_name = event['data']['name']
     attendance = event['data']['attendees']
@@ -688,6 +711,9 @@ def event_attendance(event_permalink):
 
 @app.route('/<event_permalink>/<talk_permalink>/attendance')
 def talk_attendance(event_permalink, talk_permalink):
+    event_permalink = cgi.escape(event_permalink)
+    talk_permalink = cgi.escape(talk_permalink)
+
     talk = talkClass.get_talk_by_permalink(talk_permalink)
     talk_name = talk['data']['name']
     attendance = talk['data']['attendees']
@@ -704,6 +730,9 @@ def talk_attendance(event_permalink, talk_permalink):
 
 @app.route('/<event_permalink>/<talk_permalink>/talk_attendance')
 def talk_attendance_(event_permalink, talk_permalink):
+    event_permalink = cgi.escape(event_permalink)
+    talk_permalink = cgi.escape(talk_permalink)
+
     talk = talkClass.get_talk_by_permalink(talk_permalink)
     talk_name = talk['data']['name']
     attendance = talk['data']['attendees']
@@ -927,6 +956,8 @@ def delete_user(id):
 @app.route('/<event_permalink>/delete_attendee_event/<attendee_email>')
 @login_required()
 def delete_attendee_event(attendee_email, event_permalink):
+    event_permalink = cgi.escape(event_permalink)
+
     event = eventClass.get_event_by_permalink(event_permalink)
     talks = event['data']['talks']
 
@@ -957,6 +988,9 @@ def delete_attendee_event(attendee_email, event_permalink):
 @app.route('/<event_permalink>/<talk_permalink>/delete_attendee_talk/<attendee_email>')
 @login_required()
 def delete_attendee_talk(attendee_email, event_permalink, talk_permalink):
+    event_permalink = cgi.escape(event_permalink)
+    talk_permalink = cgi.escape(talk_permalink)
+
     talk = talkClass.get_talk_by_permalink(talk_permalink)
     talk_speaker = talk['data']['speaker']
 
@@ -1082,12 +1116,14 @@ def register_user():
 @app.route('/<event_permalink>/save_attendee', methods=['POST'])
 @login_required()
 def save_attendee_event(event_permalink):
+    event_permalink = cgi.escape(event_permalink)
 
     post_data = {
         '_id': request.form.get('user-id', None).lower().strip(),
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None)
     }
+
     if not post_data['_id']:
         flash('Email is required..', 'error')
         return redirect(url_for('add_attendee_event'))
@@ -1102,11 +1138,15 @@ def save_attendee_event(event_permalink):
 @app.route('/<event_permalink>/<talk_permalink>/save_attendee_talk', methods=['POST'])
 @login_required()
 def save_attendee_talk(event_permalink, talk_permalink):
+    event_permalink = cgi.escape(event_permalink)
+    talk_permalink = cgi.escape(talk_permalink)
+
     post_data = {
         '_id': request.form.get('user-id', None),
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None)
     }
+
     if not post_data['_id'] :
         flash('Email is required..', 'error')
         return redirect(url_for('add_attendee_talk'))
@@ -1146,6 +1186,9 @@ def _schedule_talk(event_permalink, talk_permalink, user_email):
     # Auxiliary function for schedule_talk and schedule_talk_event
     user_data = userClass.get_user(user_email)
     attendee = user_data['data']
+
+    event_permalink = cgi.escape(event_permalink)
+    talk_permalink = cgi.escape(talk_permalink)
 
     talk = talkClass.get_talk_by_permalink(talk_permalink)
 
