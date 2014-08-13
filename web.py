@@ -483,6 +483,9 @@ def talk_preview(event_permalink):
     talk_end = time_to_string(talk['end'])
     talk['end'] = talk_end
 
+    talk['summary'] = base64.b64decode(talk['summary']).decode('utf-8')
+    talk['description'] = base64.b64decode(talk['description']).decode('utf-8')
+
     return render_template('talk_preview.html', event_permalink=event_permalink,
                            talk=talk, talk_start=talk_start, talk_end=talk_end, talk_date=talk_date,
                            meta_title='Preview talk::' + talk['name'])

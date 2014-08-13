@@ -9,57 +9,46 @@
 {%- endblock -%}
 {%- block body -%}
 	{%- if talk -%}
-		<div class="talk clearfix">
+		<div class="talk content" style="background-color: white; padding-left: 35px;">
 			<div class="row">
 				<div class="col-lg-8">
 					<div class="page-header">
 						<h1>{{ talk['name'] }}</h1>
-						<p><span class="icon-time">&nbsp;</span><i>Speaker {{ talk['speaker'] }}</i></p>
-						<div class="social row-fluid">
-					        <!-- AddThis Button BEGIN -->
-							<div class="addthis_toolbox addthis_default_style addthis_16x16_style">
-								<a class="addthis_button_twitter"></a>
-								<a class="addthis_button_facebook"></a>
-								<a class="addthis_button_google_plusone_share"></a>
-								<a class="addthis_button_evernote"></a>
-								<a class="addthis_button_pocket"></a>
-							</div>
-							<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-526fe54e082798d3"></script>
-							<!-- AddThis Button END -->
-				        </div>
+						<div><i class="fa fa-user fa-fw" style="margin-top: 3%;"></i> Speaker {{ talk['speaker'] }}</div>
+                        <div><i class="fa fa-clock-o fa-fw"></i> On {{ talk['date'] }} From {{ talk['start'] }} to {{ talk['end'] }}</div>
+                        <div><i class="fa fa-map-marker fa-fw"></i> at {{ talk['room'] }}</div>
+
+                        <dl class="dl-horizontal" >
+                            <dt>Summary:</dt>
+                            <dd style="margin-top: 3%;">
+                            {{ talk['summary'] }}
+                            </dd>
+
+                            <dt style="margin-top: 3%;">Description:</dt>
+                            <dd style="margin-top: 3%;">
+                            {{ talk['description'] }}
+                            </dd>
+                        </dl>
+
+                        <div class="infopanel">
+                        <div class="tags">
+                           <span title="tags"><i class="fa fa-tags fa-fw"></i> </span>
+                           {%- if talk['tags'] -%}
+                           {%- for tag in talk['tags'] -%}
+                           &nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=talk['event'], tag=tag) }}">{{ tag }}</a>
+                           {%- endfor -%}
+                           {%- endif -%}
+                        </div>
+                        </div>
 					</div>
 
-                    <blockquote class=".col-md-4" style="margin-top=30px;">
-                    <dl class="dl-horizontal">
-                    <dt>Summary</dt>
-                    <dd>{{ talk['summary'] }}</dd>
-                    <dt>Description</dt>
-                    <dd>{{ talk['description'] }}</dd>
-                    <dt>Date</dt>
-                    <dd>{{ talk['date'] }}</dd>
-                    <dt>Start Time</dt>
-                    <dd>{{ talk['start'] }}</dd>
-                    <dt>End Time</dt>
-                    <dd>{{ talk['end'] }}</dd>
-                    <dt>Room</dt>
-                    <dd>{{ talk['room'] }}</dd>
-                    <dt>Tags</dt>
-                    <dd class="tags">
-						{%- if talk['tags'] -%}
-							{%- for tag in talk['tags'] -%}
-							<a href="{{ url_for('talks_by_tag', event_permalink=talk['event'], tag=tag) }}">{{ tag }}</a>&nbsp;
-							{%- endfor -%}
-						{%- endif -%}
-					</dd>
-                    </dl>
-                    </blockquote>
 
 					<div class="preview-back">
-						<a href="{{ session.get('talk-preview')['redirect'] }}" class="btn btn-primary btn-lg">< Back</a>
+						<a href="{{ session.get('talk-preview')['redirect'] }}" class="response btn btn-primary"><i class="fa fa-chevron-circle-left"></i>&nbsp; Back</a>
 					</div>
 				</div>
 			</div>
-		</div>
+
 	{%- endif -%}
 	{%- include 'sidebar.html' -%}
 {%- endblock -%}

@@ -2,6 +2,7 @@
 {%- block head -%}
 {%- include 'head.html' -%}
 {%- block additional_css -%}
+<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/metisMenu.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
@@ -9,58 +10,48 @@
 {%- endblock -%}
 {%- block body -%}
 	{%- if event -%}
-		<div class="event clearfix">
+		<div class="event content" style="background-color: white; padding-left: 35px;">
 			<div class="row">
 				<div class="col-lg-8">
 					<div class="page-header">
 						<h1>{{ event['name'] }}</h1>
-						<p><span class="icon-time">&nbsp;</span><i>Organized by {{ event['organizer'] }}</i></p>
-						<div class="social row-fluid">
-					        <!-- AddThis Button BEGIN -->
-							<div class="addthis_toolbox addthis_default_style addthis_16x16_style">
-								<a class="addthis_button_twitter"></a>
-								<a class="addthis_button_facebook"></a>
-								<a class="addthis_button_google_plusone_share"></a>
-								<a class="addthis_button_evernote"></a>
-								<a class="addthis_button_pocket"></a>
-							</div>
-							<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=xa-526fe54e082798d3"></script>
-							<!-- AddThis Button END -->
-				        </div>
+						<div><i class="fa fa-user fa-fw" style="margin-top: 3%;"></i> Organized by {{ event['organizer'] }}</div>
+                        <div><i class="fa fa-clock-o fa-fw"></i> From {{ event['start'] }} to {{ event['end'] }}</div>
+                        <div><i class="fa fa-map-marker fa-fw"></i> at {{ event['venue'] }}</div>
+
+                        <dl class="dl-horizontal" >
+                            <dt>Summary:</dt>
+                            <dd style="margin-top: 3%;">
+                            {{ event['summary'] }}
+                            </dd>
+
+                            <dt style="margin-top: 3%;">Description:</dt>
+                            <dd style="margin-top: 3%;">
+                            {{ event['description'] }}
+                            </dd>
+                        </dl>
+
+
+                        <div class="infopanel">
+                        <div class="tags">
+                           <span title="tags"><i class="fa fa-tags fa-fw"></i> </span>
+                           {%- if event['tags'] -%}
+                           {%- for tag in event['tags'] -%}
+                           &nbsp;<a href="{{ url_for('events_by_tag', tag=tag) }}">{{ tag }}</a>
+                           {%- endfor -%}
+                           {%- endif -%}
+                        </div>
+                        </div>
+
 					</div>
 
-                    <blockquote class=".col-md-4" style="margin-top=30px;">
-                    <dl class="dl-horizontal">
-                    <dt>Summary</dt>
-                    <dd>{{ event['summary']}}</dd>
-                    <dt>Description</dt>
-                    <dd>{{ event['description'] }}</dd>
-                    <dt>Start Date</dt>
-                    <dd>{{ event['start'] }}</dd>
-                    <dt>End Date</dt>
-                    <dd>{{ event['end'] }}</dd>
-                    <dt>Venue</dt>
-                    <dd>{{ event['venue'] }}</dd>
-                    <dt>Tags</dt>
-                    <dd class="tags">
-						{%- if event['tags'] -%}
-							{%- for tag in event['tags'] -%}
-							<a href="{{ url_for('events_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>&nbsp;
-							{%- endfor -%}
-						{%- endif -%}
-					</dd>
-                    </dl>
-                    </blockquote>
-
-
 					<div class="preview-back">
-						<a href="{{ session.get('event-preview')['redirect'] }}" class="btn btn-primary btn-lg">< Back</a>
+						<a href="{{ session.get('event-preview')['redirect'] }}" class="response btn btn-primary"><i class="fa fa-chevron-circle-left"></i>&nbsp;Back</a>
 					</div>
 				</div>
 			</div>
   		</div>
 	{%- endif -%}
-	{%- include 'sidebar.html' -%}
 {%- endblock -%}
 {%- block additional_js -%}
 <script src="{{ url_for('static', filename='js/lightbox-2.6.min.js') }}"></script>
