@@ -106,7 +106,11 @@
                               {%- endif -%}
                               <input type="password" class="form-control" name="user-new-password-again" id="user-new-password-again" placeholder="New Password Repeat" autocomplete="off">
                            </div>
+                           <legend>Biography</legend>
+                           <textarea id="user-bio" name="user-bio" class="form-control" placeholder="Tell people a little about yourself."></textarea>
                         </fieldset>
+                        </br></br>
+
                         <div class="form-group">
                            <input name="user-id" type="hidden" value="{{ user['_id'] }}">
                            <input name="user-update" type="hidden" value="1">

@@ -58,7 +58,10 @@
 								{%- endif -%}
 							    <input type="password" class="form-control" name="user-new-password-again" id="user-new-password-again" placeholder="Repeat Password" value="" required autocomplete="off">
 							</div>
+                            </br>
+                            <textarea id="user-bio" name="user-bio" class="form-control" placeholder="User Biography. Tell people a little about yourself."></textarea>
                         </fieldset>
+                        </br>
                         <div class="form-group">
                             <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                             <input type="submit" class="btn btn-primary" value="Install">

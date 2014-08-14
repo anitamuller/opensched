@@ -28,14 +28,15 @@
                         {%- endfor -%}
                     {%- endif -%}
                {%- endwith -%}
+               <div class="table-actions">
                <a href="{{ url_for('add_user') }}" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add User</a>
-               <table style="align: center; width: 60%;">
+               </div>
+
+               <table style="margin-bottom: 0px; align: center; width: 60%;">
                   {%- for user in users -%}
                   <tr>
                      <td>
-                     <div>
                         <img src="{{ user['gravatar_url'] }}" class="img-circle">
-                     </div>
                      </td>
                      {%- if user['name'] -%}
                      <td><strong>{{ user['name'] }}</strong></td>

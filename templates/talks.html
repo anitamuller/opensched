@@ -58,7 +58,7 @@
                                     <i class="fa fa-gear"></i>  <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a title="Add attendees to talk" href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}">Invite people</a></li>
+                                    <li><a title="Add attendees to talk" href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}"><i class="fa fa-user"></i> Invite people</a></li>
                                     <li class="divider"></li>
                                     <li><a title="Edit talk" href="{{ url_for('talk_edit', event_permalink=event_permalink, id=talk['_id']) }}">Edit talk</a></li>
                                     <li><a title="Delete talk" href="{{ url_for('talk_del', event_permalink=event_permalink, id=talk['_id']) }}">Delete talk</a></li>

@@ -71,7 +71,8 @@ class User:
                 self.response['data'].append({'id': user['_id'],
                                               'name': user['name'],
                                               'role': user['role'],
-                                              'active': user['active']})
+                                              'active': user['active'],
+                                              'bio': user['bio']})
         except Exception, e:
             self.print_debug_info(e, self.debug_mode)
             self.response['error'] = 'Users not found..'
@@ -140,6 +141,9 @@ class User:
                 exist_user['password'] = generate_password_hash(
                     user_data['old_pass'], method='pbkdf2:sha256')
 
+                if not user_data['new_pass']:
+                    not_password = True
+
             if user_data['update'] is not False:
                 if exist_user:
                     if user_data['old_pass']:
@@ -150,7 +154,8 @@ class User:
                             if user_data['new_pass'] and user_data['new_pass'] == user_data['new_pass_again']:
                                 password_hash = generate_password_hash(
                                     user_data['new_pass'], method='pbkdf2:sha256')
-                                record = {'password': password_hash, 'name': user_data['name'], 'active': u'1'}
+                                record = {'password': password_hash, 'name': user_data['name'], 'active': u'1',
+                                          'bio': user_data['bio']}
                                 try:
 
                                     self.collection.update(
@@ -161,17 +166,27 @@ class User:
                                     self.response[
                                         'error'] = 'Update user error..'
                             else:
-                                self.response[
-                                    'error'] = 'New password doesn\'t match..'
-                                return self.response
+                                if not_password:
+                                    record = {'name': user_data['name'], 'active': u'0',
+                                              'bio': user_data['bio']}
+                                    self.collection.update(
+                                        {'_id': user_data['_id']}, {'$set': record}, upsert=True, multi=False)
+                                    self.response['data'] = True
+                                else:
+                                    self.response[
+                                        'error'] = 'New password doesn\'t match..'
+                                    return self.response
                         else:
                             self.response[
                                 'error'] = 'Old password doesn\'t match..'
                             return self.response
                     else:
                         try:
+                            if not user_data['name']:
+                                user_data['name'] = ""
                             record = {'name': user_data['name'],
-                                      'role': user_data['role']}
+                                      'role': user_data['role'],
+                                      'bio': user_data['bio']}
                             self.collection.update(
                                 {'_id': user_data['_id']}, {'$set': record}, upsert=False, multi=False)
                             self.response['data'] = True
@@ -189,9 +204,13 @@ class User:
                     if user_data['new_pass'] and user_data['new_pass'] == user_data['new_pass_again']:
                         password_hash = generate_password_hash(
                             user_data['new_pass'], method='pbkdf2:sha256')
+
+                        if not user_data['name']:
+                                user_data['name'] = ""
                         record = {'_id': user_data['_id'], 'password': password_hash,
                                   'name': user_data['name'], 'role': user_data['role'],
-                                  'active': user_data['active'], 'speaker_at': {}, 'attendee_at': {}}
+                                  'active': user_data['active'], 'bio':user_data['bio'],
+                                  'speaker_at': {}, 'attendee_at': {}}
                         try:
                             self.collection.insert(record, safe=True)
                             self.response['data'] = True
@@ -225,13 +244,15 @@ class User:
                         if not exist_user.has_key('password'):
                             exist_user['password'] = None
                         if not exist_user.has_key('name'):
-                            exist_user['name'] = None
+                            exist_user['name'] = ""
+
 
                         record = {'_id': exist_user['_id'],
                                   'password': exist_user['password'],
                                   'name': exist_user['name'],
                                   'active': exist_user['active'],
                                   'role': exist_user['role'],
+                                  'bio': exist_user['bio'],
                                   'speaker_at': exist_user['speaker_at'],
                                   'attendee_at': new_attendee_at}
 
@@ -261,13 +282,14 @@ class User:
                     if not exist_user.has_key('password'):
                         exist_user['password'] = None
                     if not exist_user.has_key('name'):
-                        exist_user['name'] = None
+                        exist_user['name'] = ""
 
                     record = {'_id': exist_user['_id'],
                               'password': exist_user['password'],
                               'name': exist_user['name'],
                               'active': exist_user['active'],
                               'role': exist_user['role'],
+                              'bio': exist_user['bio'],
                               'speaker_at': exist_user['speaker_at'],
                               'attendee_at': new_attendee_at}
 
@@ -292,8 +314,9 @@ class User:
                     new_attendee_at[event_name] = [talk_permalink]
 
                 record = {'_id': user_data['_id'],
-                          'active': user_data['active'], 'name': None, 'password': None,
-                          'role': user_data['role'], 'attendee_at': new_attendee_at, 'speaker_at': {}}
+                          'active': user_data['active'], 'name': "", 'password': None,
+                          'role': user_data['role'], 'bio': "",
+                          'attendee_at': new_attendee_at, 'speaker_at': {}}
 
                 try:
                     self.collection.insert(record, safe=True)
@@ -310,7 +333,7 @@ class User:
 
         if not exist_user:
             record = {'_id': speaker_email,
-                      'active': 0, 'name': None, 'password': None,
+                      'active': 0, 'name': None, 'password': None, 'bio': None,
                       'role': 'User', 'attendee_at': {event_permalink: [talk_permalink]},
                       'speaker_at': {event_permalink: [talk_permalink]}}
 
@@ -348,6 +371,7 @@ class User:
                       'name': exist_user['name'],
                       'active': exist_user['active'],
                       'role': exist_user['role'],
+                      'bio': exist_user['bio'],
                       'attendee_at': new_attendee_at,
                       'speaker_at': new_speaker_at}
 
@@ -375,6 +399,7 @@ class User:
                       'name': user['name'],
                       'active': user['active'],
                       'role': user['role'],
+                      'bio': user['bio'],
                       'attendee_at': new_attendee_at,
                       'speaker_at': new_speaker_at}
 
@@ -399,6 +424,7 @@ class User:
                       'name': user['name'],
                       'active': user['active'],
                       'role': user['role'],
+                      'bio': user['bio'],
                       'attendee_at': new_attendee_at,
                       'speaker_at': new_speaker_at}
 
@@ -425,6 +451,7 @@ class User:
                   'name': user['name'],
                   'active': user['active'],
                   'role': user['role'],
+                  'bio': user['bio'],
                   'attendee_at': new_attendee_at,
                   'speaker_at': new_speaker_at}
 

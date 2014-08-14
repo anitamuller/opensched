@@ -49,7 +49,7 @@
                   {%- endfor -%}
                   {%- endif -%}
                   {%- endwith -%}
-                  <a href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}" class="response btn btn-primary">Invite People</a>
+                  <a href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}" class="response btn btn-primary"><i class="fa fa-user"></i> Invite People</a>
                   <a href="{{ url_for('new_talk', event_permalink=event['permalink']) }}" class="response btn btn-primary">Add talks</a>
                   <a href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}" class="response btn btn-primary">List talks</a>
 

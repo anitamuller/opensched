@@ -760,7 +760,7 @@ def register():
 def add_user():
     gravatar_url = userClass.get_gravatar_link()
     role_list = ['Admin', 'User']
-    return render_template('add_user.html', gravatar_url=gravatar_url, role_list=role_list,  meta_title='Register new User')
+    return render_template('add_user.html', gravatar_url=gravatar_url, role_list=role_list,  meta_title='Register a new User')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -1020,11 +1020,14 @@ def save_user():
         'new_pass_again': request.form.get('user-new-password-again', None),
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None),
+        'bio': request.form.get('user-bio', None),
         'update': request.form.get('user-update', False)
     }
 
-    if not post_data['name'] or not post_data['_id']:
-        flash('Name and Email are required..', 'error')
+    if not post_data['name']:
+            post_data['name'] = ""
+    if not post_data['_id']:
+        flash('Email is required..', 'error')
         if post_data['update']:
                 return redirect(url_for('edit_user', id=post_data['_id']))
         else:
@@ -1059,11 +1062,14 @@ def save_profile_user():
         'new_pass_again': request.form.get('user-new-password-again', None),
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None),
+        'bio': request.form.get('user-bio', None),
         'update': request.form.get('user-update', False)
     }
 
-    if not post_data['name'] or not post_data['_id']:
-        flash('Name and Email are required..', 'error')
+    if not post_data['name']:
+            post_data['name'] = ""
+    if not post_data['_id']:
+        flash('Email is required..', 'error')
         if post_data['update']:
                 return redirect(url_for('edit_user', id=post_data['_id']))
         else:
@@ -1095,6 +1101,7 @@ def register_user():
         'new_pass_again': request.form.get('user-new-password-again', None),
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None),
+        'bio': request.form.get('user-bio', None),
         'update': request.form.get('user-update', False)
     }
 
@@ -1258,6 +1265,7 @@ def install():
             'name': request.form.get('user-name', None),
             'role': 'Admin',
             'active': 1,
+            'bio': request.form.get('user-bio', None),
             'new_pass': request.form.get('user-new-password', None),
             'new_pass_again': request.form.get('user-new-password-again', None),
             'update': False
@@ -1281,6 +1289,8 @@ def install():
             error = True
         else:
             install_result = settingsClass.install(site_data, user_data)
+            import pdb
+            pdb.set_trace()
             if install_result['error']:
                 for i in install_result['error']:
                     if i is not None:

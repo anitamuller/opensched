@@ -27,7 +27,7 @@
                         {%- endfor -%}
                     {%- endif -%}
                {%- endwith -%}
-               <a href="{{ url_for('add_attendee_event', event_permalink=event_permalink) }}" class="response btn btn-primary">Invite People</a>
+               <a href="{{ url_for('add_attendee_event', event_permalink=event_permalink) }}" class="response btn btn-primary"><i class="fa fa-user"></i> Invite People</a>
                <a href="{{ url_for('events') }}" class="response btn btn-primary"><i class="fa fa-chevron-circle-left"></i> Back to events</a>
                   <table style="align: center; width: 60%;">
                   {%- for user in users -%}
@@ -63,7 +63,7 @@
                  <div class="alert alert-info" role="alert" style="border-color:#D9EDF7;"><h4 style="font-size: 14px">No people invited to this event: '{{ event_name }}'</h4></div>
             </div>
             <div>
-                <a title="Invite attendees to event" href="{{ url_for('add_attendee_event', event_permalink=event_permalink) }}" class="btn btn-primary">Invite people</a>
+                <a title="Invite attendees to event" href="{{ url_for('add_attendee_event', event_permalink=event_permalink) }}" class="btn btn-primary"><i class="fa fa-user"></i> Invite people</a>
             </div>
             {%- endif -%}
          </div>

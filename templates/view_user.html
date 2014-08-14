@@ -6,7 +6,7 @@
 				<div class="page-header">
 					<h1>Perfil user</h1>
 				</div>
-				<div class="content">
+				<div class="content" style="font-size: 16px">
 					{%- with messages = get_flashed_messages(with_categories=True) -%}
 						{%- if messages -%}
 							{%- for category, message in messages -%}
@@ -24,14 +24,16 @@
 							<div>
                                 </br>
                                 <dl>
-                                <dt>Name</dt>
                                 <dd>{{ user['name'] }}</dd>
-                                <dt>Email</dt>
                                 <dd>{{ user['_id'] }}</dd>
                                 </dl>
-
                             </div>
                     </form>
+                    </br></br></br>
+                    <div>
+                        <h4>About {{ user['name'] }}</h4>
+                        <p>{{ user['bio'] }}</p>
+                    </div>
 					{%- endif -%}
 				</div>
 			</div>
