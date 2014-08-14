@@ -883,7 +883,14 @@ def dashboard_user():
 def _events_by_user(user_email):
     user = userClass.get_user(user_email)
 
-    organizer_at = eventClass.events_organized_by(user_email)
+    list_organizer_at = user['data']['organizer_at']
+    organizer_at = []
+
+    for event_name in list_organizer_at:
+        event = eventClass.get_event_by_permalink(event_name)
+        event['data']['start'] = date_to_string(event['data']['start'], 'short')
+        event['data']['end'] = date_to_string(event['data']['end'], 'short')
+        organizer_at.append(event['data'])
 
     list_speaker_at = user['data']['speaker_at']
     list_speaker_at_ = list_speaker_at.keys()
