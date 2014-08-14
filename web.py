@@ -1277,7 +1277,7 @@ def install():
         }
 
         for key, value in user_data.items():
-            if not value and key != 'update':
+            if not value and key != 'update' and key != 'bio':
                 user_error = True
                 break
         for key, value in site_data.items():
@@ -1289,8 +1289,6 @@ def install():
             error = True
         else:
             install_result = settingsClass.install(site_data, user_data)
-            import pdb
-            pdb.set_trace()
             if install_result['error']:
                 for i in install_result['error']:
                     if i is not None:
