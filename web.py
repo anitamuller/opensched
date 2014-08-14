@@ -238,6 +238,9 @@ def new_event():
                         for attendee in event_attendees:
                             userClass.replace_event_attendee_at(attendee, old_event_permalink, new_event_permalink)
 
+                        userClass.modify_events_organized(session['user']['email'],
+                                                          new_event_permalink, old_event_permalink)
+
                     if not response['error']:
                         flash('Event updated!', 'success')
                     else:
@@ -245,6 +248,9 @@ def new_event():
                     return redirect(url_for('events'))
                 else:
                     response = eventClass.create_new_event(event)
+                    import pdb
+                    pdb.set_trace()
+                    userClass.modify_events_organized(session['user']['email'], event['permalink'])
                     if response['error']:
                         error = True
                         error_type = 'event'
@@ -309,6 +315,9 @@ def event_del(id):
         talk_id = talk_event['data']['_id']
         talk_del(event_permalink,talk_id)
 
+    # Remove event from the list of events of the organizer
+    event_organizer = event['data']['organizer']
+    userClass.modify_events_organized(event_organizer, None, event_permalink)
     response = eventClass.delete_event(id)
 
     if response['data'] is True:
@@ -933,7 +942,8 @@ def organizers_list():
 def edit_user(id):
     user = userClass.get_user(id)
     role_list = ['Admin', 'User']
-    return render_template('edit_user.html', user=user['data'], role_list=role_list, meta_title='Edit user')
+    return render_template('edit_user.html', user=user['data'], role_list=role_list,
+                           old_email=id, meta_title='Edit user')
 
 
 @app.route('/view_user?id=<id>')
@@ -1013,7 +1023,7 @@ def delete_attendee_talk(attendee_email, event_permalink, talk_permalink):
 @login_required()
 def save_user():
     post_data = {
-        '_id': request.form.get('user-id', None),
+        '_id': request.form.get('user-email', None),
         'name': request.form.get('user-name', None),
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
@@ -1033,21 +1043,69 @@ def save_user():
         else:
             return redirect(url_for('add_user'))
     else:
-        user = userClass.save_user(post_data)
-        if user['error']:
-            flash(user['error'], 'error')
-            if post_data['update']:
-                return redirect(url_for('edit_user', id=post_data['_id']))
-            else:
-                return redirect(url_for('add_user'))
-        else:
+        old_email = request.form.get('user-id', None)
+        new_email = request.form.get('user-email', None)
+
+        if not old_email == new_email:
+            import pdb
+            pdb.set_trace()
+            user = userClass.get_user_by_email(old_email)
+
+            list_attendee_at = user['attendee_at']
+            list_attendee_at_ = list_attendee_at.keys()
+
+            for event_name in list_attendee_at_:
+                event = eventClass.get_event_by_permalink(event_name)
+                attendees_event = event['data']['attendees']
+
+                if old_email in attendees_event:
+                    attendees_event.remove(old_email)
+                    attendees_event.append(new_email)
+                    eventClass.modify_attendees_event(event_name, attendees_event)
+
+                talks_event = event['data']['talks']
+                for talk in talks_event:
+                    talk_event = talkClass.get_talk_by_permalink(talk)
+                    attendees_talk = talk_event['data']['attendees']
+                    speaker = talk_event['data']['speaker']
+
+                    if old_email in attendees_talk:
+                        attendees_talk.remove(old_email)
+                        attendees_talk.append(new_email)
+                        talkClass.modify_attendees_talk(talk, attendees_talk)
+
+                    if old_email == speaker:
+                        talkClass.modify_speaker_talk(talk, new_email)
+
+            events_organized = user['organizer_at']
+            for event in events_organized:
+                eventClass.modify_organizer_event(event, new_email)
+
+            user_deleted = userClass.delete_user(old_email)
+            if old_email == session['user']['email']:
+                session.pop('user')
+                userClass.start_session(user)
+                import pdb
+                pdb.set_trace()
+
+            user_saved = userClass.save_new_user(new_email, user)
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
+        else:
+            user = userClass.save_user(post_data)
+            if user['error']:
+                flash(user['error'], 'error')
+                if post_data['update']:
+                    return redirect(url_for('edit_user', id=post_data['_id']))
+                else:
+                    return redirect(url_for('add_user'))
+            else:
+                message = 'User updated!' if post_data['update'] else 'User added!'
+                flash(message, 'success')
 
     if session['user']['role'] == 'User':
         return redirect(url_for('dashboard_user'))
     else:
-
         return redirect(url_for('users_list'))
 
 
@@ -1055,7 +1113,7 @@ def save_user():
 @login_required()
 def save_profile_user():
     post_data = {
-        '_id': request.form.get('user-id', None),
+        '_id': request.form.get('user-email', None),
         'name': request.form.get('user-name', None),
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
@@ -1075,16 +1133,63 @@ def save_profile_user():
         else:
             return redirect(url_for('add_user'))
     else:
-        user = userClass.save_user(post_data)
-        if user['error']:
-            flash(user['error'], 'error')
-            if post_data['update']:
-                return redirect(url_for('edit_user', id=post_data['_id']))
-            else:
-                return redirect(url_for('add_user'))
-        else:
+        old_email = request.form.get('user-id', None)
+        new_email = request.form.get('user-email', None)
+
+        if not old_email == new_email:
+            import pdb
+            pdb.set_trace()
+            user = userClass.get_user_by_email(old_email)
+
+            list_attendee_at = user['attendee_at']
+            list_attendee_at_ = list_attendee_at.keys()
+
+            for event_name in list_attendee_at_:
+                event = eventClass.get_event_by_permalink(event_name)
+                attendees_event = event['data']['attendees']
+
+                if old_email in attendees_event:
+                    attendees_event.remove(old_email)
+                    attendees_event.append(new_email)
+                    eventClass.modify_attendees_event(event_name, attendees_event)
+
+                talks_event = event['data']['talks']
+                for talk in talks_event:
+                    talk_event = talkClass.get_talk_by_permalink(talk)
+                    attendees_talk = talk_event['data']['attendees']
+                    speaker = talk_event['data']['speaker']
+
+                    if old_email in attendees_talk:
+                        attendees_talk.remove(old_email)
+                        attendees_talk.append(new_email)
+                        talkClass.modify_attendees_talk(talk, attendees_talk)
+
+                    if old_email == speaker:
+                        talkClass.modify_speaker_talk(talk, new_email)
+
+            events_organized = user['organizer_at']
+            for event in events_organized:
+                eventClass.modify_organizer_event(event, new_email)
+
+            user_deleted = userClass.delete_user(old_email)
+            if old_email == session['user']['email']:
+                session.pop('user')
+                userClass.start_session(user)
+            user_saved = userClass.save_new_user(new_email, user)
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
+
+        else:
+            user = userClass.save_user(post_data)
+            if user['error']:
+                flash(user['error'], 'error')
+                if post_data['update']:
+                    return redirect(url_for('edit_user', id=post_data['_id']))
+                else:
+                    return redirect(url_for('add_user'))
+            else:
+                message = 'User updated!' if post_data['update'] else 'User added!'
+                flash(message, 'success')
 
     return redirect(url_for('configure_settings'))
 
@@ -1245,7 +1350,8 @@ def configure_settings():
                            meta_title='Settings',
                            error=error,
                            error_type=error_type,
-                           user=user['data'], role_list=role_list)
+                           user=user['data'], old_email=user_email,
+                           role_list=role_list)
 
 
 @app.route('/install', methods=['GET', 'POST'])

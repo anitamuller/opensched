@@ -242,6 +242,39 @@ class Talk:
                                                           'tags': talk_tags
                                                           })
 
+    def modify_speaker_talk(self, permalink, new_speaker):
+        self.response['data'] = self.collection.find_one({'permalink': permalink})
+        new_talk = self.response['data']
+
+        talk_name = new_talk['name']
+        talk_event = new_talk['permalink']
+        talk_summary = new_talk['summary']
+        talk_description = new_talk['description']
+        talk_permalink = new_talk['permalink']
+        talk_room = new_talk['room']
+        talk_date = new_talk['date']
+        talk_start = new_talk['start']
+        talk_end = new_talk['end']
+        talk_tags = new_talk['tags']
+        talk_speaker = new_speaker
+        talk_attendees = new_talk['attendees']
+
+        self.collection.update({'permalink': permalink}, {'name': talk_name,
+                                                          'event': talk_event,
+                                                          'summary': talk_summary,
+                                                          'description': talk_description,
+                                                          'permalink': talk_permalink,
+                                                          'room': talk_room,
+                                                          'date': talk_date,
+                                                          'start': talk_start,
+                                                          'end': talk_end,
+                                                          'attendees': talk_attendees,
+                                                          'speaker': talk_speaker,
+                                                          'tags': talk_tags
+                                                          })
+
+
+
     def delete_talk(self, talk_id):
         self.response['error'] = None
         try:
