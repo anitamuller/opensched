@@ -12,7 +12,11 @@
    <h3><strong>Event</strong> details</h3>
    <hr>
    <div><i class="fa fa-user fa-fw"></i> Organized by <a title="Event organizer" href="{{ url_for('view_user', id=event['organizer']) }}" data-target="_blank"> {{ event['organizer'] }}</a></div>
-   <div><i class="fa fa-clock-o fa-fw"></i> From {{event_start}} to {{ event_end }}</div>
+   {%- if event['start'] != event['end'] -%}
+        <div><i class="fa fa-clock-o fa-fw"></i> From {{ event['start'] }} to {{ event['end'] }}</div>
+   {%- else -%}
+        <div><i class="fa fa-clock-o fa-fw"></i> On {{ event['start'] }}</div>
+   {%- endif -%}
    <div><i class="fa fa-map-marker fa-fw"></i> <a title="venue" href="https://www.google.com/maps/place/{{ event['venue'] }}" data-target="_blank">{{ event['venue'] }}</a></div>
    <div style="margin-top: 3%;">{{ event['summary'] }}</div>
    <div class="sidebar-divider"></div>

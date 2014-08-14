@@ -6,6 +6,7 @@ from flask import session
 import event
 import talk
 
+
 class User:
 
     def __init__(self, default_config):
@@ -56,6 +57,12 @@ class User:
         return True
 
     def logout(self):
+        if session.pop(self.session_key, None):
+            return True
+        else:
+            return False
+
+    def restart_sesion(self):
         if session.pop(self.session_key, None):
             return True
         else:
@@ -210,7 +217,8 @@ class User:
                         record = {'_id': user_data['_id'], 'password': password_hash,
                                   'name': user_data['name'], 'role': user_data['role'],
                                   'active': user_data['active'], 'bio':user_data['bio'],
-                                  'speaker_at': {}, 'attendee_at': {}}
+                                  'speaker_at': {}, 'attendee_at': {},
+                                  'organizer_at': []}
                         try:
                             self.collection.insert(record, safe=True)
                             self.response['data'] = True
@@ -224,6 +232,27 @@ class User:
         else:
             self.response['error'] = 'Error..'
         return self.response
+
+    def save_new_user(self, new_email, user_data):
+        if not user_data['name']:
+            user_data['name'] = ""
+
+        record = {'_id': new_email,
+                  'password': user_data['password'],
+                  'name': user_data['name'],
+                  'role': user_data['role'],
+                  'active': user_data['active'],
+                  'bio': user_data['bio'],
+                  'speaker_at': user_data['speaker_at'],
+                  'attendee_at': user_data['attendee_at'],
+                  'organizer_at': user_data['organizer_at']}
+
+        try:
+            self.collection.insert(record, safe=True)
+            self.response['data'] = True
+        except Exception, e:
+            self.print_debug_info(e, self.debug_mode)
+            self.response['error'] = 'Create user user error..'
 
     def save_attendee(self, user_data, event_permalink, talk_permalink=None):
         self.response['error'] = None
@@ -253,6 +282,7 @@ class User:
                                   'active': exist_user['active'],
                                   'role': exist_user['role'],
                                   'bio': exist_user['bio'],
+                                  'organizer_at': exist_user['organizer_at'],
                                   'speaker_at': exist_user['speaker_at'],
                                   'attendee_at': new_attendee_at}
 
@@ -290,6 +320,7 @@ class User:
                               'active': exist_user['active'],
                               'role': exist_user['role'],
                               'bio': exist_user['bio'],
+                              'organizer_at': exist_user['organizer_at'],
                               'speaker_at': exist_user['speaker_at'],
                               'attendee_at': new_attendee_at}
 
@@ -316,7 +347,8 @@ class User:
                 record = {'_id': user_data['_id'],
                           'active': user_data['active'], 'name': "", 'password': None,
                           'role': user_data['role'], 'bio': "",
-                          'attendee_at': new_attendee_at, 'speaker_at': {}}
+                          'attendee_at': new_attendee_at, 'speaker_at': {},
+                          'organizer_at': []}
 
                 try:
                     self.collection.insert(record, safe=True)
@@ -335,7 +367,8 @@ class User:
             record = {'_id': speaker_email,
                       'active': 0, 'name': None, 'password': None, 'bio': None,
                       'role': 'User', 'attendee_at': {event_permalink: [talk_permalink]},
-                      'speaker_at': {event_permalink: [talk_permalink]}}
+                      'speaker_at': {event_permalink: [talk_permalink]},
+                      'organizer_at': []}
 
             try:
                 self.collection.insert(record, safe=True)
@@ -372,6 +405,7 @@ class User:
                       'active': exist_user['active'],
                       'role': exist_user['role'],
                       'bio': exist_user['bio'],
+                      'organizer_at': exist_user['organizer_at'],
                       'attendee_at': new_attendee_at,
                       'speaker_at': new_speaker_at}
 
@@ -400,6 +434,7 @@ class User:
                       'active': user['active'],
                       'role': user['role'],
                       'bio': user['bio'],
+                      'organizer_at': user['organizer_at'],
                       'attendee_at': new_attendee_at,
                       'speaker_at': new_speaker_at}
 
@@ -425,6 +460,7 @@ class User:
                       'active': user['active'],
                       'role': user['role'],
                       'bio': user['bio'],
+                      'organizer_at': user['organizer_at'],
                       'attendee_at': new_attendee_at,
                       'speaker_at': new_speaker_at}
 
@@ -452,12 +488,33 @@ class User:
                   'active': user['active'],
                   'role': user['role'],
                   'bio': user['bio'],
+                  'organizer_at': user['organizer_at'],
                   'attendee_at': new_attendee_at,
                   'speaker_at': new_speaker_at}
 
         self.collection.remove({'_id': user['_id']})
         self.collection.insert(record, safe=True)
 
+    def modify_events_organized(self, user_email, new_event=None, old_event=None):
+        user = self.get_user_by_email(user_email)
+        new_events_organized = user['organizer_at']
+        if old_event:
+            new_events_organized.remove(old_event)
+        if new_event:
+            new_events_organized.append(new_event)
+
+        record = {'_id': user['_id'],
+                  'password': user['password'],
+                  'name': user['name'],
+                  'active': user['active'],
+                  'role': user['role'],
+                  'bio': user['bio'],
+                  'attendee_at': user['attendee_at'],
+                  'speaker_at': user['speaker_at'],
+                  'organizer_at': new_events_organized}
+
+        self.collection.remove({'_id': user['_id']})
+        self.collection.insert(record, safe=True)
 
 
     @staticmethod

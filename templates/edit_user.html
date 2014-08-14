@@ -49,8 +49,7 @@
                                         <label class="control-label" for="user-email">Required field</label>
                                         {%- endif -%}
                                         <input type="email" class="form-control" name="user-email" id="user-email"
-                                               placeholder="Email" value="{{ user['_id'] }}" required autocomplete="off"
-                                               disabled>
+                                               placeholder="Email" value="{{ user['_id'] }}" required autocomplete="off">
                                     </div>
                                 </fieldset>
                                 <fieldset>
@@ -105,8 +104,10 @@
                                 <div class="form-group">
                                     <input name="user-id" type="hidden" value="{{ user['_id'] }}">
                                     <input name="user-update" type="hidden" value="1">
+                                    <input name="old-email" type="hidden" value="{{ old_email }}">
+                                    <input name="active" type="hidden" value="1">
                                     {%- if session.user.role == 'User' -%}
-                                    <input name="user-role" type="hidden" value="user">
+                                        <input name="user-role" type="hidden" value="user">
                                     {%- endif -%}
                                     <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                                     <input id="post-submit" type="submit" class="btn btn-primary" value="Edit">
