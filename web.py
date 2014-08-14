@@ -248,8 +248,6 @@ def new_event():
                     return redirect(url_for('events'))
                 else:
                     response = eventClass.create_new_event(event)
-                    import pdb
-                    pdb.set_trace()
                     userClass.modify_events_organized(session['user']['email'], event['permalink'])
                     if response['error']:
                         error = True
@@ -1047,8 +1045,6 @@ def save_user():
         new_email = request.form.get('user-email', None)
 
         if not old_email == new_email:
-            import pdb
-            pdb.set_trace()
             user = userClass.get_user_by_email(old_email)
 
             list_attendee_at = user['attendee_at']
@@ -1084,9 +1080,9 @@ def save_user():
             user_deleted = userClass.delete_user(old_email)
             if old_email == session['user']['email']:
                 session.pop('user')
+                user['_id']= new_email
+                user['email'] = new_email
                 userClass.start_session(user)
-                import pdb
-                pdb.set_trace()
 
             user_saved = userClass.save_new_user(new_email, user)
             message = 'User updated!' if post_data['update'] else 'User added!'
@@ -1137,8 +1133,6 @@ def save_profile_user():
         new_email = request.form.get('user-email', None)
 
         if not old_email == new_email:
-            import pdb
-            pdb.set_trace()
             user = userClass.get_user_by_email(old_email)
 
             list_attendee_at = user['attendee_at']
@@ -1174,6 +1168,8 @@ def save_profile_user():
             user_deleted = userClass.delete_user(old_email)
             if old_email == session['user']['email']:
                 session.pop('user')
+                user['_id']= new_email
+                user['email'] = new_email
                 userClass.start_session(user)
             user_saved = userClass.save_new_user(new_email, user)
             message = 'User updated!' if post_data['update'] else 'User added!'
