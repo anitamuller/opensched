@@ -39,15 +39,23 @@
                 {%- if not talks -%}
                     <div>There are no talks for this event yet.</div>
                 {%- else -%}
+                    {%- set previous_talk_date = talks[0]['date'] %}
+                    <div class="talk-date">{{ date_to_string(talks[0]['date'], 'long') }}</div>
                     {%- for talk in talks -%}
-                        <span class="btn btn-info btn-talk">
+                        {%- if previous_talk_date.day != talk['date'].day or
+                              previous_talk_date.month != talk['date'].month or
+                              previous_talk_date.year != talk['date'].year -%}
+                            <div class="talk-date">{{ date_to_string(talk['date'], 'long') }}</div>
+                        {%- endif -%}
+                        <div class="btn btn-info btn-talk">
                         {%- if session.user and session.user.email in talk['attendees'] -%}
                             <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
                         {%- elif session.user -%}
                             <img src="/static/img/unchecked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
                         {%- endif -%}
-                        <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
-                        </span>
+                            <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
+                        </div>
+                        {%- set previous_talk_date = talk['date'] %}
                     {%- endfor -%}
                 {%- endif -%}
             </div>
@@ -57,11 +65,19 @@
                {%- elif not talks or not user_schedule -%}
                     <div>There are no talks for this event yet.</div>
                {%- else -%}
+                    {%- set previous_talk_date = user_schedule[0]['date'] %}
+                    <div class="talk-date">{{ date_to_string(user_schedule[0]['date'], 'long') }}</div>
                     {%- for talk in user_schedule -%}
-                        <span class="btn btn-info btn-talk">
+                        {%- if previous_talk_date.day != talk['date'].day or
+                              previous_talk_date.month != talk['date'].month or
+                              previous_talk_date.year != talk['date'].year -%}
+                            <div class="talk-date">{{ date_to_string(talk['date'], 'long') }}</div>
+                        {%- endif -%}
+                        <div class="btn btn-info btn-talk">
                             <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
                             <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
-                        </span>
+                        </div>
+                    {%- set previous_talk_date = talk['date'] %}
                     {%- endfor -%}
                {%- endif -%}
             </div>

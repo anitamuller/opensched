@@ -67,18 +67,20 @@ def single_event(event_permalink):
     if not event['data']:
         abort(404)
 
-    user_talks, talks, attendees, speakers, tags = [], [], [], [], []
+    user_schedule, talks, attendees, speakers, tags = [], [], [], [], []
 
     if session.get('user'):
         user_email = session['user']['email']
         user = userClass.get_user(user_email)
         user_events = user['data']['attendee_at']
         #  Returns a list of talks for the queried event
-        user_talks_ = user_events[event_permalink] if event_permalink in user_events else []
+        user_talks = user_events[event_permalink] if event_permalink in user_events else []
 
-        for talk_permalink in user_talks_:
+        for talk_permalink in user_talks:
             talk = talkClass.get_talk_by_permalink(str(talk_permalink))
-            user_talks.append(talk['data'])
+            user_schedule.append(talk['data'])
+
+        user_schedule.sort(key=lambda item:item['date'], reverse=False)
 
     talks_ = event['data']['talks']
 
@@ -89,6 +91,8 @@ def single_event(event_permalink):
         if not talk['data']['speaker'] in speakers_:
             speakers_.append(str(talk['data']['speaker']))
         talks.append(talk['data'])
+
+    talks.sort(key=lambda item:item['date'], reverse=False)
 
     tags = talkClass.get_tags(event_permalink)['data']
 
@@ -116,7 +120,7 @@ def single_event(event_permalink):
                            tags=tags,
                            attendees=attendees,
                            speakers=speakers,
-                           user_schedule=user_talks,
+                           user_schedule=user_schedule,
                            meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
 
 
@@ -655,12 +659,14 @@ def my_schedule(event_permalink):
     user = userClass.get_user(user_email)
 
     user_events = user['data']['attendee_at']
-    user_talks_ = user_events[event_permalink] if event_permalink in user_events else []
-    user_talks = []
+    user_talks = user_events[event_permalink] if event_permalink in user_events else []
+    user_schedule = []
 
-    for talk_name in user_talks_:
+    for talk_name in user_talks:
         talk = talkClass.get_talk_by_permalink(str(talk_name))
-        user_talks.append(talk['data'])
+        user_schedule.append(talk['data'])
+
+    user_schedule.sort(key=lambda item:item['date'], reverse=False)
 
     event['data']['summary'] = base64.b64decode(event['data']['summary']).decode('utf-8')
     event['data']['description'] = base64.b64decode(event['data']['description']).decode('utf-8')
@@ -672,7 +678,7 @@ def my_schedule(event_permalink):
     return render_template('my_schedule.html',
                            tags=tags,
                            event=event['data'],
-                           user_talks=user_talks,
+                           user_schedule=user_schedule,
                            meta_title='My schedule for ' + event_name)
 
 
@@ -681,8 +687,11 @@ def my_schedule(event_permalink):
 @login_required()
 def add_attendee_event(event_permalink):
     event_permalink = cgi.escape(event_permalink)
+    event = eventClass.get_event_by_permalink(event_permalink)
 
-    return render_template('add_attendee_event.html', event_permalink=event_permalink,
+    return render_template('add_attendee_event.html',
+                           event_name=event['data']['name'],
+                           event_permalink=event_permalink,
                            meta_title='Invite attendee to event')
 
 
@@ -690,9 +699,13 @@ def add_attendee_event(event_permalink):
 @login_required()
 def add_attendee_talk(event_permalink, talk_permalink):
     event_permalink = cgi.escape(event_permalink)
+    talk = talkClass.get_talk_by_permalink(talk_permalink)
 
-    return render_template('add_attendee_talk.html', event_permalink=event_permalink,
-                           talk_permalink=talk_permalink, meta_title='Invite attendee to talk')
+    return render_template('add_attendee_talk.html',
+                           event_permalink=event_permalink,
+                           talk_name=talk['data']['name'],
+                           talk_permalink=talk_permalink,
+                           meta_title='Invite attendee to talk')
 
 
 @app.route('/<event_permalink>/attendance')
@@ -1353,6 +1366,7 @@ app.jinja_env.globals['csrf_token'] = generate_csrf_token
 app.jinja_env.globals['meta_description'] = app.config['SITE_DESCRIPTION']
 app.jinja_env.globals['recent_events'] = eventClass.get_events(10, 0)['data']
 app.jinja_env.globals['tags'] = eventClass.get_tags()['data']
+app.jinja_env.globals.update(date_to_string=date_to_string)
 
 if not app.config['DEBUG']:
     import logging

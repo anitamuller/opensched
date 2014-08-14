@@ -15,7 +15,7 @@
          <div class="col-lg-12">
             <div class="page-header">
                {%- if users -%}
-               <h1>{{ event_name }}: Attendance</h1>
+               <h1>"{{ event_name }}" attendance</h1>
             </div>
             <div class="content">
                {%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -27,7 +27,7 @@
                         {%- endfor -%}
                     {%- endif -%}
                {%- endwith -%}
-               <a href="{{ url_for('add_attendee_event', event_permalink=event_permalink) }}" class="response btn btn-primary"><i class="fa fa-user"></i> Invite People</a>
+               <a href="{{ url_for('add_attendee_event', event_permalink=event_permalink) }}" class="response btn btn-primary"><i class="fa fa-user"></i> Invite people</a>
                <a href="{{ url_for('events') }}" class="response btn btn-primary"><i class="fa fa-chevron-circle-left"></i> Back to events</a>
                   <table style="align: center; width: 60%;">
                   {%- for user in users -%}
@@ -40,7 +40,7 @@
                      {%- if user['name'] -%}
                      <td><strong>{{ user['name'] }}</strong></td>
                      {%- else -%}
-                     <td></td>
+                     <td>{{ user['_id'] }}</td>
                      {%- endif -%}
                      <td><a title="Email" href="{{ url_for('view_user', id=user['_id']) }}" data-target="_blank">{{ user['_id'] }}</a></td>
                      <td><div class="btn-group">
@@ -52,15 +52,13 @@
                              </ul>
                          </div>
                      </td>
-                     </br>
                   </tr>
                   {%- endfor -%}
                   </table>
-
             </div>
             {%- else -%}
             <div class="page-header">
-                 <div class="alert alert-info" role="alert" style="border-color:#D9EDF7;"><h4 style="font-size: 14px">No people invited to this event: '{{ event_name }}'</h4></div>
+                 <div class="alert alert-info" role="alert">There are no attendees for '{{ event_name }}' yet.</div>
             </div>
             <div>
                 <a title="Invite attendees to event" href="{{ url_for('add_attendee_event', event_permalink=event_permalink) }}" class="btn btn-primary"><i class="fa fa-user"></i> Invite people</a>

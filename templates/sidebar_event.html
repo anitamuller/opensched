@@ -4,7 +4,7 @@
    <hr>
    <div>Logged in as {{ session.user.name }}</div>
    <div id="user-email" hidden>{{ session.user.email }}</div>
-   <div class="my-schedule"><a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="btn btn-primary">My schedule</a></div>
+   <a href="{{ url_for('my_schedule', event_permalink=event['permalink']) }}" class="btn btn-primary my-schedule-btn">My schedule</a>
    <div class="sidebar-divider"></div>
    {%- endif -%}
 

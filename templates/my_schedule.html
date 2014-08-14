@@ -4,9 +4,9 @@
       <div class="talk">
          <div class="row">
             <div class="col-lg-8">
-               {%- if session.user and user_talks -%}
+               {%- if session.user and user_schedule -%}
                <div class="page-header">
-                  <h2>My schedule for {{ event['name'] }}</h2>
+                  <h2>My schedule for "{{ event['name'] }}"</h2>
                </div>
                <div class="content">
                   {%- with messages = get_flashed_messages(with_categories=True) -%}
@@ -18,12 +18,21 @@
                             {%- endfor -%}
                         {%- endif -%}
                   {%- endwith -%}
+                  <a href="{{ url_for('single_event', event_permalink=event['permalink']) }}" class="btn btn-primary btn-back"><i class="fa fa-chevron-circle-left"></i> Back to the event</a>
                   <ul class="user-events">
-                     {%- for talk in user_talks -%}
+                     {%- set previous_talk_date = user_schedule[0]['date'] %}
+                     <div class="talk-date">{{ date_to_string(user_schedule[0]['date'], 'long') }}</div>
+                     {%- for talk in user_schedule -%}
+                        {%- if previous_talk_date.day != talk['date'].day or
+                              previous_talk_date.month != talk['date'].month or
+                              previous_talk_date.year != talk['date'].year -%}
+                            <div class="talk-date">{{ date_to_string(talk['date'], 'long') }}</div>
+                        {%- endif -%}
                         <span class="btn btn-info btn-talk">
                             <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
                             <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
                         </span>
+                     {%- set previous_talk_date = talk['date'] %}
                      {%- endfor -%}
                   </ul>
                </div>

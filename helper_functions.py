@@ -73,13 +73,13 @@ def string_to_date(date):
     return parsed
 
 
-def date_to_string(date, date_format):
+def date_to_string(date, date_format='long'):
     """Transforms a python date in a string date"""
     if date_format == 'short':
         parsed = date.strftime('%d') + "/" + date.strftime('%m') + "/" + date.strftime('%Y')
     else:
-        parsed = date.strftime('%A') + date.strftime('%d') + ", " + \
-                      date.strftime('%B') + ", " + date.strftime('%Y')
+        parsed = "<strong>" + date.strftime('%A') + "</strong>" + ", " + date.strftime('%B') + " " +date.strftime('%d') + ", " + date.strftime('%Y')
+
     return parsed
 
 

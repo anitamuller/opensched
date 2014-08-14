@@ -4,237 +4,275 @@
 {%- block additional_css -%}
 <link href="{{ url_for('static', filename='css/metisMenu.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
-<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet"
+      media="screen">
 {%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
 <div id="wrapper">
-   {%- include 'side_nav.html' -%}
-   <div id="page-wrapper">
-      <div class="row">
-         <div class="col-lg-12">
-            <h1 class="page-header">Dashboard</h1>
-         </div>
-         <!-- /.col-lg-12 -->
-      </div>
-      <div class="add-space row">
-            <!-- /.col-lg-12 -->
-      </div>
-      <!-- /.row -->
-      <div class="row">
-         <div class="col-lg-3 col-md-6">
-            <div class="panel panel-primary">
-               <div class="panel-heading">
-                  <div class="row">
-                     <div class="col-xs-3">
+{%- include 'side_nav.html' -%}
+<div id="page-wrapper">
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Dashboard</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<div class="add-space row">
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
                         <i class="fa fa-asterisk fa-5x"></i>
-                     </div>
-                     <div class="col-xs-9 text-right">
+                    </div>
+                    <div class="col-xs-9 text-right">
                         <div class="huge">{{ events_created }}</div>
                         <div>Events</div>
-                     </div>
-                  </div>
-               </div>
-               <a href="/events_list">
-                  <div class="panel-footer">
-                     <span class="pull-left">View Details</span>
-                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                     <div class="clearfix"></div>
-                  </div>
-               </a>
+                    </div>
+                </div>
             </div>
-         </div>
-         <div class="col-lg-3 col-md-6">
-            <div class="panel panel-green">
-               <div class="panel-heading">
-                  <div class="row">
-                     <div class="col-xs-3">
+            <a href="/events_list">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-green">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
                         <i class="fa fa-tasks fa-5x"></i>
-                     </div>
-                     <div class="col-xs-9 text-right">
+                    </div>
+                    <div class="col-xs-9 text-right">
                         <div class="huge">{{ talks_created }}</div>
                         <div>Talks</div>
-                     </div>
-                  </div>
-               </div>
-               <a href="/talks_list">
-                  <div class="panel-footer">
-                     <span class="pull-left">View Details</span>
-                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                     <div class="clearfix"></div>
-                  </div>
-               </a>
+                    </div>
+                </div>
             </div>
-         </div>
-         <div class="col-lg-3 col-md-6">
-            <div class="panel panel-yellow">
-               <div class="panel-heading">
-                  <div class="row">
-                     <div class="col-xs-3">
+            <a href="/talks_list">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
                         <i class="fa fa-users fa-5x"></i>
-                     </div>
-                     <div class="col-xs-9 text-right">
+                    </div>
+                    <div class="col-xs-9 text-right">
                         <div class="huge">{{ attendees_number }}</div>
                         <div>Attendees</div>
-                     </div>
-                  </div>
-               </div>
-               <a href="/attendees">
-                  <div class="panel-footer">
-                     <span class="pull-left">View Details</span>
-                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                     <div class="clearfix"></div>
-                  </div>
-               </a>
+                    </div>
+                </div>
             </div>
-         </div>
-         <div class="col-lg-3 col-md-6">
-            <div class="panel panel-red">
-               <div class="panel-heading">
-                  <div class="row">
-                     <div class="col-xs-3">
+            <a href="/attendees">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-red">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
                         <i class="fa fa-user fa-5x"></i>
-                     </div>
-                     <div class="col-xs-9 text-right">
+                    </div>
+                    <div class="col-xs-9 text-right">
                         <div class="huge">{{ organizers_number }}</div>
                         <div>Organizers</div>
-                     </div>
-                  </div>
-               </div>
-               <a href="/organizers">
-                  <div class="panel-footer">
-                     <span class="pull-left">View Details</span>
-                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                     <div class="clearfix"></div>
-                  </div>
-               </a>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-      <div class="add-space row">
-            <!-- /.col-lg-12 -->
-      </div>
-      <!-- /.row -->
-      <div class="row">
-         <div class="col-lg-12">
-            <h2>My events</h2>
-         </div>
-         <!-- /.col-lg-12 -->
-      </div>
-      <div class="row">
-         <div class="col-lg-12">
-            <h3>Events you organize</h3>
-            {%- if organizer_at -%}
-            <div class="content">
-               <ul class="user-events">
-                  <table class="table table-bordered table-hover table-condensed table-dashboard">
-                  <tr class="info">
-                      <td>Event</td>
-                      <td>Start date</td>
-                      <td>End date</td>
-                      <td>Venue</td>
-                      <td>Admin</td>
-                  </tr>
-                  {%- for event in organizer_at -%}
-                  <tr>
-                      <td><a href="{{ url_for('single_event', event_permalink=event['permalink']) }}" data-target="_blank">{{ event['name'] }}</a></td>
-                      <td>{{ event['start'] }}</td>
-                      <td>{{ event['end'] }}</td>
-                      <td><a title="Event Venue" href="https://www.google.com/maps/place/{{ event['venue'] }}" data-target="_blank">{{ event['venue'] }}</a></td>
-
-                      <td><div class="btn-group">
-                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-gear"></i>  <span class="caret"></span>
+            <a href="/organizers">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="add-space row">
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <h2>My events</h2>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3>Events you organize</h3>
+        {%- if organizer_at -%}
+        <div class="content">
+            <ul class="user-events">
+                <table class="table table-bordered table-hover table-condensed table-dashboard">
+                    <tr class="active">
+                        <td>Event</td>
+                        <td>Start date</td>
+                        <td>End date</td>
+                        <td>Venue</td>
+                        <td>Admin</td>
+                    </tr>
+                    {%- for event in organizer_at -%}
+                    <tr>
+                        <td><a href="{{ url_for('single_event', event_permalink=event['permalink']) }}"
+                               data-target="_blank">{{ event['name'] }}</a></td>
+                        <td>{{ event['start'] }}</td>
+                        <td>{{ event['end'] }}</td>
+                        <td><a title="Event Venue" href="https://www.google.com/maps/place/{{ event['venue'] }}"
+                               data-target="_blank">{{ event['venue'] }}</a></td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
+                                        data-toggle="dropdown">
+                                    <i class="fa fa-gear"></i> <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                <li><a title="List talks" href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}">List talks</a></li>
-                                <li class="divider"></li>
-                                <li><a title="Add talks to event" href="{{ url_for('new_talk', event_permalink=event['permalink']) }}">Add talks</a></li>
-                                <li><a title="Invite attendees to event" href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}">Invite people</a></li>
-                                <li class="divider"></li>
-                                <li><a title="Edit event" href="{{ url_for('event_edit', id=event['id']) }}">Edit event</a></li>
-                                <li><a title="Delete event" href="{{ url_for('event_del', id=event['id']) }}">Delete event</a></li>
+                                    <li><a title="List talks"
+                                           href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}">List talks</a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="Add talks to event"
+                                           href="{{ url_for('new_talk', event_permalink=event['permalink']) }}">Add talks</a></li>
+                                    <li><a title="Invite attendees to event"
+                                           href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}">Invite people</a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="Edit event" href="{{ url_for('event_edit', id=event['id']) }}">Edit event</a></li>
+                                    <li><a title="Delete event" href="{{ url_for('event_del', id=event['id']) }}">Delete event</a></li>
                                 </ul>
-
-                      </div></td>
-                  </tr>
-                  {%- endfor -%}
-                  </table>
-
-               </ul>
-            </div>
-            {%- else -%}
-            <div class="alert alert-info dashboard-alert" role="alert">You don't have events to organize.</div>
-            {%- endif -%}
-         </div>
-         <!-- /.col-lg-12 -->
-      </div>
-      <!-- /.row -->
-      <div class="row">
-         <div class="col-lg-12">
-            <h3>Speaker at</h3>
-            {%- if speaker_at -%}
-            <div class="content">
-               <ul class="user-events">
-                  <table class="table table-bordered table-hover table-condensed table-dashboard">
-                  <tr class="warning">
-                      <td>Event</td>
-                      <td>Start Date</td>
-                      <td>End Date</td>
-                      <td>Venue</td>
-                  </tr>
-                  {%- for event_speaker in speaker_at -%}
-                  <tr>
-                      <td><a href="{{ url_for('single_event', event_permalink=event_speaker['permalink']) }}" data-target="_blank">{{ event_speaker['name'] }}</a></td>
-                      <td>{{ event_speaker['start'] }}</td>
-                      <td>{{ event_speaker['end'] }}</td>
-                      <td><a title="Event Venue" href="https://www.google.com/maps/place/{{ event_speaker['venue'] }}" data-target="_blank">{{ event_speaker['venue'] }}</a></td>
-                  </tr>
-                  {%- endfor -%}
-                  </table>
-
-               </ul>
-            </div>
-            {%- else -%}
-            <div class="alert alert-info dashboard-alert" role="alert">You don't have events to speak at.</div>
-            {%- endif -%}
-            <!-- /.col-lg-12 -->
-         </div>
-      </div>
-      <div class="row">
-         <div class="col-lg-12">
-            <h3>Attendee at</h3>
-            {%- if attendee_at -%}
-            <div class="content">
-               <ul class="user-events">
-                  <table class="table table-bordered table-hover table-condensed table-dashboard">
-                  <tr class="danger">
-                      <td>Event</td>
-                      <td>Start date</td>
-                      <td>End date</td>
-                      <td>Venue</td>
-                  </tr>
-                  {%- for event_attendee in attendee_at -%}
-                  <tr>
-                      <td><a href="{{ url_for('single_event', event_permalink=event_attendee['permalink']) }}" data-target="_blank">{{ event_attendee['name'] }}</a></td>
-                      <td>{{ event_attendee['start'] }}</td>
-                      <td>{{ event_attendee['end'] }}</td>
-                      <td><a title="Event Venue" href="https://www.google.com/maps/place/{{ event_attendee['venue'] }}" data-target="_blank">{{ event_attendee['venue'] }}</a></td>
-                  </tr>
-                  {%- endfor -%}
-                  </table>
-
-               </ul>
-            </div>
-            {%- else -%}
-            <div class="alert alert-info dashboard-alert" role="alert">You don't have events to attend to.</div>
-            {%- endif -%}
-         </div>
-         <!-- /.col-lg-12 -->
-      </div>
-      <!-- /.row -->
-   </div>
-   <!-- /#page-wrapper -->
+                            </div>
+                        </td>
+                    </tr>
+                    {%- endfor -%}
+                </table>
+            </ul>
+        </div>
+        {%- else -%}
+        <div class="alert alert-info dashboard-alert" role="alert">You don't have events to organize.</div>
+        {%- endif -%}
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <h3>Speaker at</h3>
+        {%- if speaker_at -%}
+        <div class="content">
+            <ul class="user-events">
+                <table class="table table-bordered table-hover table-condensed table-dashboard">
+                    <tr class="active">
+                        <td>Event</td>
+                        <td>Start Date</td>
+                        <td>End Date</td>
+                        <td>Venue</td>
+                        <td>Action</td>
+                    </tr>
+                    {%- for event_speaker in speaker_at -%}
+                    <tr>
+                        <td><a href="{{ url_for('single_event', event_permalink=event_speaker['permalink']) }}"
+                               data-target="_blank">{{ event_speaker['name'] }}</a></td>
+                        <td>{{ event_speaker['start'] }}</td>
+                        <td>{{ event_speaker['end'] }}</td>
+                        <td><a title="Event Venue" href="https://www.google.com/maps/place/{{ event_speaker['venue'] }}"
+                               data-target="_blank">{{ event_speaker['venue'] }}</a></td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
+                                        data-toggle="dropdown">
+                                    <i class="fa fa-gear"></i> <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a title="List talks"
+                                           href="{{ url_for('single_event', event_permalink=event_speaker['permalink']) }}">Go to event</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {%- endfor -%}
+                </table>
+            </ul>
+        </div>
+        {%- else -%}
+        <div class="alert alert-info dashboard-alert" role="alert">You don't have events to speak at.</div>
+        {%- endif -%}
+        <!-- /.col-lg-12 -->
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h3>Attendee at</h3>
+        {%- if attendee_at -%}
+        <div class="content">
+            <ul class="user-events">
+                <table class="table table-bordered table-hover table-condensed table-dashboard">
+                    <tr class="active">
+                        <td>Event</td>
+                        <td>Start date</td>
+                        <td>End date</td>
+                        <td>Venue</td>
+                        <td>Action</td>
+                    </tr>
+                    {%- for event_attendee in attendee_at -%}
+                    <tr>
+                        <td><a href="{{ url_for('single_event', event_permalink=event_attendee['permalink']) }}"
+                               data-target="_blank">{{ event_attendee['name'] }}</a></td>
+                        <td>{{ event_attendee['start'] }}</td>
+                        <td>{{ event_attendee['end'] }}</td>
+                        <td><a title="Event Venue"
+                               href="https://www.google.com/maps/place/{{ event_attendee['venue'] }}"
+                               data-target="_blank">{{ event_attendee['venue'] }}</a></td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
+                                        data-toggle="dropdown">
+                                    <i class="fa fa-gear"></i> <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a title="List talks"
+                                           href="{{ url_for('single_event', event_permalink=event_attendee['permalink']) }}">Go to event</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {%- endfor -%}
+                </table>
+            </ul>
+        </div>
+        {%- else -%}
+        <div class="alert alert-info dashboard-alert" role="alert">You don't have events to attend to.</div>
+        {%- endif -%}
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
 </div>
 <!-- /#wrapper -->
 {%- endblock -%}
