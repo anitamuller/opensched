@@ -3,9 +3,9 @@
     <h3><strong>Recent</strong> events</h3>
     <hr>
     <ul>
-    {% for event in recent_events %}
+        {% for event in recent_events %}
         <li><a href="{{ url_for('single_event', event_permalink=event['permalink']) }}">{{ event['name'] }}</a></li>
-    {% endfor %}
+        {% endfor %}
     </ul>
     <div class="sidebar-divider"></div>
 
@@ -13,9 +13,9 @@
     <h3><strong>Top event</strong> topics</h3>
     <hr>
     <ul>
-    {% for tag in tags %}
+        {% for tag in tags %}
         <li><a href="{{ url_for('events_by_tag', page=1, tag=tag['title']) }}">{{ tag['title'] }} <sup class="badge">{{ tag['count'] }}</sup></a></li>
-    {% endfor %}
+        {% endfor %}
     </ul>
     <div class="sidebar-divider"></div>
     {%- endif -%}
