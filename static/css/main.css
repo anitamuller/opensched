@@ -249,7 +249,7 @@ label {
 }
 
 .schedule, .myschedule, .speakers-list, .attendees-list {
-    margin: 2% 0;
+    margin: 4% 0;
 }
 
 .dashboard-alert {
@@ -312,4 +312,8 @@ label {
 
 .talk-date {
     margin-top: 2%;
+}
+
+.img-circle {
+    margin-top: 0 !important;
 }

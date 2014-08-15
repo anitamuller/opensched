@@ -99,3 +99,7 @@ def string_to_time(date, time):
 def time_to_string(time):
     """Transforms a python time in a string time"""
     return time.strftime('%I') + ":" + time.strftime('%M') + " " + time.strftime('%p')
+
+
+def chunker(seq, size):
+    return (seq[pos:pos + size] for pos in xrange(0, len(seq), size))

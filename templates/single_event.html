@@ -85,38 +85,48 @@
                {%- if not speakers -%}
                     <div>There are no speakers registered for this event yet.</div>
                {%- else -%}
-               <ul class="speakers-list">
-                  {%- for speaker in speakers -%}
-                  <li>
-                     <div>
-                        <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
-                        {%- if speaker['name'] -%}
-                        <strong>{{ speaker['name'] }}</strong>
+               <table class="speakers-list">
+                  {%- for speakers_ in chunker(speakers,3) -%}
+                  <tr>
+                    {%- for speaker in speakers_ -%}
+                     <td>
+                        <img src="{{ speaker['gravatar_url'] }}" class="img-circle" alt="{{ speaker['name'] }}">
+                     </td>
+                     <td style="padding-right: 50px;">
+                        <div><strong>{{ speaker['name'] }}</strong></div>
+                        <div><a href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a></div>
+                        {%- if speaker['bio'] -%}
+                            <small>{{ speaker['bio'] }}</small>
                         {%- endif -%}
-                        <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
-                     </div>
-                  </li>
+                     </td>
+                    {%- endfor -%}
+                  </tr>
                   {%- endfor -%}
-               </ul>
+               </table>
                {%- endif -%}
             </div>
             <div class="attendees-list" ng-show="showAttendees">
                {%- if not attendees -%}
                <div>There are no attendees for this event yet.</div>
                {%- else -%}
-               <ul class="attendees-list">
-                  {%- for attendee in attendees -%}
-                  <li>
-                     <div>
-                        <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
-                        {%- if attendee['name'] -%}
-                        <strong>{{ attendee['name'] }}</strong>
+               <table class="attendees-list">
+                  {%- for attendees_ in chunker(attendees,3) -%}
+                  <tr>
+                    {%- for attendee in attendees_ -%}
+                     <td>
+                        <img src="{{ attendee['gravatar_url'] }}" class="img-circle" alt="{{ attendee['name'] }}">
+                     </td>
+                     <td style="padding-right: 50px;">
+                        <div><strong>{{ attendee['name'] }}</strong></div>
+                        <div><a href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a></div>
+                        {%- if attendee['bio'] -%}
+                            <small>{{ attendee['bio'] }}</small>
                         {%- endif -%}
-                        <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
-                     </div>
-                  </li>
+                     </td>
+                    {%- endfor -%}
+                  </tr>
                   {%- endfor -%}
-               </ul>
+               </table>
                {%- endif -%}
             </div>
          </div>
@@ -130,4 +140,5 @@
 {%- endblock -%}
 {%- block additional_js -%}
 <script src="{{ url_for('static', filename='js/lightbox-2.6.min.js') }}"></script>
+
 {%- endblock -%}

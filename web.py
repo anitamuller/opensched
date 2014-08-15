@@ -34,7 +34,11 @@ def events_by_tag(tag, page):
     if not events['data']:
         abort(404)
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    return render_template('index.html', events=events['data'], pagination=pag, meta_title='Events by tag: ' + tag)
+    return render_template('index.html',
+                           events=events['data'],
+                           pagination=pag,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Events by tag: ' + tag)
+
 
 @app.route('/<event_permalink>/talks/tag/<tag>', defaults={'page': 1})
 @app.route('/<event_permalink>/talks/tag/<tag>/page-<int:page>')
@@ -46,10 +50,10 @@ def talks_by_tag(event_permalink, tag, page):
     if not talks['data']:
         abort(404)
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    # Tenemos que hacer un indice para las charlas
-    # ahora al hacer click funciona pero no se ve toda
-    # la informacion porque usa events en vez de talks para acceder
-    return render_template('index.html', events=talks['data'], pagination=pag, meta_title='Talks by tag: ' + tag)
+    return render_template('index.html',
+                           events=talks['data'],
+                           pagination=pag,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Talks by tag: ' + tag)
 
 
 @app.route('/<event_permalink>')
@@ -92,7 +96,7 @@ def single_event(event_permalink):
             speakers_.append(str(talk['data']['speaker']))
         talks.append(talk['data'])
 
-    talks.sort(key=lambda item:item['date'], reverse=False)
+    talks.sort(key=lambda item: item['date'], reverse=False)
 
     tags = talkClass.get_tags(event_permalink)['data']
 
@@ -121,7 +125,7 @@ def single_event(event_permalink):
                            attendees=attendees,
                            speakers=speakers,
                            user_schedule=user_schedule,
-                           meta_title=app.config['SITE_TITLE'] + '::' + event['data']['name'])
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + event['data']['name'])
 
 
 @app.route('/q/<query>', defaults={'page': 1})
@@ -136,7 +140,10 @@ def search_results(page, query):
         events['data'] = []
     count = eventClass.get_total_count(search=query)
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
-    return render_template('index.html', events=events['data'], pagination=pag, meta_title='Search results')
+    return render_template('index.html',
+                           events=events['data'],
+                           pagination=pag,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Search results')
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -162,7 +169,9 @@ def event_preview():
     event['summary'] = base64.b64decode(event['summary']).decode('utf-8')
     event['description'] = base64.b64decode(event['description']).decode('utf-8')
 
-    return render_template('event_preview.html', event=event, meta_title='Preview event::' + event['name'])
+    return render_template('event_preview.html',
+                           event=event,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Preview event: ' + event['name'])
 
 
 @app.route('/events_list', defaults={'page': 1})
@@ -176,7 +185,10 @@ def events(page):
     count = eventClass.get_total_count()
     pag = pagination.Pagination(page, app.config['PER_PAGE'], count)
 
-    return render_template('events.html', events=events['data'], pagination=pag, meta_title='Events')
+    return render_template('events.html',
+                           events=events['data'],
+                           pagination=pag,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Events')
 
 
 @app.route('/newevent', methods=['GET', 'POST'])
@@ -263,8 +275,9 @@ def new_event():
     else:
         if session.get('event-preview') and session['event-preview']['action'] == 'edit':
             session.pop('event-preview', None)
+
     return render_template('new_event.html',
-                           meta_title='New event',
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'New event',
                            error=error,
                            error_type=error_type)
 
@@ -293,7 +306,7 @@ def event_edit(id):
     event['data']['end'] = format_date(event['data']['end'])
 
     return render_template('edit_event.html',
-                           meta_title='Edit event::' + event['data']['name'],
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Edit event: ' + event['data']['name'],
                            event=event['data'],
                            error=False,
                            error_type=False)
@@ -458,7 +471,7 @@ def new_talk(event_permalink):
                            end_date=date_to_string(event['data']['end'], 'short'),
                            event_permalink=event_permalink,
                            speakers_list=speakers,
-                           meta_title='New talk',
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'New talk',
                            error=error,
                            error_type=error_type)
 
@@ -480,7 +493,10 @@ def talks(page):
             event = eventClass.get_event_by_permalink(event_permalink)
             talk['event_name'] = event['data']['name']
 
-    return render_template('talks_list.html', talks=talks['data'], pagination=pag, meta_title='Talks')
+    return render_template('talks_list.html',
+                           talks=talks['data'],
+                           pagination=pag,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Talks')
 
 @app.route('/<event_permalink>/talk_preview')
 @login_required()
@@ -499,9 +515,13 @@ def talk_preview(event_permalink):
     talk['summary'] = base64.b64decode(talk['summary']).decode('utf-8')
     talk['description'] = base64.b64decode(talk['description']).decode('utf-8')
 
-    return render_template('talk_preview.html', event_permalink=event_permalink,
-                           talk=talk, talk_start=talk_start, talk_end=talk_end, talk_date=talk_date,
-                           meta_title='Preview talk::' + talk['name'])
+    return render_template('talk_preview.html',
+                           event_permalink=event_permalink,
+                           talk=talk,
+                           talk_start=talk_start,
+                           talk_end=talk_end,
+                           talk_date=talk_date,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Preview talk: ' + talk['name'])
 
 
 @app.route('/<event_permalink>/talk_edit?id=<id>')
@@ -536,7 +556,7 @@ def talk_edit(event_permalink, id):
                            event_start=date_to_string(event['data']['start'], 'short'),
                            event_end=date_to_string(event['data']['end'], 'short'),
                            event_permalink=event_permalink,
-                           meta_title='Edit talk::' + talk['data']['name'],
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Edit talk: ' + talk['data']['name'],
                            speakers_list=speakers,
                            talk=talk['data'],
                            error=False,
@@ -611,6 +631,7 @@ def single_talk(event_permalink, talk_permalink):
         session['redirect_event'] = event_permalink
         session['redirect_talk'] = talk_permalink
 
+    event = eventClass.get_event_by_permalink(event_permalink)
     talk = talkClass.get_talk_by_permalink(talk_permalink)
 
     if not talk['data']:
@@ -636,7 +657,7 @@ def single_talk(event_permalink, talk_permalink):
                            talk=talk['data'],
                            speaker=speaker_with_gravatar['data'],
                            attendees=attendees,
-                           meta_title='Talk: ' + '::' + talk['data']['name'])
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + event['data']['name'] + " - " + talk['data']['name'])
 
 @app.route('/<event_permalink>/talks')
 def talks_by_event(event_permalink):
@@ -657,8 +678,10 @@ def talks_by_event(event_permalink):
             talk['data']['end'] = time_to_string(talk['data']['end'])
             talks.append(talk['data'])
 
-    return render_template('talks.html', event_permalink=event_permalink, talks=talks,
-                           meta_title='Talks by event: ' + event_name)
+    return render_template('talks.html',
+                           event_permalink=event_permalink,
+                           talks=talks,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Talks by event: ' + event_name)
 
 @app.route('/<event_permalink>/my_schedule')
 def my_schedule(event_permalink):
@@ -691,7 +714,7 @@ def my_schedule(event_permalink):
                            tags=tags,
                            event=event['data'],
                            user_schedule=user_schedule,
-                           meta_title='My schedule for ' + event_name)
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'My schedule for ' + event_name)
 
 
 
@@ -704,7 +727,7 @@ def add_attendee_event(event_permalink):
     return render_template('add_attendee_event.html',
                            event_name=event['data']['name'],
                            event_permalink=event_permalink,
-                           meta_title='Invite attendee to event')
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Invite attendee to ' + event['data']['name'])
 
 
 @app.route('/<event_permalink>/<talk_permalink>/add_attendee_talk')
@@ -717,7 +740,7 @@ def add_attendee_talk(event_permalink, talk_permalink):
                            event_permalink=event_permalink,
                            talk_name=talk['data']['name'],
                            talk_permalink=talk_permalink,
-                           meta_title='Invite attendee to talk')
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Invite attendee to ' + talk['data']['name'])
 
 
 @app.route('/<event_permalink>/attendance')
@@ -733,8 +756,11 @@ def event_attendance(event_permalink):
         user = userClass.get_user(str(attendee))
         list_attendance.append(user['data'])
 
-    return render_template('event_attendance.html', event_permalink=event_permalink, users=list_attendance,
-                           event_name=event_name, meta_title='Event attendance: ' + event_name)
+    return render_template('event_attendance.html',
+                           event_permalink=event_permalink,
+                           users=list_attendance,
+                           event_name=event_name,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Event attendance: ' + event_name)
 
 
 @app.route('/<event_permalink>/<talk_permalink>/attendance')
@@ -751,9 +777,12 @@ def talk_attendance(event_permalink, talk_permalink):
         user = userClass.get_user(str(attendee))
         list_attendance.append(user['data'])
 
-    return render_template('talk_attendance.html', talk_permalink=talk_permalink, event_permalink= event_permalink,
+    return render_template('talk_attendance.html',
+                           talk_permalink=talk_permalink,
+                           event_permalink= event_permalink,
                            users=list_attendance,
-                           talk_name=talk_name, meta_title='Talk attendance: ' + talk_name)
+                           talk_name=talk_name,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Talk attendance: ' + talk_name)
 
 
 @app.route('/<event_permalink>/<talk_permalink>/talk_attendance')
@@ -778,14 +807,19 @@ def talk_attendance_(event_permalink, talk_permalink):
 @app.route('/register')
 def register():
     gravatar_url = userClass.get_gravatar_link()
-    return render_template('register.html', gravatar_url=gravatar_url, meta_title='Register')
+    return render_template('register.html',
+                           gravatar_url=gravatar_url,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Register')
 
 
 @app.route('/add_user')
 def add_user():
     gravatar_url = userClass.get_gravatar_link()
     role_list = ['Admin', 'User']
-    return render_template('add_user.html', gravatar_url=gravatar_url, role_list=role_list,  meta_title='Register a new user')
+    return render_template('add_user.html',
+                           gravatar_url=gravatar_url,
+                           role_list=role_list,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Register a new user')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -865,7 +899,7 @@ def dashboard_admin():
                            talks_created=talks_created,
                            attendees_number=attendees_number,
                            organizers_number=organizers_number,
-                           meta_title='Admin dashboard')
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Admin dashboard')
 
 
 @app.route('/dashboard_user')
@@ -879,7 +913,7 @@ def dashboard_user():
                            organizer_at=organizer_at,
                            speaker_at=speaker_at,
                            attendee_at=attendee_at,
-                           meta_title='Users dashboard')
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Users dashboard')
 
 
 def _events_by_user(user_email):
@@ -928,7 +962,9 @@ def users_list():
         user_with_gravatar = userClass.get_user(user_id)
         list_users.append(user_with_gravatar['data'])
 
-    return render_template('users.html', users=list_users, meta_title='Users')
+    return render_template('users.html',
+                           users=list_users,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Users')
 
 
 @app.route('/attendees')
@@ -942,7 +978,9 @@ def attendees():
         user = userClass.get_user(attendee)
         list_users.append(user['data'])
 
-    return render_template('attendees.html', users=list_users, meta_title='Attendees')
+    return render_template('attendees.html',
+                           users=list_users,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Attendees')
 
 
 @app.route('/organizers')
@@ -956,7 +994,9 @@ def organizers_list():
         user = userClass.get_user(organizer)
         list_users.append(user['data'])
 
-    return render_template('organizers.html', users=list_users, meta_title='Organizers')
+    return render_template('organizers.html',
+                           users=list_users,
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Organizers')
 
 
 @app.route('/edit_user?id=<id>')
@@ -966,7 +1006,7 @@ def edit_user(id):
     user = userClass.get_user(id)
     role_list = ['Admin', 'User']
     return render_template('edit_user.html', user=user['data'], role_list=role_list,
-                           old_email=id, meta_title='Edit user')
+                           old_email=id, meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Edit user')
 
 
 @app.route('/edit_inactive_user?id=<id>')
@@ -975,14 +1015,16 @@ def edit_user(id):
 def edit_inactive_user(id):
     user = userClass.get_user(id)
     return render_template('edit_inactive_user.html', user=user['data'],
-                           old_email=id, meta_title='Edit user')
+                           old_email=id, meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Edit user')
 
 
 @app.route('/view_user?id=<id>')
 @login_required()
 def view_user(id):
     user = userClass.get_user(id)
-    return render_template('view_user.html', user=user['data'], meta_title='Perfil user')
+    return render_template('view_user.html',
+                           user=user['data'],
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'User profile')
 
 
 @app.route('/delete_user?id=<id>')
@@ -1231,7 +1273,6 @@ def save_profile_user():
     return redirect(url_for('configure_settings'))
 
 
-
 @app.route('/register_user', methods=['POST'])
 def register_user():
 
@@ -1262,7 +1303,6 @@ def register_user():
             message = 'User updated!' if post_data['update'] else 'User added!'
             flash(message, 'success')
     return redirect(url_for('login'))
-
 
 
 @app.route('/<event_permalink>/save_attendee', methods=['POST'])
@@ -1309,6 +1349,7 @@ def save_attendee_talk(event_permalink, talk_permalink):
         talkClass.add_new_attendee(talk_permalink, attendee_email)
 
     return redirect(url_for('talks_by_event', event_permalink=event_permalink))
+
 
 @app.route('/<event_permalink>/<talk_permalink>/schedule_talk')
 @login_required()
@@ -1384,7 +1425,7 @@ def configure_settings():
 
     return render_template('settings.html',
                            default_settings=app.config,
-                           meta_title='Settings',
+                           meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Settings',
                            error=error,
                            error_type=error_type,
                            user=user['data'], old_email=user_email,
@@ -1497,6 +1538,7 @@ app.jinja_env.globals['meta_description'] = app.config['SITE_DESCRIPTION']
 app.jinja_env.globals['recent_events'] = eventClass.get_events(10, 0)['data']
 app.jinja_env.globals['tags'] = eventClass.get_tags()['data']
 app.jinja_env.globals.update(date_to_string=date_to_string)
+app.jinja_env.globals.update(chunker=chunker)
 
 if not app.config['DEBUG']:
     import logging

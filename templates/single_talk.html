@@ -3,66 +3,78 @@
 {%- include 'head.html' -%}
 {%- block additional_css -%}
 <link href="{{ url_for('static', filename='css/metisMenu.min.css') }}" rel="stylesheet" media="screen">
-<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet"
+      media="screen">
 {%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
 {%- if talk -%}
 <div class="talk clearfix">
-   <div class="row">
-      <div class="col-lg-8">
-         <div class="page-header">
-            <h2>{{ talk['name'] }}</h2>
-         </div>
-         <div>{{ talk['description'] }}</div>
-         <div class="infopanel">
-            <div class="tags">
-               <span title="tags"><i class="fa fa-tags fa-fw"></i></span>
-               {%- if talk['tags'] -%}
-               {%- for tag in talk['tags'] -%}
-               &nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag }}</a>
-               {%- endfor -%}
-               {%- endif -%}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="page-header">
+                <h2>{{ talk['name'] }}</h2>
             </div>
-         </div>
-         <div class="single-talk-buttons" ng-app="" ng-controller="talkController">
-            <div class="btn-group talk">
-                    <a href="{{ url_for('single_event', event_permalink=event_permalink) }}" class="btn btn-primary">Back to the event</a>
+            <div>{{ talk['description'] }}</div>
+            <div class="infopanel">
+                <div class="tags">
+                    <span title="tags"><i class="fa fa-tags fa-fw"></i></span>
+                    {%- if talk['tags'] -%}
+                    {%- for tag in talk['tags'] -%}
+                    &nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=event_permalink, tag=tag) }}">{{ tag
+                    }}</a>
+                    {%- endfor -%}
+                    {%- endif -%}
+                </div>
+            </div>
+            <div class="single-talk-buttons" ng-app="" ng-controller="talkController">
+                <div class="btn-group talk">
+                    <a href="{{ url_for('single_event', event_permalink=event_permalink) }}" class="btn btn-primary">Back
+                        to the event</a>
                     <button ng-click="clickAttendees()" class="btn btn-primary">Attendees</button>
-               {%- if session.user and not session.user.email in talk['attendees'] -%}
-                    <a href="{{ url_for('schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Add to my schedule!</a>
-                    </div>
-               {%- elif session.user -%}
-                    <a href="{{ url_for('schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}" class="btn btn-primary">Remove from my schedule</a>
-                    </div>
-               {%- else -%}
-                    </div>
-                    <div class="single-talk-buttons"><a href="{{ url_for('login') }}">Login</a> or <a href="{{ url_for('register') }}">sign up</a> to bookmark this talk.</div>
-               {%- endif -%}
-            <div ng-show="showAttendees">
-               <ul class="attendees-list">
-                  {%- if attendees -%}
-                  <h4>Attendees</h4>
-                  {%- for attendee in attendees -%}
-                  <li>
-                     <div>
-                        <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
-                        <strong>{{ attendee['name'] }}</strong>
-                        <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
-                     </div>
-                  </li>
-                  {%- endfor -%}
-                  {%- else -%}
-                  <h4>There are no attendees for this event yet.</h4>
-                  {%- endif -%}
-               </ul>
+                    {%- if session.user and not session.user.email in talk['attendees'] -%}
+                    <a href="{{ url_for('schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}"
+                       class="btn btn-primary">Add to my schedule!</a>
+                </div>
+                {%- elif session.user -%}
+                <a href="{{ url_for('schedule_talk', event_permalink=event_permalink, talk_permalink=talk['permalink']) }}"
+                   class="btn btn-primary">Remove from my schedule</a>
             </div>
-         </div>
-      </div>
-   </div>
-   <script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
-   <script src="{{ url_for('static', filename='js/talk-options.js') }}"></script>
+            {%- else -%}
+        </div>
+        <div class="single-talk-buttons"><a href="{{ url_for('login') }}">Login</a> or <a
+                href="{{ url_for('register') }}">sign up</a> to bookmark this talk.
+        </div>
+        {%- endif -%}
+        <div ng-show="showAttendees">
+            {%- if attendees -%}
+            <table class="attendees-list">
+                {%- for attendees_ in chunker(attendees,3) -%}
+                <tr>
+                    {%- for attendee in attendees_ -%}
+                    <td>
+                        <img src="{{ attendee['gravatar_url'] }}" class="img-circle" alt="{{ attendee['name'] }}">
+                    </td>
+                    <td style="padding-right: 50px;">
+                        <div><strong>{{ attendee['name'] }}</strong></div>
+                        <div><a href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{
+                            attendee['_id'] }}</a></div>
+                        {%- if attendee['bio'] -%}
+                        <small>{{ attendee['bio'] }}</small>
+                        {%- endif -%}
+                    </td>
+                    {%- endfor -%}
+                </tr>
+                {%- endfor -%}
+            </table>
+            {%- else -%}
+            <div>There are no attendees for this event yet.</div>
+            {%- endif -%}
+        </div>
+    </div>
 </div>
+<script src="{{ url_for('static', filename='js/angular/angular.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/talk-options.js') }}"></script>
 {%- endif -%}
 {%- include 'sidebar_talk.html' -%}
 {%- endblock -%}
