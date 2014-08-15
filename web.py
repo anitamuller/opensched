@@ -351,6 +351,7 @@ def bulk_delete_events():
 @login_required()
 def new_talk(event_permalink):
     event_permalink = cgi.escape(event_permalink)
+    event = eventClass.get_event_by_permalink(event_permalink)
 
     error = False
     error_type = 'validate'
@@ -453,6 +454,8 @@ def new_talk(event_permalink):
     speakers = eventClass.get_attendance_event(event_permalink)
 
     return render_template('new_talk.html',
+                           start_date=date_to_string(event['data']['start'], 'short'),
+                           end_date=date_to_string(event['data']['end'], 'short'),
                            event_permalink=event_permalink,
                            speakers_list=speakers,
                            meta_title='New talk',
@@ -505,6 +508,7 @@ def talk_preview(event_permalink):
 @login_required()
 def talk_edit(event_permalink, id):
     event_permalink = cgi.escape(event_permalink)
+    event = eventClass.get_event_by_permalink(event_permalink)
 
     talk = talkClass.get_talk_by_id(id)
     session['talk-permalink'] = talk['data']['permalink']
@@ -529,6 +533,8 @@ def talk_edit(event_permalink, id):
     talk['data']['description'] = base64.b64decode(talk['data']['description']).decode('utf-8')
 
     return render_template('edit_talk.html',
+                           event_start=date_to_string(event['data']['start'], 'short'),
+                           event_end=date_to_string(event['data']['end'], 'short'),
                            event_permalink=event_permalink,
                            meta_title='Edit talk::' + talk['data']['name'],
                            speakers_list=speakers,
@@ -779,7 +785,7 @@ def register():
 def add_user():
     gravatar_url = userClass.get_gravatar_link()
     role_list = ['Admin', 'User']
-    return render_template('add_user.html', gravatar_url=gravatar_url, role_list=role_list,  meta_title='Register a new User')
+    return render_template('add_user.html', gravatar_url=gravatar_url, role_list=role_list,  meta_title='Register a new user')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -1236,7 +1242,7 @@ def register_user():
         'new_pass': request.form.get('user-new-password', None),
         'new_pass_again': request.form.get('user-new-password-again', None),
         'role': request.form.get('user-role', None),
-        'active': request.form.get('user-active', None),
+        'active': 1,
         'bio': request.form.get('user-bio', None),
         'update': request.form.get('user-update', False)
     }
