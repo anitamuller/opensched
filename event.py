@@ -446,6 +446,8 @@ class Event:
         new_permalink = unicodedata.normalize('NFKD', new_permalink).encode('ascii', 'ignore')
         #  Replace spaces for dashes
         new_permalink = new_permalink.replace(" ", "_")
+        #  Remove quotes (valid ascii)
+        new_permalink = new_permalink.replace("'", "")
         #  To lowercase
         new_permalink = new_permalink.lower()
 

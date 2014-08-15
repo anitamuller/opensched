@@ -151,7 +151,6 @@ class Talk:
                 self.response['error'] = 'Talk update error..'
 
         else:
-
             try:
                 record = {'name': talk_data['name'],
                           'event': talk_data['event'],
@@ -209,7 +208,6 @@ class Talk:
                                                           'tags': talk_tags
 
                                                           })
-
 
     def modify_event_talk(self, permalink, new_event_permalink):
         self.response['data'] = self.collection.find_one({'permalink': permalink})
@@ -273,8 +271,6 @@ class Talk:
                                                           'tags': talk_tags
                                                           })
 
-
-
     def delete_talk(self, talk_id):
         self.response['error'] = None
         try:
@@ -310,6 +306,8 @@ class Talk:
         new_permalink = unicodedata.normalize('NFKD', new_permalink).encode('ascii', 'ignore')
         #  Replace spaces for dashes
         new_permalink = new_permalink.replace(" ", "_")
+        #  Remove quotes (valid ascii)
+        new_permalink = new_permalink.replace("'", "")
         #  To lowercase
         new_permalink = new_permalink.lower()
 
