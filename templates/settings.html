@@ -59,8 +59,6 @@
                   </form>
                   <div class="clearfix more"></div>
                   {%- endif -%}
-
-
                   {%- if user -%}
                   <div class="add-space more">
                         <h2>Profile configuration</h2>
@@ -109,8 +107,6 @@
                            <legend>Biography</legend>
                            <textarea id="user-bio" name="user-bio" class="form-control" placeholder="Tell people a little about yourself.">{{ user['bio'] }}</textarea>
                         </fieldset>
-                        </br></br>
-
                         <div class="form-group">
                            <input name="user-id" type="hidden" value="{{ user['_id'] }}">
                            <input name="user-update" type="hidden" value="1">
@@ -119,7 +115,7 @@
                            <input name="user-role" type="hidden" value="user">
                         {%- endif -%}
                            <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-                           <input id="post-submit" type="submit" class="btn btn-primary" value="Edit Your Profile">
+                           <input id="post-submit" type="submit" class="btn btn-primary" value="Edit your profile">
                         </div>
                      </div>
                   </form>

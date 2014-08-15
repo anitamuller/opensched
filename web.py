@@ -1122,17 +1122,17 @@ def save_user():
                     user = userClass.get_user_by_email(old_email)
                     userClass.delete_user(old_email)
                     userClass.save_new_user(new_email, user)
-            else:
-                user = userClass.save_user(post_data)
-                if user['error']:
-                    flash(user['error'], 'error')
-                    if post_data['update']:
-                        return redirect(url_for('edit_user', id=post_data['_id']))
-                    else:
-                        return redirect(url_for('add_user'))
+        else:
+            user = userClass.save_user(post_data)
+            if user['error']:
+                flash(user['error'], 'error')
+                if post_data['update']:
+                    return redirect(url_for('edit_user', id=post_data['_id']))
                 else:
-                    message = 'User updated!' if post_data['update'] else 'User added!'
-                    flash(message, 'success')
+                    return redirect(url_for('add_user'))
+            else:
+                message = 'User updated!' if post_data['update'] else 'User added!'
+                flash(message, 'success')
 
     if session['user']['role'] == 'User':
         return redirect(url_for('dashboard_user'))
@@ -1144,7 +1144,7 @@ def save_user():
 @login_required()
 def save_profile_user():
     post_data = {
-        '_id': request.form.get('user-email', None),
+        '_id': request.form.get('user-id', None),
         'name': request.form.get('user-name', None),
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
