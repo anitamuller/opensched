@@ -134,6 +134,8 @@
                         <input id="talk-preview" type="submit" class="btn" value="Preview">
                      </div>
                   </form>
+                  <div id="event-start" hidden>{{ event_start }}</div>
+                  <div id="event-end" hidden>{{ event_end }}</div>
                </div>
             </div>
          </div>
@@ -142,9 +144,9 @@
 </div>
 {%- endblock -%}
 {%- block scripts -%}
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <!-- WYSIWYG editor -->
 <script src="{{ url_for('static', filename='js/summernote.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/summernote-talks.js') }}"></script>
