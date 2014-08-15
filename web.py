@@ -407,24 +407,20 @@ def new_talk(event_permalink):
 
                     if response['permalink-changed']:
                         old_permalink, new_permalink = response['permalink-changed']
-                        event = eventClass.get_event_by_permalink(event_permalink)
+                        talk = talkClass.get_talk_by_permalink(event_permalink)
                         event_talks = event['data']['talks']
                         event_talks.remove(old_permalink)
                         event_talks.append(new_permalink)
                         eventClass.modify_talks_event(event_permalink, event_talks)
 
-                        import pdb
-                        pdb.set_trace()
-
                         # Update users invited to the event speaker_at and attendee_at fields
-                        event_attendees = event['data']['attendees']
+                        talk_attendees = talk['data']['attendees']
 
-                        for attendee in event_attendees:
+                        for attendee in talk_attendees:
                             user_attendee = userClass.get_user_by_email(attendee)
                             userClass.remove_attendee(attendee, event_permalink, old_permalink)
                             userClass.save_attendee(user_attendee, event_permalink, new_permalink)
                             userClass.save_speaker(attendee, event_permalink, new_permalink)
-
 
                     if not response['error']:
                         flash('Talk updated!', 'success')
