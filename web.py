@@ -1049,7 +1049,7 @@ def delete_attendee_talk(attendee_email, event_permalink, talk_permalink):
 @login_required()
 def save_user():
     post_data = {
-        '_id': request.form.get('user-email', None),
+        '_id': request.form.get('user-id', None),
         'name': request.form.get('user-name', None),
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
@@ -1144,7 +1144,7 @@ def save_user():
 @login_required()
 def save_profile_user():
     post_data = {
-        '_id': request.form.get('user-id', None),
+        '_id': request.form.get('user-email', None),
         'name': request.form.get('user-name', None),
         'old_pass': request.form.get('user-old-password', None),
         'new_pass': request.form.get('user-new-password', None),
