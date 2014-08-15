@@ -56,13 +56,13 @@
                                     <i class="fa fa-gear"></i>  <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                <li><a title="List talks" href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}">List talks</a></li>
-                                <li class="divider"></li>
-                                <li><a title="Add talks to event" href="{{ url_for('new_talk', event_permalink=event['permalink']) }}">Add talks</a></li>
-                                <li><a title="Invite attendees to event" href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}">Invite people</a></li>
-                                <li class="divider"></li>
                                 <li><a title="Edit event" href="{{ url_for('event_edit', id=event['id']) }}">Edit event</a></li>
                                 <li><a title="Delete event" href="{{ url_for('event_del', id=event['id']) }}">Delete event</a></li>
+                                <li class="divider"></li>
+                                <li><a title="Invite attendees to event" href="{{ url_for('add_attendee_event', event_permalink=event['permalink']) }}">Invite people</a></li>
+                                <li class="divider"></li>
+                                <li><a title="Add talks to event" href="{{ url_for('new_talk', event_permalink=event['permalink']) }}">Add talks</a></li>
+                                <li><a title="List talks" href="{{ url_for('talks_by_event', event_permalink= event['permalink']) }}">List talks</a></li>
                                 </ul>
                             </div>
                         </td>
