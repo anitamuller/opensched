@@ -275,7 +275,6 @@ class User:
                         if not exist_user.has_key('name'):
                             exist_user['name'] = ""
 
-
                         record = {'_id': exist_user['_id'],
                                   'password': exist_user['password'],
                                   'name': exist_user['name'],
@@ -334,7 +333,6 @@ class User:
                         self.print_debug_info(e, self.debug_mode)
                         self.response['error'] = 'Create user user error..'
             else:
-
                 # Aca se crea un nuevo usuario asique solamente inicializamos
                 event_name = str(event_permalink)
                 new_attendee_at = {}
@@ -345,9 +343,13 @@ class User:
                     new_attendee_at[event_name] = [talk_permalink]
 
                 record = {'_id': user_data['_id'],
-                          'active': user_data['active'], 'name': "", 'password': None,
-                          'role': user_data['role'], 'bio': "",
-                          'attendee_at': new_attendee_at, 'speaker_at': {},
+                          'active': user_data['active'],
+                          'name': user_data['name'],
+                          'password': None,
+                          'role': user_data['role'],
+                          'bio': "",
+                          'attendee_at': new_attendee_at,
+                          'speaker_at': {},
                           'organizer_at': []}
 
                 try:
