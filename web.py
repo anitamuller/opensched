@@ -1119,57 +1119,62 @@ def save_user():
     else:
         old_email = request.form.get('user-id', None)
         new_email = request.form.get('user-email', None)
-        active = request.form.get('active', None)
         exist_user = userClass.get_user_by_email(old_email)
         if exist_user:
             if not old_email == new_email and not new_email == None:
-                if active:
-                    user = userClass.get_user_by_email(old_email)
+                user = userClass.get_user_by_email(old_email)
 
-                    list_attendee_at = user['attendee_at']
-                    list_attendee_at_ = list_attendee_at.keys()
+                list_attendee_at = user['attendee_at']
+                list_attendee_at_ = list_attendee_at.keys()
 
-                    for event_name in list_attendee_at_:
-                        event = eventClass.get_event_by_permalink(event_name)
-                        attendees_event = event['data']['attendees']
+                for event_name in list_attendee_at_:
+                    event = eventClass.get_event_by_permalink(event_name)
+                    attendees_event = event['data']['attendees']
 
-                        if old_email in attendees_event:
-                            attendees_event.remove(old_email)
-                            attendees_event.append(new_email)
-                            eventClass.modify_attendees_event(event_name, attendees_event)
+                    if old_email in attendees_event:
+                        attendees_event.remove(old_email)
+                        attendees_event.append(new_email)
+                        eventClass.modify_attendees_event(event_name, attendees_event)
 
-                        talks_event = event['data']['talks']
-                        for talk in talks_event:
-                            talk_event = talkClass.get_talk_by_permalink(talk)
-                            attendees_talk = talk_event['data']['attendees']
-                            speaker = talk_event['data']['speaker']
+                    talks_event = event['data']['talks']
+                    for talk in talks_event:
+                        talk_event = talkClass.get_talk_by_permalink(talk)
+                        attendees_talk = talk_event['data']['attendees']
+                        speaker = talk_event['data']['speaker']
 
-                            if old_email in attendees_talk:
-                                attendees_talk.remove(old_email)
-                                attendees_talk.append(new_email)
-                                talkClass.modify_attendees_talk(talk, attendees_talk)
+                        if old_email in attendees_talk:
+                            attendees_talk.remove(old_email)
+                            attendees_talk.append(new_email)
+                            talkClass.modify_attendees_talk(talk, attendees_talk)
 
-                            if old_email == speaker:
-                                talkClass.modify_speaker_talk(talk, new_email)
+                        if old_email == speaker:
+                            talkClass.modify_speaker_talk(talk, new_email)
 
-                    events_organized = user['organizer_at']
-                    for event in events_organized:
-                        eventClass.modify_organizer_event(event, new_email)
+                events_organized = user['organizer_at']
+                for event in events_organized:
+                    eventClass.modify_organizer_event(event, new_email)
 
-                    user_deleted = userClass.delete_user(old_email)
-                    if old_email == session['user']['email']:
-                        session.pop('user')
-                        user['_id']= new_email
-                        user['email'] = new_email
-                        userClass.start_session(user)
+                user_deleted = userClass.delete_user(old_email)
+                if old_email == session['user']['email']:
+                    session.pop('user')
+                    user['_id']= new_email
+                    user['email'] = new_email
+                    userClass.start_session(user)
 
-                    user_saved = userClass.save_new_user(new_email, user)
+                user_saved = userClass.save_new_user(new_email, user)
+                message = 'User updated!' if post_data['update'] else 'User added!'
+                flash(message, 'success')
+            else:
+                user = userClass.save_user(post_data)
+                if user['error']:
+                    flash(user['error'], 'error')
+                    if post_data['update']:
+                        return redirect(url_for('edit_user', id=post_data['_id']))
+                    else:
+                        return redirect(url_for('add_user'))
+                else:
                     message = 'User updated!' if post_data['update'] else 'User added!'
                     flash(message, 'success')
-                else:
-                    user = userClass.get_user_by_email(old_email)
-                    userClass.delete_user(old_email)
-                    userClass.save_new_user(new_email, user)
         else:
             user = userClass.save_user(post_data)
             if user['error']:
@@ -1312,6 +1317,7 @@ def save_attendee_event(event_permalink):
 
     post_data = {
         '_id': request.form.get('user-id', None).lower().strip(),
+        'name': request.form.get('user-name', None),
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None)
     }
@@ -1335,6 +1341,7 @@ def save_attendee_talk(event_permalink, talk_permalink):
 
     post_data = {
         '_id': request.form.get('user-id', None),
+        'name': request.form.get('user-name', None),
         'role': request.form.get('user-role', None),
         'active': request.form.get('user-active', None)
     }

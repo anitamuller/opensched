@@ -36,6 +36,15 @@
                             <div>
                                 <fieldset>
                                     <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
+                                        <h5>Name</h5>
+                                        {%- if error and error_type == 'validate' -%}
+                                        <label class="control-label" for="user-name">Required field</label>
+                                        {%- endif -%}
+                                        <input type="text" class="form-control" name="user-name" id="user-name"
+                                               placeholder="Name" value="{{ user['name'] }}" required
+                                               autocomplete="off">
+                                    </div>
+                                    <div class="form-group {% if error and error_type == 'validate' %}has-error{% endif %}">
                                         <h5>Email</h5>
                                         {%- if error and error_type == 'validate' -%}
                                         <label class="control-label" for="user-email">Required field</label>
@@ -52,7 +61,7 @@
                                 <input name="old-email" type="hidden" value="{{ old_email }}">
                                 <input name="active" type="hidden" value="0">
                                 {%- if session.user.role == 'User' -%}
-                                <input name="user-role" type="hidden" value="user">
+                                    <input name="user-role" type="hidden" value="User">
                                 {%- endif -%}
                                 <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                                 <input id="user-submit" type="submit" class="btn btn-primary" value="Edit">
