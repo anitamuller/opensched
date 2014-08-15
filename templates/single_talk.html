@@ -45,11 +45,21 @@
                   <h4>Attendees</h4>
                   {%- for attendee in attendees -%}
                   <li>
-                     <div>
-                        <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
-                        <strong>{{ attendee['name'] }}</strong>
-                        <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
-                     </div>
+                     <form class="form-user" role="form">
+							<div class="photo-user">
+								<img src="{{attendee['gravatar_url'] }}" class="img-circle">
+							</div>
+							<div>
+                                </br></br>
+                                <dl>
+                                {%- if attendee['name'] -%}
+                                <dd><strong>{{ attendee['name'] }}</strong></dd>
+                                {%- endif -%}
+                                <dd><a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a></dd>
+                                </dl>
+                            </div>
+                     </form>
+                    </br>
                   </li>
                   {%- endfor -%}
                   {%- else -%}

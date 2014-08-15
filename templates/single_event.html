@@ -88,13 +88,21 @@
                <ul class="speakers-list">
                   {%- for speaker in speakers -%}
                   <li>
-                     <div>
-                        <img src="{{ speaker['gravatar_url'] }}" class="img-circle">
-                        {%- if speaker['name'] -%}
-                        <strong>{{ speaker['name'] }}</strong>
-                        {%- endif -%}
-                        <a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a>
-                     </div>
+                     <form class="form-user" role="form">
+							<div class="photo-user">
+								<img src="{{speaker['gravatar_url'] }}" class="img-circle">
+							</div>
+							<div>
+                                </br></br>
+                                <dl>
+                                {%- if speaker['name'] -%}
+                                <dd><strong>{{ speaker['name'] }}</strong></dd>
+                                {%- endif -%}
+                                <dd><a title="Speaker" href="{{ url_for('view_user', id=speaker['_id']) }}" data-target="_blank"> {{ speaker['_id'] }}</a></dd>
+                                </dl>
+                            </div>
+                     </form>
+                     </br>
                   </li>
                   {%- endfor -%}
                </ul>
@@ -107,13 +115,21 @@
                <ul class="attendees-list">
                   {%- for attendee in attendees -%}
                   <li>
-                     <div>
-                        <img src="{{ attendee['gravatar_url'] }}" class="img-circle">
-                        {%- if attendee['name'] -%}
-                        <strong>{{ attendee['name'] }}</strong>
-                        {%- endif -%}
-                        <a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a>
-                     </div>
+                     <form class="form-user" role="form">
+							<div class="photo-user">
+								<img src="{{attendee['gravatar_url'] }}" class="img-circle">
+							</div>
+							<div>
+                                </br></br>
+                                <dl>
+                                {%- if attendee['name'] -%}
+                                <dd><strong>{{ attendee['name'] }}</strong></dd>
+                                {%- endif -%}
+                                <dd><a title="Attendee" href="{{ url_for('view_user', id=attendee['_id']) }}" data-target="_blank"> {{ attendee['_id'] }}</a></dd>
+                                </dl>
+                            </div>
+                     </form>
+                    </br>
                   </li>
                   {%- endfor -%}
                </ul>
