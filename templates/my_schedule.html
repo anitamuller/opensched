@@ -38,7 +38,7 @@
                </div>
                {%- else -%}
                <div class="page-header">
-                    <div class="alert alert-info" role="alert">There are no sessions in your schedule yet. <a href="{{ url_for('single_event', event_permalink=event_permalink) }}">Go back to the event page and start picking talks!</a></div>
+                    <div class="alert alert-info" role="alert">There are no sessions in your schedule yet. <a href="{{ url_for('single_event', event_permalink=event['permalink']) }}">Go back to the event page and start picking talks!</a></div>
                </div>
                </div>
                {%- endif -%}
