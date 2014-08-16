@@ -77,7 +77,7 @@
                 </div>
                 {%- else -%}
                 <div class="page-header">
-                    <div class="alert alert-info" role="alert">There are no attendees for '{{ talk_name }}'yet.</div>
+                    <div class="alert alert-danger" role="alert">There are no attendees for '{{ talk_name }}'yet.</div>
                 </div>
                 <div class="content">
                     <a href="{{ url_for('add_attendee_talk', event_permalink=event_permalink, talk_permalink=talk_permalink) }}"

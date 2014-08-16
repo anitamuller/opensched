@@ -73,7 +73,7 @@
                </div>
                {%- else -%}
                <div>
-                    <div class="alert alert-info" role="alert">There are no talks for this event yet!</div>
+                    <div class="alert alert-danger" role="alert">There are no talks for this event yet!</div>
                     <a href="{{ url_for('new_talk', event_permalink=event_permalink) }}" class="response btn btn-primary"><i class="fa fa-plus"></i> Add talk</a>
                     <a href="{{ url_for('events') }}" class="response btn btn-primary"><i class="fa fa-chevron-circle-left"></i> Back to events</a>
                </div>

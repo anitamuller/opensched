@@ -102,8 +102,8 @@ footer a {color: #d6d8dd;}
     color: #999;
 }
 .error, .success {display:block;}
-.success {background-color: #dff0d8;}
-.error {background-color: #f2dede;}
+.success {background-color: #fcf8e3; border-color: #faebcc; color: #8a6d3b; font-weight: normal;}
+.error {background-color: #f2dede; border-color: #EED3D7; color: #b94a48; font-weight: normal;}
 
 .preview-back {margin-top: 20px;}
 
@@ -306,6 +306,10 @@ label {
 .img-circle {
     margin-top: 0 !important;
     margin-right: 20%;
+}
+
+.page-header {
+    border-bottom: none;
 }
 
 .page-header h1 {

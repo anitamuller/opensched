@@ -73,7 +73,7 @@
                </div>
                {%- else -%}
                <div>
-                 <div class="alert alert-info" role="alert">You are not organizing any event yet!</div>
+                 <div class="alert alert-danger" role="alert">You are not organizing any event yet!</div>
                  <a href="{{ url_for('new_event') }}" class="response btn btn-primary"><i class="fa fa-plus"></i> Create event</a>
                </div>
                {%- endif -%}
