@@ -13,11 +13,6 @@ body {
     background-color: white;
 }
 
-.post {margin-top:2em;}
-.post img {
-    max-width: 100%;
-    height: auto;
-}
 .content {
     font-size: 14px;
     line-height: 24px;
@@ -146,12 +141,6 @@ a.icon {
     float:left;
     margin:0;
 }
-.navbar-header .nav>li {float:left;}
-.navbar-header .navbar-nav>li>a {
-    padding-top:14.5px;
-    padding-bottom:14.5px;
-}
-.navbar {min-height:53px;}
 
 legend {
     padding-top:20px;
@@ -316,4 +305,13 @@ label {
 
 .img-circle {
     margin-top: 0 !important;
+    margin-right: 20%;
+}
+
+.page-header h1 {
+    font-size: 48px;
+}
+
+td {
+    padding: 0 15px 15px 0;
 }

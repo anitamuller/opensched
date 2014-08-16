@@ -28,7 +28,7 @@
                               previous_talk_date.year != talk['date'].year -%}
                             <div class="talk-date">{{ date_to_string(talk['date'], 'long') }}</div>
                         {%- endif -%}
-                        <span class="btn btn-info btn-talk">
+                        <span class="btn btn-default btn-talk">
                             <img src="/static/img/checked.png" class="select-talk" ng-click="addSched('{{ talk['permalink'] }}')"/>
                             <a href="{{ url_for('single_talk', event_permalink=event['permalink'], talk_permalink=talk['permalink']) }}">{{ talk['name'] }}</a>
                         </span>

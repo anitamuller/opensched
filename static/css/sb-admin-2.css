@@ -21,7 +21,7 @@ body {
 @media(min-width:768px) {
     #page-wrapper {
         position: inherit;
-        margin: 0 0 0 250px;
+        margin: -1% 0 0 250px;
         padding: 0 30px;
         border-left: 1px solid #e7e7e7;
     }
@@ -128,7 +128,7 @@ body {
         z-index: 1;
         position: absolute;
         width: 19.6%;
-        margin-top: 51px;
+        margin-top: 3%;
     }
 
     .navbar-top-links .dropdown-messages,
@@ -290,6 +290,24 @@ table.dataTable thead .sorting:after {
     font-size: 40px;
 }
 
+.panel-blue {
+    border-color: #0099CC;
+}
+
+.panel-blue .panel-heading {
+    border-color: #0099CC;
+    color: #fff;
+    background-color: #0099CC;
+}
+
+.panel-blue a {
+    color: #0099CC;
+}
+
+.panel-blue a:hover {
+    color: #00688B;
+}
+
 .panel-green {
     border-color: #5cb85c;
 }
@@ -346,5 +364,5 @@ table.dataTable thead .sorting:after {
 
 .container {
     width: 100%;
-    margin-top: 2%;
+    margin-top: -1%;
 }
