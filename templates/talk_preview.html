@@ -4,53 +4,54 @@
 {%- block additional_css -%}
 <link href="{{ url_for('static', filename='css/metisMenu.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
-<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
+<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet"
+      media="screen">
 {%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
-	{%- if talk -%}
-		<div class="talk content" style="background-color: white; padding-left: 35px;">
-			<div class="row">
-				<div class="col-lg-8">
-					<div class="page-header">
-						<h1>{{ talk['name'] }}</h1>
-						<div><i class="fa fa-user fa-fw" style="margin-top: 3%;"></i> Speaker {{ talk['speaker'] }}</div>
-                        <div><i class="fa fa-clock-o fa-fw"></i> On {{ talk['date'] }} From {{ talk['start'] }} to {{ talk['end'] }}</div>
-                        <div><i class="fa fa-map-marker fa-fw"></i> at {{ talk['room'] }}</div>
+{%- if talk -%}
+<div class="talk content" style="background-color: white; padding-left: 35px;">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="page-header">
+                <h1>{{ talk['name'] }}</h1>
 
-                        <dl class="dl-horizontal" >
-                            <dt>Summary:</dt>
-                            <dd style="margin-top: 3%;">
-                            {{ talk['summary'] }}
-                            </dd>
+                <div><i class="fa fa-user fa-fw" style="margin-top: 3%;"></i> Speaker {{ talk['speaker'] }}</div>
+                <div><i class="fa fa-clock-o fa-fw"></i> On {{ talk['date'] }} From {{ talk['start'] }} to {{
+                    talk['end'] }}
+                </div>
+                <div><i class="fa fa-map-marker fa-fw"></i> At {{ talk['room'] }}</div>
+                <dl class="dl-horizontal">
+                    <dt>Summary:</dt>
+                    <dd style="margin-top: 3%;">
+                        {{ talk['summary'] }}
+                    </dd>
 
-                            <dt style="margin-top: 3%;">Description:</dt>
-                            <dd style="margin-top: 3%;">
-                            {{ talk['description'] }}
-                            </dd>
-                        </dl>
-
-                        <div class="infopanel">
-                        <div class="tags">
-                           <span title="tags"><i class="fa fa-tags fa-fw"></i> </span>
-                           {%- if talk['tags'] -%}
-                           {%- for tag in talk['tags'] -%}
-                           &nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=talk['event'], tag=tag) }}">{{ tag }}</a>
-                           {%- endfor -%}
-                           {%- endif -%}
-                        </div>
-                        </div>
-					</div>
-
-
-					<div class="preview-back">
-						<a href="{{ session.get('talk-preview')['redirect'] }}" class="response btn btn-primary"><i class="fa fa-chevron-circle-left"></i>&nbsp; Back</a>
-					</div>
-				</div>
-			</div>
-
-	{%- endif -%}
-	{%- include 'sidebar.html' -%}
+                    <dt style="margin-top: 3%;">Description:</dt>
+                    <dd style="margin-top: 3%;">
+                        {{ talk['description'] }}
+                    </dd>
+                </dl>
+                <div class="infopanel">
+                    <div class="tags">
+                        <span title="tags"><i class="fa fa-tags fa-fw"></i> </span>
+                        {%- if talk['tags'] -%}
+                        {%- for tag in talk['tags'] -%}
+                        &nbsp;<a href="{{ url_for('talks_by_tag', event_permalink=talk['event'], tag=tag) }}">{{ tag
+                        }}</a>
+                        {%- endfor -%}
+                        {%- endif -%}
+                    </div>
+                </div>
+            </div>
+            <div class="preview-back">
+                <a href="{{ session.get('talk-preview')['redirect'] }}" class="response btn btn-primary"><i
+                        class="fa fa-chevron-circle-left"></i> Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+{%- endif -%}
 {%- endblock -%}
 {%- block additional_js -%}
 <script src="{{ url_for('static', filename='js/lightbox-2.6.min.js') }}"></script>

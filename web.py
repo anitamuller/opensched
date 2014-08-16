@@ -408,10 +408,11 @@ def new_talk(event_permalink):
                     'talk-preview']['action'] = 'edit' if request.form.get('talk-id') else 'add'
                 if request.form.get('talk-id'):
                     session[
-                        'talk-preview']['redirect'] = url_for('talk_edit', id=request.form.get('talk-id'))
+                        'talk-preview']['redirect'] = url_for('talk_edit', event_permalink=event_permalink,
+                                                              id=request.form.get('talk-id'))
                 else:
                     session['talk-preview']['redirect'] = url_for('new_talk', event_permalink=event_permalink)
-                return redirect(url_for('talk_preview',event_permalink=event_permalink))
+                return redirect(url_for('talk_preview', event_permalink=event_permalink))
             else:
                 session.pop('talk-preview', None)
 
@@ -553,8 +554,8 @@ def talk_edit(event_permalink, id):
     talk['data']['description'] = base64.b64decode(talk['data']['description']).decode('utf-8')
 
     return render_template('edit_talk.html',
-                           event_start=date_to_string(event['data']['start'], 'short'),
-                           event_end=date_to_string(event['data']['end'], 'short'),
+                           start_date=date_to_string(event['data']['start'], 'short'),
+                           end_date=date_to_string(event['data']['end'], 'short'),
                            event_permalink=event_permalink,
                            meta_title=app.config['SITE_TITLE'] + ' :: ' + 'Edit talk: ' + talk['data']['name'],
                            speakers_list=speakers,

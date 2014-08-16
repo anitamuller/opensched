@@ -109,7 +109,6 @@
                         <label for="talk-tags">Tags</label>
                         <input type="text" name="talk-tags" class="form-control" id="talk-tags" placeholder="Tags, comma separated" value="{{ talk_tags }}">
                      </div>
-
                      <div class="form-group {% if error and error_type == 'validate' %} has-error{% endif %}">
                         {%- if error and error_type == 'validate' -%}
                         <label class="control-label" for="talk-speaker">Required field</label>
@@ -134,8 +133,8 @@
                         <input id="talk-preview" type="submit" class="btn" value="Preview">
                      </div>
                   </form>
-                  <div id="event-start" hidden>{{ event_start }}</div>
-                  <div id="event-end" hidden>{{ event_end }}</div>
+                  <div id="start-date" hidden>{{ start_date }}</div>
+                  <div id="end-date" hidden>{{ end_date }}</div>
                </div>
             </div>
          </div>
