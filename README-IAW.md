@@ -2,7 +2,7 @@
 # Sistema de organización de eventos
 
 ## Autores
-    Ana Laura Muller y Victoria Martínez de la Cruz
+Ana Laura Muller y Victoria Martínez de la Cruz
 
 ## Requerimientos
 - [Python 2.7.8] (https://www.python.org/downloads/)
@@ -11,8 +11,12 @@
 
 ## Instalación
 
-- Instalar librerías detalladas en requirements.txt, con el siguiente comando::
-        `pip install -r requirements.txt`
+- Instalar librerías detalladas en requirements.txt, con el comando `pip install -r requirements.txt`
+
+## Ejecución
+
+- En el directorio de la aplicación iniciar el servidor con el comando `python web.py`. Por defecto
+será accesible desde `http://localhost:8080`.
 
 ## IDE
 - [PyCharm] (http://www.jetbrains.com/pycharm/download/)

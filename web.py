@@ -417,9 +417,7 @@ def new_talk(event_permalink):
                 session.pop('talk-preview', None)
 
                 if request.form.get('talk-id'):
-
                     response = talkClass.edit_talk(request.form['talk-id'], talk)
-
                     if response['permalink-changed']:
                         old_permalink, new_permalink = response['permalink-changed']
                         talk = talkClass.get_talk_by_permalink(event_permalink)
@@ -1289,7 +1287,7 @@ def register_user():
         'new_pass': request.form.get('user-new-password', None),
         'new_pass_again': request.form.get('user-new-password-again', None),
         'role': request.form.get('user-role', None),
-        'active': 1,
+        'active': u'1',
         'bio': request.form.get('user-bio', None),
         'update': request.form.get('user-update', False)
     }
@@ -1456,7 +1454,7 @@ def install():
             '_id': request.form.get('user-email', None),
             'name': request.form.get('user-name', None),
             'role': 'Admin',
-            'active': 1,
+            'active': u'1',
             'bio': request.form.get('user-bio', None),
             'new_pass': request.form.get('user-new-password', None),
             'new_pass_again': request.form.get('user-new-password-again', None),

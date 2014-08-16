@@ -55,7 +55,7 @@
                                         <i class="fa fa-gear"></i> <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu" role="menu">
-                                        {%- if user['active'] == 1 -%}
+                                        {%- if user['active'] == '1' -%}
                                         <li><a title="Edit user" href="{{ url_for('edit_user', id=user['_id']) }}">Edit
                                             user</a></li>
                                         {%- else -%}
@@ -82,7 +82,7 @@
 {%- endblock -%}
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <!-- Metis Menu Plugin JavaScript -->
 <script src="{{ url_for('static', filename='js/metisMenu.min.js') }}"></script>
 <!-- Custom Theme JavaScript -->

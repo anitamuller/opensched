@@ -307,6 +307,10 @@ label {
     margin-right: 20%;
 }
 
+.profile-edit {
+    padding-left:115px;
+}
+
 .page-header {
     border-bottom: none;
 }

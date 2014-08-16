@@ -93,3 +93,11 @@
    </div>
 </div>
 {%- endblock -%}
+{%- block scripts -%}
+<script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{{ url_for('static', filename='js/metisMenu.min.js') }}"></script>
+<!-- Custom Theme JavaScript -->
+<script src="{{ url_for('static', filename='js/sb-admin-2.js') }}"></script>
+{%- endblock -%}

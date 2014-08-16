@@ -62,7 +62,7 @@
                   <div class="add-space more">
                         <h2>Profile configuration</h2>
                   </div>
-                  <form class="form-user" role="form" method="post" action="{{ url_for('save_profile_user') }}">
+                  <form class="form-user profile-edit" role="form" method="post" action="{{ url_for('save_profile_user') }}">
                      <div class="photo-user">
                         <img src="{{ user['gravatar_url'] }}" class="img-circle">
                      </div>
@@ -129,7 +129,7 @@
 {%- endblock -%}
 {%- block scripts -%}
 <script src="{{ url_for('static', filename='js/jquery-2.1.1.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <!-- Metis Menu Plugin JavaScript -->
 <script src="{{ url_for('static', filename='js/metisMenu.min.js') }}"></script>
 <!-- Custom Theme JavaScript -->

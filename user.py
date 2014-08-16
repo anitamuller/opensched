@@ -214,10 +214,14 @@ class User:
 
                         if not user_data['name']:
                                 user_data['name'] = ""
-                        record = {'_id': user_data['_id'], 'password': password_hash,
-                                  'name': user_data['name'], 'role': user_data['role'],
-                                  'active': user_data['active'], 'bio':user_data['bio'],
-                                  'speaker_at': {}, 'attendee_at': {},
+                        record = {'_id': user_data['_id'],
+                                  'password': password_hash,
+                                  'name': user_data['name'],
+                                  'role': user_data['role'],
+                                  'active': user_data['active'],
+                                  'bio': user_data['bio'],
+                                  'speaker_at': {},
+                                  'attendee_at': {},
                                   'organizer_at': []}
                         try:
                             self.collection.insert(record, safe=True)
@@ -367,8 +371,12 @@ class User:
 
         if not exist_user:
             record = {'_id': speaker_email,
-                      'active': 0, 'name': None, 'password': None, 'bio': None,
-                      'role': 'User', 'attendee_at': {event_permalink: [talk_permalink]},
+                      'active': u'0',
+                      'name': None,
+                      'password': None,
+                      'bio': None,
+                      'role': 'User',
+                      'attendee_at': {event_permalink: [talk_permalink]},
                       'speaker_at': {event_permalink: [talk_permalink]},
                       'organizer_at': []}
 
