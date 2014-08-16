@@ -5,7 +5,6 @@
 <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/metisMenu.min.css') }}" rel="stylesheet" media="screen">
 <link href="{{ url_for('static', filename='css/sb-admin-2.css') }}" rel="stylesheet" media="screen">
-<link href="{{ url_for('static', filename='font-awesome-4.1.0/css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
 {%- endblock -%}
 {%- endblock -%}
 {%- block body -%}
@@ -18,7 +17,6 @@
 						<div><i class="fa fa-user fa-fw" style="margin-top: 3%;"></i> Organized by {{ event['organizer'] }}</div>
                         <div><i class="fa fa-clock-o fa-fw"></i> From {{ event['start'] }} to {{ event['end'] }}</div>
                         <div><i class="fa fa-map-marker fa-fw"></i> At {{ event['venue'] }}</div>
-
                         <dl class="dl-horizontal" >
                             <dt>Summary:</dt>
                             <dd style="margin-top: 3%;">
@@ -30,8 +28,6 @@
                             {{ event['description'] }}
                             </dd>
                         </dl>
-
-
                         <div class="infopanel">
                         <div class="tags">
                            <span title="tags"><i class="fa fa-tags fa-fw"></i> </span>
@@ -42,9 +38,7 @@
                            {%- endif -%}
                         </div>
                         </div>
-
 					</div>
-
 					<div class="preview-back">
 						<a href="{{ session.get('event-preview')['redirect'] }}" class="response btn btn-primary"><i class="fa fa-chevron-circle-left"></i>&nbsp;Back</a>
 					</div>

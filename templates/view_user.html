@@ -4,9 +4,9 @@
 		<div class="row">
 			<div class="col-lg-8">
 				<div class="page-header">
-					<h1>Perfil user</h1>
+					<h1>User profile</h1>
 				</div>
-				<div class="content" style="font-size: 16px">
+				<div class="content">
 					{%- with messages = get_flashed_messages(with_categories=True) -%}
 						{%- if messages -%}
 							{%- for category, message in messages -%}
@@ -17,23 +17,23 @@
 						{%- endif -%}
 					{%- endwith -%}
 					{%- if user -%}
-					<form class="form-user" role="form">
-							<div class="photo-user">
-								<img src="{{ user['gravatar_url'] }}" class="img-circle">
-							</div>
-							<div>
-                                </br>
-                                <dl>
-                                <dd>{{ user['name'] }}</dd>
-                                <dd>{{ user['_id'] }}</dd>
+					<table>
+                        <tr>
+							<td>
+								<img src="{{ user['gravatar_url'] }}" class="img-circle" />
+							</td>
+							<td>
+                                <dl class="dl-horizontal">
+                                    <dt>Name:</dt>
+                                    <dd>{{ user['name'] }}</dd>
+                                    <dt>Email:</dt>
+                                    <dd>{{ user['_id'] }}</dd>
+                                    <dt>Bio:</dt>
+                                    <dd>{{ user['bio'] }}</dd>
                                 </dl>
-                            </div>
-                    </form>
-                    </br></br></br>
-                    <div>
-                        <h4>About {{ user['name'] }}</h4>
-                        <p>{{ user['bio'] }}</p>
-                    </div>
+                            </td>
+                        </tr>
+                    </table>
 					{%- endif -%}
 				</div>
 			</div>
